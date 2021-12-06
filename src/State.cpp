@@ -1,7 +1,7 @@
 // Copyright (c) 2021 André Filipe Caldas Laranjeira
 // MIT License
 
-// Alien Attack - State module - Source code.
+// Alien Attack - State class - Source code.
 
 // Includes.
 #include "State.hpp"

@@ -1,7 +1,7 @@
 // Copyright (c) 2021 André Filipe Caldas Laranjeira
 // MIT License
 
-// Alien Attack - Game module - Header file.
+// Alien Attack - Game class - Header file.
 
 // Define guard.
 #ifndef GAME_H_
@@ -101,7 +101,7 @@ class Game {
 
   // Private components.
   private:
-    // Class methods.
+    // Class method prototypes.
     Game(GameParams game_params);
 
     // Members.

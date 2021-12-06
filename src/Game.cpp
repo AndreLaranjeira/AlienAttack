@@ -1,7 +1,7 @@
 // Copyright (c) 2021 André Filipe Caldas Laranjeira
 // MIT License
 
-// Alien Attack - Game module - Source code.
+// Alien Attack - Game class - Source code.
 
 // Includes.
 #include "Game.hpp"

@@ -1,7 +1,7 @@
 // Copyright (c) 2021 André Filipe Caldas Laranjeira
 // MIT License
 
-// Alien Attack - State module - Header file.
+// Alien Attack - State class - Header file.
 
 // Define guard.
 #ifndef STATE_H_
