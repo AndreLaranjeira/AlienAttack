@@ -6,7 +6,7 @@ EXE = alien-attack
 # Compiler name, source file extension and compilation data (flags and libs).
 CC = g++
 CFLAGS = -Wall -g -I $(IDIR) -std=c++17
-LIBS =
+LIBS = -lSDL2 -lSDL2_image -lSDL2_mixer
 
 # Project paths.
 IDIR = include
@@ -22,7 +22,7 @@ SEXT = cpp
 MAIN = main
 
 # Project classes.
-MODULES =
+MODULES = Game State
 
 # Makefile function definitions.
 FULL_PATH = $(patsubst %,$(2)/%.$(3),$(1))
