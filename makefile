@@ -22,7 +22,7 @@ SEXT = cpp
 MAIN = main
 
 # Project classes.
-MODULES = Game State
+MODULES = Game Music Sprite State
 
 # Makefile function definitions.
 FULL_PATH = $(patsubst %,$(2)/%.$(3),$(1))
