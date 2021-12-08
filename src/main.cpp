@@ -22,7 +22,6 @@ enum MainFunctionStatusCode {
 
 // Main function.
 int main(int argc, char** argv) {
-  char end;
   Game *game;
 
   try {
@@ -33,9 +32,8 @@ int main(int argc, char** argv) {
       return MainFunctionStatusCode::GameInitError;
   }
   
-  // Placeholder logic.
-  cout << "Press ENTER to finish program. ";
-  cin.get(end);
+  // Run game.
+  game->Run();
 
   // Clean up resources used.
   delete game;

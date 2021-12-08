@@ -20,6 +20,7 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_stdinc.h>
+#include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_video.h>
 
 // User includes.
@@ -36,7 +37,8 @@ enum GameInitErrorCode {
   SDLMixError,
   SDLAudioError,
   SDLWindowError,
-  SDLRendererError
+  SDLRendererError,
+  GameStateError
 };
 
 enum GameInitSuccessCode {
@@ -115,12 +117,15 @@ class Game {
     // Method prototypes.
     void cleanUpFailedGameInit(GameInitErrorCode error_code);
     void cleanUpGameRenderer();
+    void cleanUpGameState();
     void cleanUpGameWindow();
     void cleanUpSDLModules();
     string describeGameInitErrorCode(GameInitErrorCode error_code);
     string describeGameInitErrorDetails(GameInitErrorCode error_code);
     SDLConfig generateDefaultSDLConfig(GameParams game_params);
+    void handleGameInitError(GameInitErrorCode error_code);
     GameInitStatusCode initGame(SDLConfig SDL_module_params);
+    int initGameState();
     int initSDL(Uint32 flags);
     int initSDLAudio(SDLAudioParams audio_params, int audio_channels);
     int initSDLImage(int flags);

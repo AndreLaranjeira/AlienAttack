@@ -20,13 +20,13 @@ Game::Game(GameParams game_params) {
 
   if(holds_alternative<GameInitErrorCode>(game_init_status_code)) {
     game_init_error_code = get<GameInitErrorCode>(game_init_status_code);
-    this->cleanUpFailedGameInit(game_init_error_code);
-    this->throwGameInitException(game_init_error_code);
+    this->handleGameInitError(game_init_error_code);
   }
 
 };
 
 Game::~Game() {
+  this->cleanUpGameState();
   this->cleanUpGameRenderer();
   this->cleanUpGameWindow();
   this->cleanUpSDLModules();
@@ -61,12 +61,22 @@ State& Game::GetState(){
 };
 
 void Game::Run(){
+  while (this->state->QuitRequested() != true) {
+    this->state->Update();
 
+    this->state->Render();
+    SDL_RenderPresent(this->renderer);
+    
+    SDL_Delay(33);
+  }
 };
 
 // Private method implementations.
 void Game::cleanUpFailedGameInit(GameInitErrorCode error_code) {
   switch (error_code) {
+    case GameInitErrorCode::GameStateError:
+      this->cleanUpGameRenderer();
+
     case GameInitErrorCode::SDLRendererError:
       this->cleanUpGameWindow();
       
@@ -93,6 +103,10 @@ void Game::cleanUpGameRenderer() {
     SDL_DestroyRenderer(this->renderer);
     this->renderer = nullptr;
   }
+};
+
+void Game::cleanUpGameState() {
+  delete this->state;
 };
 
 void Game::cleanUpGameWindow() {
@@ -133,7 +147,10 @@ string Game::describeGameInitErrorCode(GameInitErrorCode error_code) {
       break;
     case GameInitErrorCode::SDLRendererError:
       description += "the SDL Renderer";
-      break;  
+      break;
+    case GameInitErrorCode::GameStateError:
+      description += "the internal Game State";
+      break;
   }
 
   description += ".";
@@ -156,6 +173,8 @@ string Game::describeGameInitErrorDetails(GameInitErrorCode error_code) {
     case GameInitErrorCode::SDLRendererError:
       description += SDL_GetError();
       break;
+    case GameInitErrorCode::GameStateError:
+      description += "The Game State constructor threw an exception";
   }
 
   description += ".";
@@ -190,6 +209,11 @@ SDLConfig Game::generateDefaultSDLConfig(GameParams game_params) {
   };
 };
 
+void Game::handleGameInitError(GameInitErrorCode error_code) {
+  this->cleanUpFailedGameInit(error_code);
+  this->throwGameInitException(error_code);
+};
+
 GameInitStatusCode Game::initGame(SDLConfig SDL_config) {
   if(this->verifySingletonProperty() != 0)
     return GameInitErrorCode::DuplicateGameInstanceError;
@@ -214,7 +238,21 @@ GameInitStatusCode Game::initGame(SDLConfig SDL_config) {
   if(this->initSDLRenderer(SDL_config.renderer_params) != 0)
     return GameInitErrorCode::SDLRendererError;
 
+  if(this->initGameState() != 0)
+    return GameInitErrorCode::GameStateError;
+
   return GameInitSuccessCode::GameInitSuccess;
+};
+
+int Game::initGameState() {
+  try {
+    this->state = new State();
+  }
+  catch(exception &e) {
+    return -1;
+  }
+
+  return 0;
 };
 
 int Game::initSDL(Uint32 SDL_flags) {
