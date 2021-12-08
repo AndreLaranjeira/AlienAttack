@@ -94,12 +94,12 @@ class Game {
     ~Game();
 
     // Method prototypes.
-    SDL_Renderer* GetRenderer();
-    State& GetState();
-    void Run();
+    SDL_Renderer* getRenderer();
+    State& getState();
+    void run();
 
     // Static method prototypes.
-    static Game& GetInstance();
+    static Game& getInstance();
 
   // Private components.
   private:

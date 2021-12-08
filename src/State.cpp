@@ -12,17 +12,17 @@ State::State() {};
 State::~State() {};
 
 // Public method implementations.
-void State::LoadAssets() {};
+void State::loadAssets() {};
 
-bool State::QuitRequested() {
-  return this->quitRequested;
+bool State::quitRequested() {
+  return this->quit_requested;
 };
 
-void State::Render() {};
+void State::render() {};
 
-void State::Update() {
+void State::update() {
   if(SDL_QuitRequested() == SDL_TRUE)
-    this->quitRequested = true;
+    this->quit_requested = true;
 };
 
 // Private method implementations.

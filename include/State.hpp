@@ -33,10 +33,10 @@ class State {
     ~State();
 
     // Method prototypes.
-    void LoadAssets();
-    bool QuitRequested();
-    void Render();
-    void Update();
+    void loadAssets();
+    bool quitRequested();
+    void render();
+    void update();
 
   // Private components.
   private:
@@ -44,7 +44,7 @@ class State {
     // Members.
     Sprite bg;
     Music music;
-    bool quitRequested = false;
+    bool quit_requested = false;
 };
 
 #endif // STATE_H_

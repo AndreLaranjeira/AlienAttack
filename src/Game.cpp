@@ -33,7 +33,7 @@ Game::~Game() {
 };
 
 // Public method implementations.
-Game& Game::GetInstance() {
+Game& Game::getInstance() {
   GameParams game_params = {
     .title = "AlienAttack",
     .width = 1024,
@@ -52,19 +52,19 @@ Game& Game::GetInstance() {
   return *Game::instance;
 };
 
-SDL_Renderer* Game::GetRenderer(){
+SDL_Renderer* Game::getRenderer(){
   return this->renderer;
 };
 
-State& Game::GetState(){
+State& Game::getState(){
   return *(this->state);
 };
 
-void Game::Run(){
-  while (this->state->QuitRequested() != true) {
-    this->state->Update();
+void Game::run(){
+  while (this->state->quitRequested() != true) {
+    this->state->update();
 
-    this->state->Render();
+    this->state->render();
     SDL_RenderPresent(this->renderer);
     
     SDL_Delay(33);

@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
   Game *game;
 
   try {
-    game = &Game::GetInstance();
+    game = &Game::getInstance();
   }
   catch (exception &e) {
       cout << "Caught exception: " << e.what();
@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
   }
   
   // Run game.
-  game->Run();
+  game->run();
 
   // Clean up resources used.
   delete game;
