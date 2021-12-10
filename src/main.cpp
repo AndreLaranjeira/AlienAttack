@@ -27,8 +27,8 @@ int main(int argc, char** argv) {
   try {
     game = &Game::getInstance();
   }
-  catch (exception &e) {
-      cout << "Caught exception: " << e.what();
+  catch (exception& e) {
+      cerr << "Caught exception: " << e.what();
       return MainFunctionStatusCode::GameInitError;
   }
   

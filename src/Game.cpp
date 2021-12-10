@@ -44,7 +44,7 @@ Game& Game::getInstance() {
     try {
       Game::instance = new Game(game_params);
     }
-    catch(exception &e) {
+    catch(exception& e) {
       throw;
     }
   }
@@ -248,7 +248,7 @@ int Game::initGameState() {
   try {
     this->state = new State();
   }
-  catch(exception &e) {
+  catch(exception& e) {
     return -1;
   }
 
