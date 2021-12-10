@@ -3,7 +3,7 @@
 
 // Alien Attack - State class - Source code.
 
-// Includes.
+// Class header include.
 #include "State.hpp"
 
 // Class method implementations.

@@ -3,7 +3,7 @@
 
 // Alien Attack - Music class - Source code.
 
-// Includes.
+// Class header include.
 #include "Music.hpp"
 
 // Class method implementations.

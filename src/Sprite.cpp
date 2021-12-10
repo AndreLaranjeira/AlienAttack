@@ -3,7 +3,7 @@
 
 // Alien Attack - Sprite class - Source code.
 
-// Includes.
+// Class header include.
 #include "Sprite.hpp"
 
 // Class method implementations.

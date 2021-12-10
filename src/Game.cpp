@@ -3,7 +3,7 @@
 
 // Alien Attack - Game class - Source code.
 
-// Includes.
+// Class header include.
 #include "Game.hpp"
 
 // Static member initializations.
