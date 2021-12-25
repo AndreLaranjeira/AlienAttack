@@ -8,6 +8,7 @@
 #define GAME_H_
 
 // Includes.
+#include <exception>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -132,8 +133,12 @@ class Game {
     int initSDLMix(int flags);
     int initSDLRenderer(SDLRendererParams renderer_params);
     int initSDLWindow(SDLWindowParams window_params);
+    void renderAndPresentGameState(SDL_Renderer* renderer);
+    bool shouldKeepRunning();
     void throwGameInitException(GameInitErrorCode error_code);
+    void updateGameState();
     int verifySingletonProperty();
+    void waitTimeIntervalBetweenFrames();
 };
 
 #endif // GAME_H_

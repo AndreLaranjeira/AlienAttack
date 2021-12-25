@@ -8,6 +8,7 @@
 #define STATE_H_
 
 // Includes.
+#include <exception>
 #include <iostream>
 #include <string>
 
@@ -30,13 +31,14 @@ class State {
 
     // Class method prototypes.
     State();
+    State(SDL_Renderer* renderer);
     ~State();
 
     // Method prototypes.
     void loadAssets();
     bool quitRequested();
-    void render();
-    void update();
+    void render(SDL_Renderer* renderer);
+    void update(double dt);
 
   // Private components.
   private:

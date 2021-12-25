@@ -7,7 +7,13 @@
 #include "State.hpp"
 
 // Class method implementations.
-State::State() {};
+State::State() : bg() {};
+
+State::State(SDL_Renderer* renderer)
+try : bg(renderer, "./assets/img/ocean.jpg") {}
+catch(exception& e) {
+  throw;
+};
 
 State::~State() {};
 
@@ -18,9 +24,11 @@ bool State::quitRequested() {
   return this->quit_requested;
 };
 
-void State::render() {};
+void State::render(SDL_Renderer* renderer) {
+  bg.render(renderer, 0, 0);
+};
 
-void State::update() {
+void State::update(double dt) {
   if(SDL_QuitRequested() == SDL_TRUE)
     this->quit_requested = true;
 };

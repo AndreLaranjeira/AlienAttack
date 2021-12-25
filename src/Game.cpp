@@ -61,13 +61,10 @@ State& Game::getState(){
 };
 
 void Game::run(){
-  while (this->state->quitRequested() != true) {
-    this->state->update();
-
-    this->state->render();
-    SDL_RenderPresent(this->renderer);
-    
-    SDL_Delay(33);
+  while (this->shouldKeepRunning()) {
+    this->updateGameState();
+    this->renderAndPresentGameState(this->renderer);
+    this->waitTimeIntervalBetweenFrames();
   }
 };
 
@@ -246,7 +243,7 @@ GameInitStatusCode Game::initGame(SDLConfig SDL_config) {
 
 int Game::initGameState() {
   try {
-    this->state = new State();
+    this->state = new State(this->renderer);
   }
   catch(exception& e) {
     return -1;
@@ -321,6 +318,15 @@ int Game::initSDLWindow(SDLWindowParams window_params) {
     return -1;
 };
 
+void Game::renderAndPresentGameState(SDL_Renderer* state_renderer) {
+  this->state->render(state_renderer);
+  SDL_RenderPresent(state_renderer);
+};
+
+bool Game::shouldKeepRunning() {
+  return !(this->state->quitRequested());
+};
+
 void Game::throwGameInitException(GameInitErrorCode error_code) {
   string exception_msg;
 
@@ -332,11 +338,19 @@ void Game::throwGameInitException(GameInitErrorCode error_code) {
   exception_msg += "\n";
 
   throw runtime_error(exception_msg);
-}
+};
+
+void Game::updateGameState() {
+  this->state->update(0);
+};
 
 int Game::verifySingletonProperty() {
   if (Game::instance == nullptr)
     return 0;
   else
     return -1;
+};
+
+void Game::waitTimeIntervalBetweenFrames() {
+  SDL_Delay(33);
 };
