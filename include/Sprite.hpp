@@ -23,18 +23,18 @@
 using namespace std;
 
 // Enumeration definitions.
-enum OpenTextureErrorCode {
+enum OpenNewTextureErrorCode {
   LoadTextureError = 1,
   ConfigureSpriteError
 };
 
-enum OpenTextureSuccessCode {
-  OpenTextureSuccess
+enum OpenNewTextureSuccessCode {
+  OpenNewTextureSuccess
 };
 
 // Type definitions.
-using OpenTextureStatusCode = \
-  variant<OpenTextureSuccessCode, OpenTextureErrorCode>;
+using OpenNewTextureStatusCode = \
+  variant<OpenNewTextureSuccessCode, OpenNewTextureErrorCode>;
 
 // Class definition.
 class Sprite {
@@ -59,19 +59,19 @@ class Sprite {
 
     // Members.
     SDL_Rect clip_rect;
-    int height;
+    int height = 0;
     SDL_Texture* texture = nullptr;
-    int width;
+    int width = 0;
 
     // Method prototypes.
     void cleanUpCurrentTexture();
-    void cleanUpFailedOpenTexture(OpenTextureErrorCode error_code);
+    void cleanUpFailedOpenNewTexture(OpenNewTextureErrorCode error_code);
     int configureSpriteWithTextureSpecification();
-    string describeOpenTextureErrorCode(OpenTextureErrorCode error_code);
-    void handleOpenTextureError(OpenTextureErrorCode error_code);
+    string describeOpenNewTextureErrorCode(OpenNewTextureErrorCode error_code);
+    void handleOpenNewTextureError(OpenNewTextureErrorCode error_code);
     int loadTexture(SDL_Renderer* renderer, string file);
-    OpenTextureStatusCode openTexture(SDL_Renderer* renderer, string file);
-    void throwOpenTextureException(OpenTextureErrorCode error_code);
+    OpenNewTextureStatusCode openNewTexture(SDL_Renderer* renderer, string file);
+    void throwOpenNewTextureException(OpenNewTextureErrorCode error_code);
 };
 
 #endif // SPRITE_H_

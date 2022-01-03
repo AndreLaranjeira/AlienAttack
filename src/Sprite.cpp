@@ -31,17 +31,19 @@ bool Sprite::isOpen() {
 };
 
 void Sprite::open(SDL_Renderer* renderer, string file) {
-  OpenTextureErrorCode open_texture_error_code;
-  OpenTextureStatusCode open_texture_status_code;
+  OpenNewTextureErrorCode open_new_texture_error_code;
+  OpenNewTextureStatusCode open_new_texture_status_code;
 
   this->cleanUpCurrentTexture();
-  open_texture_status_code = this->openTexture(renderer, file);
+  open_new_texture_status_code = this->openNewTexture(renderer, file);
 
-  if(holds_alternative<OpenTextureErrorCode>(open_texture_status_code)) {
-    open_texture_error_code = get<OpenTextureErrorCode>(
-      open_texture_status_code
+  if(
+    holds_alternative<OpenNewTextureErrorCode>(open_new_texture_status_code)
+  ) {
+    open_new_texture_error_code = get<OpenNewTextureErrorCode>(
+      open_new_texture_status_code
     );
-    this->handleOpenTextureError(open_texture_error_code);
+    this->handleOpenNewTextureError(open_new_texture_error_code);
   }
 };
 
@@ -71,11 +73,11 @@ void Sprite::cleanUpCurrentTexture() {
   }
 };
 
-void Sprite::cleanUpFailedOpenTexture(OpenTextureErrorCode error_code) {
+void Sprite::cleanUpFailedOpenNewTexture(OpenNewTextureErrorCode error_code) {
   switch (error_code) {
-    case OpenTextureErrorCode::ConfigureSpriteError:
+    case OpenNewTextureErrorCode::ConfigureSpriteError:
       this->cleanUpCurrentTexture();
-    case OpenTextureErrorCode::LoadTextureError:
+    case OpenNewTextureErrorCode::LoadTextureError:
       ;
   }
 };
@@ -98,14 +100,16 @@ int Sprite::configureSpriteWithTextureSpecification() {
   }
 };
 
-string Sprite::describeOpenTextureErrorCode(OpenTextureErrorCode error_code) {
+string Sprite::describeOpenNewTextureErrorCode(
+  OpenNewTextureErrorCode error_code
+) {
   string description = string("This error was caused by ");
   
   switch (error_code) {
-    case OpenTextureErrorCode::LoadTextureError:
+    case OpenNewTextureErrorCode::LoadTextureError:
       description += "attempting to load the texture from the file system";
       break;
-    case OpenTextureErrorCode::ConfigureSpriteError:
+    case OpenNewTextureErrorCode::ConfigureSpriteError:
       description += \
         "attempting to configure the sprite with the texture information";
       break;
@@ -116,9 +120,9 @@ string Sprite::describeOpenTextureErrorCode(OpenTextureErrorCode error_code) {
   return description;
 };
 
-void Sprite::handleOpenTextureError(OpenTextureErrorCode error_code) {
-  this->cleanUpFailedOpenTexture(error_code);
-  this->throwOpenTextureException(error_code);
+void Sprite::handleOpenNewTextureError(OpenNewTextureErrorCode error_code) {
+  this->cleanUpFailedOpenNewTexture(error_code);
+  this->throwOpenNewTextureException(error_code);
 };
 
 int Sprite::loadTexture(SDL_Renderer* renderer, string file) {
@@ -131,25 +135,25 @@ int Sprite::loadTexture(SDL_Renderer* renderer, string file) {
     return -1;
 };
 
-OpenTextureStatusCode Sprite::openTexture(
+OpenNewTextureStatusCode Sprite::openNewTexture(
   SDL_Renderer* renderer,
   string file
 ) {
   if(loadTexture(renderer, file) != 0)
-    return OpenTextureErrorCode::LoadTextureError;
+    return OpenNewTextureErrorCode::LoadTextureError;
   
   if(configureSpriteWithTextureSpecification() != 0)
-    return OpenTextureErrorCode::ConfigureSpriteError;
+    return OpenNewTextureErrorCode::ConfigureSpriteError;
 
-  return OpenTextureSuccessCode::OpenTextureSuccess;
+  return OpenNewTextureSuccessCode::OpenNewTextureSuccess;
 };
 
-void Sprite::throwOpenTextureException(OpenTextureErrorCode error_code) {
+void Sprite::throwOpenNewTextureException(OpenNewTextureErrorCode error_code) {
   string exception_msg;
 
   exception_msg = string("There was an error opening a texture!");
   exception_msg += " ";
-  exception_msg += this->describeOpenTextureErrorCode(error_code);
+  exception_msg += this->describeOpenNewTextureErrorCode(error_code);
   exception_msg += " More details: ";
   exception_msg += SDL_GetError();
   exception_msg += ".\n";

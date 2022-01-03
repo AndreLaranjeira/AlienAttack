@@ -319,6 +319,7 @@ int Game::initSDLWindow(SDLWindowParams window_params) {
 };
 
 void Game::renderAndPresentGameState(SDL_Renderer* state_renderer) {
+  SDL_RenderClear(state_renderer);
   this->state->render(state_renderer);
   SDL_RenderPresent(state_renderer);
 };
