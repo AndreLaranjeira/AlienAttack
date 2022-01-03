@@ -52,15 +52,15 @@ Game& Game::getInstance() {
   return *Game::instance;
 };
 
-SDL_Renderer* Game::getRenderer(){
+SDL_Renderer* Game::getRenderer() {
   return this->renderer;
 };
 
-State& Game::getState(){
+State& Game::getState() {
   return *(this->state);
 };
 
-void Game::run(){
+void Game::run() {
   while (this->shouldKeepRunning()) {
     this->updateGameState();
     this->renderAndPresentGameState(this->renderer);
