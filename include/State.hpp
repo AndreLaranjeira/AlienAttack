@@ -47,6 +47,9 @@ class State {
     Sprite bg;
     Music music;
     bool quit_requested = false;
+
+    // Method prototypes.
+    void playMusic();
 };
 
 #endif // STATE_H_

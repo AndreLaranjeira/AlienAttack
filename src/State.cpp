@@ -7,10 +7,14 @@
 #include "State.hpp"
 
 // Class method implementations.
-State::State() : bg() {};
+State::State() : bg(), music() {};
 
-State::State(SDL_Renderer* renderer)
-try : bg(renderer, "./assets/img/ocean.jpg") {}
+State::State(SDL_Renderer* renderer) try :
+  bg(renderer, "./assets/img/ocean.jpg"),
+  music("./assets/audio/stage_state.ogg")
+{
+  this->playMusic();
+}
 catch(exception& e) {
   throw;
 };
@@ -34,3 +38,12 @@ void State::update(double dt) {
 };
 
 // Private method implementations.
+void State::playMusic() {
+  try {
+    this->music.play();
+  }
+  catch(exception& e) {
+    cerr << "Non-fatal exception caught: " << e.what();
+    cerr << "Ignoring exception and continuing execution!\n";
+  }
+};
