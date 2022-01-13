@@ -43,7 +43,7 @@ void State::playMusic() {
     this->music.play();
   }
   catch(exception& e) {
-    cerr << "Non-fatal exception caught: " << e.what();
-    cerr << "Ignoring exception and continuing execution!\n";
+    cerr << "[State] " << e.what();
+    cerr << "[State] Ignoring previous exception and continuing execution!\n";
   }
 };

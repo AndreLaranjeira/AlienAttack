@@ -8,16 +8,17 @@
 #define SPRITE_H_
 
 // Includes.
-#include <iostream>
 #include <stdexcept>
 #include <string>
-#include <variant>
 
 // SDL2 includes.
 #include <SDL2/SDL_error.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
+
+// User includes.
+#include "ErrorDescriptionTemplate.hpp"
 
 // Namespace.
 using namespace std;
@@ -28,13 +29,35 @@ enum OpenNewTextureErrorCode {
   ConfigureSpriteError
 };
 
-enum OpenNewTextureSuccessCode {
-  OpenNewTextureSuccess
+// Auxiliary class definitions.
+class OpenNewTextureErrorDescription :
+  public ErrorDescriptionTemplate<OpenNewTextureErrorCode>
+{
+  // Public components.
+  public:
+
+    // Class method prototypes.
+    OpenNewTextureErrorDescription(OpenNewTextureErrorCode error_code);
+    ~OpenNewTextureErrorDescription();
+
+    // Method prototypes.
+    string describeErrorCause(OpenNewTextureErrorCode error_code) override;
+    string describeErrorDetails(OpenNewTextureErrorCode error_code) override;
+    string describeErrorSummary() override;
 };
 
-// Type definitions.
-using OpenNewTextureStatusCode = \
-  variant<OpenNewTextureSuccessCode, OpenNewTextureErrorCode>;
+// Exception definitions.
+class OpenNewTextureException :
+  public OpenNewTextureErrorDescription,
+  public runtime_error
+{
+  // Public components.
+  public:
+
+    // Class method prototypes.
+    OpenNewTextureException(OpenNewTextureErrorCode error_code);
+    ~OpenNewTextureException();
+};
 
 // Class definition.
 class Sprite {
@@ -68,10 +91,8 @@ class Sprite {
     void cleanUpFailedOpenNewTexture(OpenNewTextureErrorCode error_code);
     int configureSpriteWithTextureSpecification();
     string describeOpenNewTextureErrorCode(OpenNewTextureErrorCode error_code);
-    void handleOpenNewTextureError(OpenNewTextureErrorCode error_code);
     int loadTexture(SDL_Renderer* renderer, string file);
-    OpenNewTextureStatusCode openNewTexture(SDL_Renderer* renderer, string file);
-    void throwOpenNewTextureException(OpenNewTextureErrorCode error_code);
+    void openNewTexture(SDL_Renderer* renderer, string file);
 };
 
 #endif // SPRITE_H_

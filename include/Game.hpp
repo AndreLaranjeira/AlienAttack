@@ -12,7 +12,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
-#include <variant>
 
 // SDL2 includes.
 #include <SDL2/SDL.h>
@@ -25,6 +24,7 @@
 #include <SDL2/SDL_video.h>
 
 // User includes.
+#include "ErrorDescriptionTemplate.hpp"
 #include "State.hpp"
 
 // Namespace.
@@ -40,10 +40,6 @@ enum GameInitErrorCode {
   SDLWindowError,
   SDLRendererError,
   GameStateError
-};
-
-enum GameInitSuccessCode {
-  GameInitSuccess
 };
 
 // Type definitions.
@@ -84,7 +80,35 @@ struct SDLConfig {
   SDLRendererParams renderer_params;
 };
 
-using GameInitStatusCode = variant<GameInitSuccessCode, GameInitErrorCode>;
+// Auxiliary class definitions.
+class GameInitErrorDescription :
+  public ErrorDescriptionTemplate<GameInitErrorCode>
+{
+  // Public components.
+  public:
+
+    // Class method prototypes.
+    GameInitErrorDescription(GameInitErrorCode error_code);
+    ~GameInitErrorDescription();
+
+    // Method prototypes.
+    string describeErrorCause(GameInitErrorCode error_code) override;
+    string describeErrorDetails(GameInitErrorCode error_code) override;
+    string describeErrorSummary() override;
+};
+
+// Exception definitions.
+class GameInitException :
+  public GameInitErrorDescription,
+  public runtime_error
+{
+  // Public components.
+  public:
+
+    // Class method prototypes.
+    GameInitException(GameInitErrorCode error_code);
+    ~GameInitException();
+};
 
 // Class definition.
 class Game {
@@ -104,6 +128,7 @@ class Game {
 
   // Private components.
   private:
+
     // Class method prototypes.
     Game(GameParams game_params);
 
@@ -121,11 +146,8 @@ class Game {
     void cleanUpGameState();
     void cleanUpGameWindow();
     void cleanUpSDLModules();
-    string describeGameInitErrorCode(GameInitErrorCode error_code);
-    string describeGameInitErrorDetails(GameInitErrorCode error_code);
     SDLConfig generateDefaultSDLConfig(GameParams game_params);
-    void handleGameInitError(GameInitErrorCode error_code);
-    GameInitStatusCode initGame(SDLConfig SDL_module_params);
+    void initGame(SDLConfig SDL_module_params);
     int initGameState();
     int initSDL(Uint32 flags);
     int initSDLAudio(SDLAudioParams audio_params, int audio_channels);
@@ -135,7 +157,6 @@ class Game {
     int initSDLWindow(SDLWindowParams window_params);
     void renderAndPresentGameState(SDL_Renderer* renderer);
     bool shouldKeepRunning();
-    void throwGameInitException(GameInitErrorCode error_code);
     void updateGameState();
     int verifySingletonProperty();
     void waitTimeIntervalBetweenFrames();

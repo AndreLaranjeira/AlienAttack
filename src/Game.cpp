@@ -11,18 +11,15 @@ Game* Game::instance = nullptr;
 
 // Class method implementations.
 Game::Game(GameParams game_params) {
-  GameInitErrorCode game_init_error_code;
-  GameInitStatusCode game_init_status_code;
-  SDLConfig game_SDL_config;
+  SDLConfig game_SDL_config = this->generateDefaultSDLConfig(game_params);
 
-  game_SDL_config = this->generateDefaultSDLConfig(game_params);
-  game_init_status_code = this->initGame(game_SDL_config);
-
-  if(holds_alternative<GameInitErrorCode>(game_init_status_code)) {
-    game_init_error_code = get<GameInitErrorCode>(game_init_status_code);
-    this->handleGameInitError(game_init_error_code);
+  try {
+    this->initGame(game_SDL_config);
   }
-
+  catch(GameInitException& game_init_exception) {
+    this->cleanUpFailedGameInit(game_init_exception.getErrorCode());
+    throw;
+  }
 };
 
 Game::~Game() {
@@ -31,6 +28,18 @@ Game::~Game() {
   this->cleanUpGameWindow();
   this->cleanUpSDLModules();
 };
+
+GameInitErrorDescription::GameInitErrorDescription(
+  GameInitErrorCode error_code
+) : ErrorDescriptionTemplate<GameInitErrorCode>(error_code) {};
+
+GameInitErrorDescription::~GameInitErrorDescription() {};
+
+GameInitException::GameInitException(GameInitErrorCode error_code) :
+  GameInitErrorDescription(error_code),
+  runtime_error(this->describeError(error_code)) {};
+
+GameInitException::~GameInitException() {};
 
 // Public method implementations.
 Game& Game::getInstance() {
@@ -66,6 +75,78 @@ void Game::run() {
     this->renderAndPresentGameState(this->renderer);
     this->waitTimeIntervalBetweenFrames();
   }
+};
+
+string GameInitErrorDescription::describeErrorCause(
+  GameInitErrorCode error_code
+) {
+  string error_cause = string("This error was caused by ");
+  
+  switch (error_code) {
+    case GameInitErrorCode::DuplicateGameInstanceError:
+      error_cause += "an attempt to create multiple game instances";
+      break;
+    case GameInitErrorCode::SDLError:
+      error_cause += "the SDL module";
+      break;
+    case GameInitErrorCode::SDLImageError:
+      error_cause += "the SDL Image module";
+      break;
+    case GameInitErrorCode::SDLMixError:
+      error_cause += "the SDL Mixer module";
+      break;
+    case GameInitErrorCode::SDLAudioError:
+      error_cause += "the SDL Audio functionality";
+      break;
+    case GameInitErrorCode::SDLWindowError:
+      error_cause += "the SDL Window";
+      break;
+    case GameInitErrorCode::SDLRendererError:
+      error_cause += "the SDL Renderer";
+      break;
+    case GameInitErrorCode::GameStateError:
+      error_cause += "the internal Game State";
+      break;
+  }
+
+  error_cause += ".";
+
+  return error_cause;
+};
+
+string GameInitErrorDescription::describeErrorDetails(
+  GameInitErrorCode error_code
+) {
+  string error_details;
+
+  switch (error_code) {
+    case GameInitErrorCode::DuplicateGameInstanceError:
+      error_details += "There can only be 1 instance of Game running";
+      break;
+    case GameInitErrorCode::SDLError:
+    case GameInitErrorCode::SDLImageError:
+    case GameInitErrorCode::SDLMixError:
+    case GameInitErrorCode::SDLAudioError:
+    case GameInitErrorCode::SDLWindowError:
+    case GameInitErrorCode::SDLRendererError:
+      error_details += SDL_GetError();
+      break;
+    case GameInitErrorCode::GameStateError:
+      error_details += "The Game State constructor threw an exception";
+      break;
+  }
+
+  error_details += ".";
+
+  return error_details;
+};
+
+string GameInitErrorDescription::describeErrorSummary() {
+  string error_summary = string(
+    "GameInitError: There was an error initializing the Game!"
+  );
+
+  return error_summary;
 };
 
 // Private method implementations.
@@ -120,65 +201,6 @@ void Game::cleanUpSDLModules() {
   SDL_Quit();
 };
 
-string Game::describeGameInitErrorCode(GameInitErrorCode error_code) {
-  string description = string("This error was caused by ");
-  
-  switch (error_code) {
-    case GameInitErrorCode::DuplicateGameInstanceError:
-      description += "an attempt to create multiple game instances";
-      break;
-    case GameInitErrorCode::SDLError:
-      description += "the SDL module";
-      break;
-    case GameInitErrorCode::SDLImageError:
-      description += "the SDL Image module";
-      break;
-    case GameInitErrorCode::SDLMixError:
-      description += "the SDL Mixer module";
-      break;
-    case GameInitErrorCode::SDLAudioError:
-      description += "the SDL Audio";
-      break;
-    case GameInitErrorCode::SDLWindowError:
-      description += "the SDL Window";
-      break;
-    case GameInitErrorCode::SDLRendererError:
-      description += "the SDL Renderer";
-      break;
-    case GameInitErrorCode::GameStateError:
-      description += "the internal Game State";
-      break;
-  }
-
-  description += ".";
-
-  return description;
-}
-
-string Game::describeGameInitErrorDetails(GameInitErrorCode error_code) {
-  string description = string("More details: ");
-
-  switch (error_code) {
-    case GameInitErrorCode::DuplicateGameInstanceError:
-      description += "There can only be 1 instance of Game running";
-      break;
-    case GameInitErrorCode::SDLError:
-    case GameInitErrorCode::SDLImageError:
-    case GameInitErrorCode::SDLMixError:
-    case GameInitErrorCode::SDLAudioError:
-    case GameInitErrorCode::SDLWindowError:
-    case GameInitErrorCode::SDLRendererError:
-      description += SDL_GetError();
-      break;
-    case GameInitErrorCode::GameStateError:
-      description += "The Game State constructor threw an exception";
-  }
-
-  description += ".";
-
-  return description;
-}
-
 SDLConfig Game::generateDefaultSDLConfig(GameParams game_params) {
   return {
     .SDL_flags =  SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_VIDEO,
@@ -206,39 +228,32 @@ SDLConfig Game::generateDefaultSDLConfig(GameParams game_params) {
   };
 };
 
-void Game::handleGameInitError(GameInitErrorCode error_code) {
-  this->cleanUpFailedGameInit(error_code);
-  this->throwGameInitException(error_code);
-};
-
-GameInitStatusCode Game::initGame(SDLConfig SDL_config) {
+void Game::initGame(SDLConfig SDL_config) {
   if(this->verifySingletonProperty() != 0)
-    return GameInitErrorCode::DuplicateGameInstanceError;
+    throw GameInitException(GameInitErrorCode::DuplicateGameInstanceError);
 
   if(this->initSDL(SDL_config.SDL_flags) != 0)
-    return GameInitErrorCode::SDLError;
+    throw GameInitException(GameInitErrorCode::SDLError);
 
   if(this->initSDLImage(SDL_config.image_flags) != 0)
-    return GameInitErrorCode::SDLImageError; 
+    throw GameInitException(GameInitErrorCode::SDLImageError); 
 
   if(this->initSDLMix(SDL_config.mixer_flags) != 0)
-    return GameInitErrorCode::SDLMixError;
+    throw GameInitException(GameInitErrorCode::SDLMixError);
 
   if(
     this->initSDLAudio(SDL_config.audio_params, SDL_config.mixer_channels) != 0
   )
-    return GameInitErrorCode::SDLAudioError;
+    throw GameInitException(GameInitErrorCode::SDLAudioError);
 
   if(this->initSDLWindow(SDL_config.window_params) != 0)
-    return GameInitErrorCode::SDLWindowError;
+    throw GameInitException(GameInitErrorCode::SDLWindowError);
 
   if(this->initSDLRenderer(SDL_config.renderer_params) != 0)
-    return GameInitErrorCode::SDLRendererError;
+    throw GameInitException(GameInitErrorCode::SDLRendererError);
 
   if(this->initGameState() != 0)
-    return GameInitErrorCode::GameStateError;
-
-  return GameInitSuccessCode::GameInitSuccess;
+    throw GameInitException(GameInitErrorCode::GameStateError);
 };
 
 int Game::initGameState() {
@@ -246,6 +261,7 @@ int Game::initGameState() {
     this->state = new State(this->renderer);
   }
   catch(exception& e) {
+    cerr << "[Game] " << e.what();
     return -1;
   }
 
@@ -326,19 +342,6 @@ void Game::renderAndPresentGameState(SDL_Renderer* state_renderer) {
 
 bool Game::shouldKeepRunning() {
   return !(this->state->quitRequested());
-};
-
-void Game::throwGameInitException(GameInitErrorCode error_code) {
-  string exception_msg;
-
-  exception_msg = string("There was an error initializing the Game!");
-  exception_msg += " ";
-  exception_msg += this->describeGameInitErrorCode(error_code);
-  exception_msg += " ";
-  exception_msg += this->describeGameInitErrorDetails(error_code);
-  exception_msg += "\n";
-
-  throw runtime_error(exception_msg);
 };
 
 void Game::updateGameState() {

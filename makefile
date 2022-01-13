@@ -5,7 +5,7 @@ EXE = alien-attack
 
 # Compiler name, source file extension and compilation data (flags and libs).
 CC = g++
-CFLAGS = -Wall -g -I $(IDIR) -std=c++17
+CFLAGS = -Wall -g -I $(IDIR)
 LIBS = -lSDL2 -lSDL2_image -lSDL2_mixer
 
 # Project paths.
@@ -21,12 +21,13 @@ SEXT = cpp
 # Project components.
 MAIN = main
 CLASSES = Game Music Sprite State
+TEMPLATES = ErrorDescriptionTemplate 
 
 # Makefile function definitions.
 FULL_PATH = $(patsubst %,$(2)/%.$(3),$(1))
 
 # Joining file names with their respective paths.
-DEPS = $(call FULL_PATH,$(CLASSES),$(IDIR),$(IEXT))
+DEPS = $(call FULL_PATH,$(CLASSES) $(TEMPLATES),$(IDIR),$(IEXT))
 OBJ = $(call FULL_PATH,$(CLASSES) $(MAIN),$(ODIR),$(OEXT))
 # SRC = $(call FULL_PATH,$(CLASSES) $(MAIN),$(SDIR),$(SEXT))
 
