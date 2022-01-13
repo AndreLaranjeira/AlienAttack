@@ -18,19 +18,17 @@ IEXT = hpp
 OEXT = o
 SEXT = cpp
 
-# Project main.
+# Project components.
 MAIN = main
-
-# Project classes.
-MODULES = Game Music Sprite State
+CLASSES = Game Music Sprite State
 
 # Makefile function definitions.
 FULL_PATH = $(patsubst %,$(2)/%.$(3),$(1))
 
 # Joining file names with their respective paths.
-DEPS = $(call FULL_PATH,$(MODULES),$(IDIR),$(IEXT))
-OBJ = $(call FULL_PATH,$(MODULES) $(MAIN),$(ODIR),$(OEXT))
-# SRC = $(call FULL_PATH,$(MODULES) $(MAIN),$(SDIR),$(SEXT))
+DEPS = $(call FULL_PATH,$(CLASSES),$(IDIR),$(IEXT))
+OBJ = $(call FULL_PATH,$(CLASSES) $(MAIN),$(ODIR),$(OEXT))
+# SRC = $(call FULL_PATH,$(CLASSES) $(MAIN),$(SDIR),$(SEXT))
 
 # Project executable compilation rule.
 $(EXE): $(OBJ)
