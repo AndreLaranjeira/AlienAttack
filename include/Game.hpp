@@ -24,8 +24,10 @@
 #include <SDL2/SDL_video.h>
 
 // User includes.
-#include "ErrorDescriptionTemplate.hpp"
 #include "State.hpp"
+
+// Template includes.
+#include "templates/ErrorDescription.hpp"
 
 // Namespace.
 using namespace std;
@@ -87,9 +89,8 @@ class GameInitErrorDescription :
   // Public components.
   public:
 
-    // Class method prototypes.
-    GameInitErrorDescription(GameInitErrorCode error_code);
-    ~GameInitErrorDescription();
+    // Inherited methods.
+    using ErrorDescriptionTemplate::ErrorDescriptionTemplate;
 
     // Method prototypes.
     string describeErrorCause(GameInitErrorCode error_code) override;
@@ -107,7 +108,6 @@ class GameInitException :
 
     // Class method prototypes.
     GameInitException(GameInitErrorCode error_code);
-    ~GameInitException();
 };
 
 // Class definition.
@@ -131,6 +131,10 @@ class Game {
 
     // Class method prototypes.
     Game(GameParams game_params);
+    Game(const Game&) = delete;
+
+    // Class operators.
+    Game& operator=(const Game&) = delete;
 
     // Members.
     SDL_Renderer* renderer = nullptr;

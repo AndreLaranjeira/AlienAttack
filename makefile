@@ -3,41 +3,44 @@
 # Executable name.
 EXE = alien-attack
 
-# Compiler name, source file extension and compilation data (flags and libs).
-CC = g++
-CFLAGS = -Wall -g -I $(IDIR)
-LIBS = -lSDL2 -lSDL2_image -lSDL2_mixer
-
 # Project paths.
-IDIR = include
-ODIR = src/obj
-SDIR = src
+INC_DIR = include
+OBJ_DIR = src/obj
+SRC_DIR = src
+TPL_DIR = include/templates
 
 # Project extensions.
-IEXT = hpp
-OEXT = o
-SEXT = cpp
+INC_EXT = hpp
+OBJ_EXT = o
+SRC_EXT = cpp
+TPL_EXT = hpp
 
 # Project components.
 MAIN = main
 CLASSES = Game Music Sprite State
-TEMPLATES = ErrorDescriptionTemplate 
+TEMPLATES = ErrorDescription
+
+# Compiler name, source file extension and compilation data (flags and libs).
+CC = g++
+CFLAGS = -Wall -g -I $(INC_DIR)
+LIBS = -lSDL2 -lSDL2_image -lSDL2_mixer
 
 # Makefile function definitions.
 FULL_PATH = $(patsubst %,$(2)/%.$(3),$(1))
 
 # Joining file names with their respective paths.
-DEPS = $(call FULL_PATH,$(CLASSES) $(TEMPLATES),$(IDIR),$(IEXT))
-OBJ = $(call FULL_PATH,$(CLASSES) $(MAIN),$(ODIR),$(OEXT))
-# SRC = $(call FULL_PATH,$(CLASSES) $(MAIN),$(SDIR),$(SEXT))
+DEPS = $(call FULL_PATH,$(CLASSES),$(INC_DIR),$(INC_EXT))
+DEPS += $(call FULL_PATH,$(TEMPLATES),$(TPL_DIR),$(TPL_EXT))
+OBJ = $(call FULL_PATH,$(CLASSES) $(MAIN),$(OBJ_DIR),$(OBJ_EXT))
+# SRC = $(call FULL_PATH,$(CLASSES) $(MAIN),$(SRC_DIR),$(SRC_EXT))
 
 # Project executable compilation rule.
 $(EXE): $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 # Object files compilation rule.
-$(ODIR)/%.$(OEXT): $(SDIR)/%.$(SEXT) $(DEPS)
-	@if [ ! -d $(ODIR) ]; then mkdir $(ODIR); fi
+$(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT) $(DEPS)
+	@if [ ! -d $(OBJ_DIR) ]; then mkdir $(OBJ_DIR); fi
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 # List of aditional makefile commands.
@@ -49,7 +52,7 @@ all: $(EXE)
 
 # Command to clean object files and project executable.
 clean:
-	@rm -f $(ODIR)/*.o *~ core
+	@rm -f $(OBJ_DIR)/*.o *~ core
 	@if [ -f $(EXE) ]; then \
 		rm -i $(EXE); \
 	fi

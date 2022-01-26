@@ -7,8 +7,6 @@
 #include "State.hpp"
 
 // Class method implementations.
-State::State() : bg(), music() {};
-
 State::State(SDL_Renderer* renderer) try :
   bg(renderer, "./assets/img/ocean.jpg"),
   music("./assets/audio/stage_state.ogg")
@@ -18,8 +16,6 @@ State::State(SDL_Renderer* renderer) try :
 catch(exception& e) {
   throw;
 };
-
-State::~State() {};
 
 // Public method implementations.
 void State::loadAssets() {};

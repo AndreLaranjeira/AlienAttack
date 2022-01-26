@@ -7,21 +7,9 @@
 #include "Music.hpp"
 
 // Class method implementations.
-Music::Music() {};
-
 Music::Music(string file) {
   this->open(file);
 };
-
-Music::~Music() {
-  this->cleanUpCurrentMusic();
-};
-
-OpenMusicErrorDescription::OpenMusicErrorDescription(
-  OpenMusicErrorCode error_code
-) : ErrorDescriptionTemplate<OpenMusicErrorCode>(error_code) {};
-
-OpenMusicErrorDescription::~OpenMusicErrorDescription() {};
 
 OpenMusicException::OpenMusicException(
   OpenMusicErrorCode error_code
@@ -29,27 +17,11 @@ OpenMusicException::OpenMusicException(
   OpenMusicErrorDescription(error_code),
   runtime_error(this->describeError(error_code)) {};
 
-OpenMusicException::~OpenMusicException() {};
-
-PlayMusicErrorDescription::PlayMusicErrorDescription(
-  PlayMusicErrorCode error_code
-) : ErrorDescriptionTemplate<PlayMusicErrorCode>(error_code) {};
-
-PlayMusicErrorDescription::~PlayMusicErrorDescription() {};
-
 PlayMusicException::PlayMusicException(
   PlayMusicErrorCode error_code
 ) :
   PlayMusicErrorDescription(error_code),
   runtime_error(this->describeError(error_code)) {};
-
-PlayMusicException::~PlayMusicException() {};
-
-StopMusicErrorDescription::StopMusicErrorDescription(
-  StopMusicErrorCode error_code
-) : ErrorDescriptionTemplate<StopMusicErrorCode>(error_code) {};
-
-StopMusicErrorDescription::~StopMusicErrorDescription() {};
 
 StopMusicException::StopMusicException(
   StopMusicErrorCode error_code
@@ -57,11 +29,9 @@ StopMusicException::StopMusicException(
   StopMusicErrorDescription(error_code),
   runtime_error(this->describeError(error_code)) {};
 
-StopMusicException::~StopMusicException() {};
-
 // Public method implementations.
 bool Music::isOpen() {
-  return (this->music != nullptr);
+  return (this->music.get() != nullptr);
 };
 
 bool Music::isUsingMixer() {
@@ -69,8 +39,10 @@ bool Music::isUsingMixer() {
 }
 
 void Music::open(string file) {
-  this->cleanUpCurrentMusic();
-  this->openNewMusic(file);
+  this->music.reset(Mix_LoadMUS(file.c_str()));
+
+  if(this->music.get() == nullptr)
+    throw OpenMusicException(OpenMusicErrorCode::LoadMusicError);
 };
 
 void Music::play(int repetitions) {
@@ -102,26 +74,12 @@ void Music::stop(unsigned int fade_out_duration_milliseconds) {
 };
 
 // Private method implementations.
-void Music::cleanUpCurrentMusic() {
-  if(this->isOpen()) {
-    Mix_FreeMusic(this->music);
-    this->music = nullptr;
-  }
-};
-
 bool Music::mixerInUse() {
   return (Mix_PlayingMusic() && Mix_FadingMusic() != MIX_FADING_OUT);
 };
 
-void Music::openNewMusic(string file) {
-  this->music = Mix_LoadMUS(file.c_str());
-
-  if(this->music == nullptr)
-    throw OpenMusicException(OpenMusicErrorCode::LoadMusicError);
-};
-
 int Music::playCurrentMusic(int repetitions) {
-  if(Mix_PlayMusic(this->music, repetitions) != 0)
+  if(Mix_PlayMusic(this->music.get(), repetitions) != 0)
     return -1;
 
   this->usingMixer = true;

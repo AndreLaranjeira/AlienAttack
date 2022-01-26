@@ -7,29 +7,15 @@
 #include "Sprite.hpp"
 
 // Class method implementations.
-Sprite::Sprite() {};
-
 Sprite::Sprite(SDL_Renderer* renderer, string file) {
   this->open(renderer, file);
 };
-
-Sprite::~Sprite() {
-  this->cleanUpCurrentTexture();
-};
-
-OpenNewTextureErrorDescription::OpenNewTextureErrorDescription(
-  OpenNewTextureErrorCode error_code
-) : ErrorDescriptionTemplate<OpenNewTextureErrorCode>(error_code) {};
-
-OpenNewTextureErrorDescription::~OpenNewTextureErrorDescription() {};
 
 OpenNewTextureException::OpenNewTextureException(
   OpenNewTextureErrorCode error_code
 ) :
   OpenNewTextureErrorDescription(error_code),
   runtime_error(this->describeError(error_code)) {};
-
-OpenNewTextureException::~OpenNewTextureException() {};
 
 // Public method implementations.
 int Sprite::getHeight() {
@@ -41,19 +27,14 @@ int Sprite::getWidth() {
 };
 
 bool Sprite::isOpen() {
-  return (this->texture != nullptr);
+  return (this->texture.get() != nullptr);
 };
 
 void Sprite::open(SDL_Renderer* renderer, string file) {
-  this->cleanUpCurrentTexture();
-  
   try {
     this->openNewTexture(renderer, file);
   }
   catch(OpenNewTextureException& open_new_texture_exception) {
-    this->cleanUpFailedOpenNewTexture(
-      open_new_texture_exception.getErrorCode()
-    );
     throw;
   }
 };
@@ -66,7 +47,12 @@ void Sprite::render(SDL_Renderer* renderer, int x_pos, int y_pos) {
     .h = this->clip_rect.h
   };
 
-  SDL_RenderCopy(renderer, this->texture, &this->clip_rect, &destination_rect);
+  SDL_RenderCopy(
+    renderer,
+    this->texture.get(),
+    &this->clip_rect,
+    &destination_rect
+  );
 };
 
 void Sprite::setClip(int x_pos, int y_pos, int width, int height) {
@@ -120,26 +106,10 @@ string OpenNewTextureErrorDescription::describeErrorSummary() {
 };
 
 // Private method implementations.
-void Sprite::cleanUpCurrentTexture() {
-  if(this->isOpen()) {
-    SDL_DestroyTexture(this->texture);
-    this->texture = nullptr;
-  }
-};
-
-void Sprite::cleanUpFailedOpenNewTexture(OpenNewTextureErrorCode error_code) {
-  switch (error_code) {
-    case OpenNewTextureErrorCode::ConfigureSpriteError:
-      this->cleanUpCurrentTexture();
-    case OpenNewTextureErrorCode::LoadTextureError:
-      ;
-  }
-};
-
 int Sprite::configureSpriteWithTextureSpecification() {
   if(
     SDL_QueryTexture(
-      this->texture,
+      this->texture.get(),
       nullptr,
       nullptr,
       &this->width,
@@ -155,9 +125,9 @@ int Sprite::configureSpriteWithTextureSpecification() {
 };
 
 int Sprite::loadTexture(SDL_Renderer* renderer, string file) {
-  this->texture = IMG_LoadTexture(renderer, file.c_str());
+  this->texture.reset(IMG_LoadTexture(renderer, file.c_str()));
   
-  if(this->texture != nullptr)
+  if(this->texture.get() != nullptr)
     return 0;
 
   else

@@ -21,7 +21,6 @@ class ErrorDescriptionTemplate {
 
     // Class method prototypes.
     ErrorDescriptionTemplate(TErrorCode error_code);
-    ~ErrorDescriptionTemplate();
 
     // Method prototypes.
     TErrorCode getErrorCode();
@@ -50,9 +49,6 @@ ErrorDescriptionTemplate<TErrorCode>::ErrorDescriptionTemplate(
   TErrorCode error_code
 ) :
   error_code(error_code) {};
-
-template <class TErrorCode>
-ErrorDescriptionTemplate<TErrorCode>::~ErrorDescriptionTemplate() {};
 
 // Public method implementations.
 template <class TErrorCode>

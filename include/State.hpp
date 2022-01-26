@@ -30,9 +30,8 @@ class State {
   public:
 
     // Class method prototypes.
-    State();
+    State() = default;
     State(SDL_Renderer* renderer);
-    ~State();
 
     // Method prototypes.
     void loadAssets();

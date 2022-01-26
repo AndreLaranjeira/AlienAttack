@@ -8,6 +8,7 @@
 #define SPRITE_H_
 
 // Includes.
+#include <memory>
 #include <stdexcept>
 #include <string>
 
@@ -17,8 +18,8 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 
-// User includes.
-#include "ErrorDescriptionTemplate.hpp"
+// Template includes.
+#include "templates/ErrorDescription.hpp"
 
 // Namespace.
 using namespace std;
@@ -29,6 +30,10 @@ enum OpenNewTextureErrorCode {
   ConfigureSpriteError
 };
 
+// Type definitions.
+using SDLTextureUniquePTR = \
+  unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
+
 // Auxiliary class definitions.
 class OpenNewTextureErrorDescription :
   public ErrorDescriptionTemplate<OpenNewTextureErrorCode>
@@ -36,9 +41,8 @@ class OpenNewTextureErrorDescription :
   // Public components.
   public:
 
-    // Class method prototypes.
-    OpenNewTextureErrorDescription(OpenNewTextureErrorCode error_code);
-    ~OpenNewTextureErrorDescription();
+    // Inherited methods.
+    using ErrorDescriptionTemplate::ErrorDescriptionTemplate;
 
     // Method prototypes.
     string describeErrorCause(OpenNewTextureErrorCode error_code) override;
@@ -56,7 +60,6 @@ class OpenNewTextureException :
 
     // Class method prototypes.
     OpenNewTextureException(OpenNewTextureErrorCode error_code);
-    ~OpenNewTextureException();
 };
 
 // Class definition.
@@ -65,9 +68,8 @@ class Sprite {
   public:
 
     // Class method prototypes.
-    Sprite();
+    Sprite() = default;
     Sprite(SDL_Renderer* renderer, string file);
-    ~Sprite();
 
     // Method prototypes.
     int getHeight();
@@ -83,12 +85,13 @@ class Sprite {
     // Members.
     SDL_Rect clip_rect;
     int height = 0;
-    SDL_Texture* texture = nullptr;
+    SDLTextureUniquePTR texture = SDLTextureUniquePTR(
+      nullptr,
+      &SDL_DestroyTexture
+    );
     int width = 0;
 
     // Method prototypes.
-    void cleanUpCurrentTexture();
-    void cleanUpFailedOpenNewTexture(OpenNewTextureErrorCode error_code);
     int configureSpriteWithTextureSpecification();
     string describeOpenNewTextureErrorCode(OpenNewTextureErrorCode error_code);
     int loadTexture(SDL_Renderer* renderer, string file);

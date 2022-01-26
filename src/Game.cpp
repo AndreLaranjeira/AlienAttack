@@ -29,17 +29,9 @@ Game::~Game() {
   this->cleanUpSDLModules();
 };
 
-GameInitErrorDescription::GameInitErrorDescription(
-  GameInitErrorCode error_code
-) : ErrorDescriptionTemplate<GameInitErrorCode>(error_code) {};
-
-GameInitErrorDescription::~GameInitErrorDescription() {};
-
 GameInitException::GameInitException(GameInitErrorCode error_code) :
   GameInitErrorDescription(error_code),
   runtime_error(this->describeError(error_code)) {};
-
-GameInitException::~GameInitException() {};
 
 // Public method implementations.
 Game& Game::getInstance() {

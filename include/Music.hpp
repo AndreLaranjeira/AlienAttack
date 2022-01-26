@@ -8,14 +8,15 @@
 #define MUSIC_H_
 
 // Includes.
+#include <memory>
 #include <stdexcept>
 #include <string>
 
 // SDL2 includes.
 #include <SDL2/SDL_mixer.h>
 
-// User includes.
-#include "ErrorDescriptionTemplate.hpp"
+// Template includes.
+#include "templates/ErrorDescription.hpp"
 
 // Namespace.
 using namespace std;
@@ -39,6 +40,9 @@ enum StopMusicErrorCode {
   FailureToStopMusicError
 };
 
+// Type definitions.
+using MixMusicUniquePTR = unique_ptr<Mix_Music, decltype(&Mix_FreeMusic)>;
+
 // Auxiliary class definitions.
 class OpenMusicErrorDescription :
   public ErrorDescriptionTemplate<OpenMusicErrorCode>
@@ -46,9 +50,8 @@ class OpenMusicErrorDescription :
   // Public components.
   public:
 
-    // Class method prototypes.
-    OpenMusicErrorDescription(OpenMusicErrorCode error_code);
-    ~OpenMusicErrorDescription();
+    // Inherited methods.
+    using ErrorDescriptionTemplate::ErrorDescriptionTemplate;
 
     // Method prototypes.
     string describeErrorCause(OpenMusicErrorCode error_code) override;
@@ -62,9 +65,8 @@ class PlayMusicErrorDescription :
   // Public components.
   public:
 
-    // Class method prototypes.
-    PlayMusicErrorDescription(PlayMusicErrorCode error_code);
-    ~PlayMusicErrorDescription();
+    // Inherited methods.
+    using ErrorDescriptionTemplate::ErrorDescriptionTemplate;
 
     // Method prototypes.
     string describeErrorCause(PlayMusicErrorCode error_code) override;
@@ -78,9 +80,8 @@ class StopMusicErrorDescription :
   // Public components.
   public:
 
-    // Class method prototypes.
-    StopMusicErrorDescription(StopMusicErrorCode error_code);
-    ~StopMusicErrorDescription();
+    // Inherited methods.
+    using ErrorDescriptionTemplate::ErrorDescriptionTemplate;
 
     // Method prototypes.
     string describeErrorCause(StopMusicErrorCode error_code) override;
@@ -98,7 +99,6 @@ class OpenMusicException :
 
     // Class method prototypes.
     OpenMusicException(OpenMusicErrorCode error_code);
-    ~OpenMusicException();
 };
 
 class PlayMusicException :
@@ -110,7 +110,6 @@ class PlayMusicException :
 
     // Class method prototypes.
     PlayMusicException(PlayMusicErrorCode error_code);
-    ~PlayMusicException();
 };
 
 class StopMusicException :
@@ -122,7 +121,6 @@ class StopMusicException :
 
     // Class method prototypes.
     StopMusicException(StopMusicErrorCode error_code);
-    ~StopMusicException();
 };
 
 // Class definition.
@@ -131,9 +129,8 @@ class Music {
   public:
 
     // Class method prototypes.
-    Music();
+    Music() = default;
     Music(string file);
-    ~Music();
 
     // Method prototypes.
     bool isOpen();
@@ -146,13 +143,11 @@ class Music {
   private:
 
     // Members.
-    Mix_Music* music = nullptr;
+    MixMusicUniquePTR music = MixMusicUniquePTR(nullptr, &Mix_FreeMusic);
     bool usingMixer = false;
 
     // Method prototypes.
-    void cleanUpCurrentMusic();
     bool mixerInUse();
-    void openNewMusic(string file);
     int playCurrentMusic(int repetitions);
     int stopCurrentMusic(unsigned int fade_out_duration_milliseconds);
 };

@@ -6,6 +6,7 @@
 // Includes.
 #include <exception>
 #include <iostream>
+#include <memory>
 
 // User includes.
 #include "Game.hpp"
@@ -21,9 +22,11 @@ enum MainFunctionStatusCode {
 
 // Main function.
 int main(int argc, char** argv) {
+  unique_ptr<Game> game;
+
   try {
-    Game game = Game::getInstance();
-    game.run();
+    game = unique_ptr<Game>(&Game::getInstance());
+    game->run();
   }
   catch (GameInitException& e) {
       cerr << "[Main] " << e.what();
