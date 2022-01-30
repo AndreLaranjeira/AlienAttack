@@ -11,10 +11,10 @@ Sprite::Sprite(SDL_Renderer* renderer, string file) {
   this->open(renderer, file);
 };
 
-OpenNewTextureException::OpenNewTextureException(
-  OpenNewTextureErrorCode error_code
+LoadAndConfigSpriteException::LoadAndConfigSpriteException(
+  LoadAndConfigSpriteErrorCode error_code
 ) :
-  OpenNewTextureErrorDescription(error_code),
+  LoadAndConfigSpriteErrorDescription(error_code),
   runtime_error(this->describeError(error_code)) {};
 
 // Public method implementations.
@@ -32,9 +32,9 @@ bool Sprite::isOpen() {
 
 void Sprite::open(SDL_Renderer* renderer, string file) {
   try {
-    this->openNewTexture(renderer, file);
+    this->loadAndConfigSprite(renderer, file);
   }
-  catch(OpenNewTextureException& open_new_texture_exception) {
+  catch(LoadAndConfigSpriteException& load_and_config_sprite_exception) {
     throw;
   }
 };
@@ -62,17 +62,18 @@ void Sprite::setClip(int x_pos, int y_pos, int width, int height) {
   this->clip_rect.h = height;
 };
 
-string OpenNewTextureErrorDescription::describeErrorCause(
-  OpenNewTextureErrorCode error_code
+string LoadAndConfigSpriteErrorDescription::describeErrorCause(
+  LoadAndConfigSpriteErrorCode error_code
 ) {
   string error_cause = string("This error was caused by ");
   
   switch (error_code) {
-    case OpenNewTextureErrorCode::LoadTextureError:
-      error_cause += "attempting to load the texture from the file system";
+    case LoadAndConfigSpriteErrorCode::LoadSpriteTextureError:
+      error_cause += "attempting to load a sprite's texture from the file "
+        "system";
       break;
-    case OpenNewTextureErrorCode::ConfigureSpriteError:
-      error_cause += "attempting to configure the sprite with the texture "
+    case LoadAndConfigSpriteErrorCode::ConfigureSpriteError:
+      error_cause += "attempting to configure the sprite using the texture "
         "information";
       break;
   }
@@ -82,8 +83,8 @@ string OpenNewTextureErrorDescription::describeErrorCause(
   return error_cause;
 };
 
-string OpenNewTextureErrorDescription::describeErrorDetails(
-  OpenNewTextureErrorCode error_code
+string LoadAndConfigSpriteErrorDescription::describeErrorDetails(
+  LoadAndConfigSpriteErrorCode error_code
 ) {
   string error_details;
 
@@ -97,16 +98,17 @@ string OpenNewTextureErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-string OpenNewTextureErrorDescription::describeErrorSummary() {
+string LoadAndConfigSpriteErrorDescription::describeErrorSummary() {
   string error_summary = string(
-    "OpenNewTextureError: There was an error opening a texture!"
+    "LoadAndConfigSpriteError: An error occurred when loading and configuring " 
+    "a sprite!"
   );
 
   return error_summary;
 };
 
 // Private method implementations.
-int Sprite::configureSpriteWithTextureSpecification() {
+int Sprite::configSpriteWithTextureSpecs() {
   if(
     SDL_QueryTexture(
       this->texture.get(),
@@ -124,7 +126,7 @@ int Sprite::configureSpriteWithTextureSpecification() {
   }
 };
 
-int Sprite::loadTexture(SDL_Renderer* renderer, string file) {
+int Sprite::loadSpriteTexture(SDL_Renderer* renderer, string file) {
   this->texture.reset(IMG_LoadTexture(renderer, file.c_str()));
   
   if(this->texture.get() != nullptr)
@@ -134,15 +136,17 @@ int Sprite::loadTexture(SDL_Renderer* renderer, string file) {
     return -1;
 };
 
-void Sprite::openNewTexture(
+void Sprite::loadAndConfigSprite(
   SDL_Renderer* renderer,
   string file
 ) {
-  if(loadTexture(renderer, file) != 0)
-    throw OpenNewTextureException(OpenNewTextureErrorCode::LoadTextureError);
+  if(loadSpriteTexture(renderer, file) != 0)
+    throw LoadAndConfigSpriteException(
+      LoadAndConfigSpriteErrorCode::LoadSpriteTextureError
+    );
   
-  if(configureSpriteWithTextureSpecification() != 0)
-    throw OpenNewTextureException(
-      OpenNewTextureErrorCode::ConfigureSpriteError
+  if(configSpriteWithTextureSpecs() != 0)
+    throw LoadAndConfigSpriteException(
+      LoadAndConfigSpriteErrorCode::ConfigureSpriteError
     );
 };

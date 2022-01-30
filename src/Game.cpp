@@ -135,7 +135,7 @@ string GameInitErrorDescription::describeErrorDetails(
 
 string GameInitErrorDescription::describeErrorSummary() {
   string error_summary = string(
-    "GameInitError: There was an error initializing the Game!"
+    "GameInitError: An error occurred when initializing the Game!"
   );
 
   return error_summary;

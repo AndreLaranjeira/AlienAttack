@@ -127,7 +127,7 @@ string OpenMusicErrorDescription::describeErrorDetails(
 
 string OpenMusicErrorDescription::describeErrorSummary() {
   string error_summary = string(
-    "OpenMusicError: There was an error opening a music track!"
+    "OpenMusicError: An error occurred when opening a music track!"
   );
 
   return error_summary;
@@ -177,7 +177,7 @@ string PlayMusicErrorDescription::describeErrorDetails(
 
 string PlayMusicErrorDescription::describeErrorSummary() {
   string error_summary = string(
-    "PlayMusicError: There was an error playing a music track!"
+    "PlayMusicError: An error occurred when playing a music track!"
   );
 
   return error_summary;
@@ -226,7 +226,7 @@ string StopMusicErrorDescription::describeErrorDetails(
 
 string StopMusicErrorDescription::describeErrorSummary() {
   string error_summary = string(
-    "StopMusicError: There was an error stopping a music track!"
+    "StopMusicError: An error occurred when stopping a music track!"
   );
 
   return error_summary;

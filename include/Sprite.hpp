@@ -25,8 +25,8 @@
 using namespace std;
 
 // Enumeration definitions.
-enum OpenNewTextureErrorCode {
-  LoadTextureError = 1,
+enum LoadAndConfigSpriteErrorCode {
+  LoadSpriteTextureError = 1,
   ConfigureSpriteError
 };
 
@@ -35,8 +35,8 @@ using SDLTextureUniquePTR = \
   unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
 
 // Auxiliary class definitions.
-class OpenNewTextureErrorDescription :
-  public ErrorDescriptionTemplate<OpenNewTextureErrorCode>
+class LoadAndConfigSpriteErrorDescription :
+  public ErrorDescriptionTemplate<LoadAndConfigSpriteErrorCode>
 {
   // Public components.
   public:
@@ -45,21 +45,25 @@ class OpenNewTextureErrorDescription :
     using ErrorDescriptionTemplate::ErrorDescriptionTemplate;
 
     // Method prototypes.
-    string describeErrorCause(OpenNewTextureErrorCode error_code) override;
-    string describeErrorDetails(OpenNewTextureErrorCode error_code) override;
+    string describeErrorCause(
+      LoadAndConfigSpriteErrorCode error_code
+    ) override;
+    string describeErrorDetails(
+      LoadAndConfigSpriteErrorCode error_code
+    ) override;
     string describeErrorSummary() override;
 };
 
 // Exception definitions.
-class OpenNewTextureException :
-  public OpenNewTextureErrorDescription,
+class LoadAndConfigSpriteException :
+  public LoadAndConfigSpriteErrorDescription,
   public runtime_error
 {
   // Public components.
   public:
 
     // Class method prototypes.
-    OpenNewTextureException(OpenNewTextureErrorCode error_code);
+    LoadAndConfigSpriteException(LoadAndConfigSpriteErrorCode error_code);
 };
 
 // Class definition.
@@ -92,10 +96,9 @@ class Sprite {
     int width = 0;
 
     // Method prototypes.
-    int configureSpriteWithTextureSpecification();
-    string describeOpenNewTextureErrorCode(OpenNewTextureErrorCode error_code);
-    int loadTexture(SDL_Renderer* renderer, string file);
-    void openNewTexture(SDL_Renderer* renderer, string file);
+    int configSpriteWithTextureSpecs();
+    void loadAndConfigSprite(SDL_Renderer* renderer, string file);
+    int loadSpriteTexture(SDL_Renderer* renderer, string file);
 };
 
 #endif // SPRITE_H_
