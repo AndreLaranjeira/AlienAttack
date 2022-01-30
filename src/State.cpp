@@ -34,12 +34,26 @@ void State::update(double dt) {
 };
 
 // Private method implementations.
+bool State::musicIsUsingMixer() {
+  return this->music.isUsingMixer();
+};
+
 void State::playMusic() {
   try {
     this->music.play();
   }
-  catch(exception& e) {
-    cerr << "[State] " << e.what();
+  catch(PlayMusicException& play_music_exception) {
+    cerr << "[State] " << play_music_exception.what();
+    cerr << "[State] Ignoring previous exception and continuing execution!\n";
+  }
+};
+
+void State::stopMusic() {
+  try {
+    this->music.stop();
+  }
+  catch(StopMusicException& stop_music_exception) {
+    cerr << "[State] " << stop_music_exception.what();
     cerr << "[State] Ignoring previous exception and continuing execution!\n";
   }
 };

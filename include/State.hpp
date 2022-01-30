@@ -48,7 +48,9 @@ class State {
     bool quit_requested = false;
 
     // Method prototypes.
+    bool musicIsUsingMixer();
     void playMusic();
+    void stopMusic();
 };
 
 #endif // STATE_H_
