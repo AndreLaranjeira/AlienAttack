@@ -14,7 +14,7 @@
 using namespace std;
 
 // Class definition.
-template <class TErrorCode>
+template <typename TErrorCode>
 class ErrorDescriptionTemplate {
   // Public components.
   public:
@@ -44,20 +44,20 @@ class ErrorDescriptionTemplate {
 };
 
 // Class method implementations.
-template <class TErrorCode>
+template <typename TErrorCode>
 ErrorDescriptionTemplate<TErrorCode>::ErrorDescriptionTemplate(
   TErrorCode error_code
 ) :
   error_code(error_code) {};
 
 // Public method implementations.
-template <class TErrorCode>
+template <typename TErrorCode>
 TErrorCode ErrorDescriptionTemplate<TErrorCode>::getErrorCode() {
   return this->error_code;
 };
 
 // Protected method implementations.
-template <class TErrorCode>
+template <typename TErrorCode>
 string ErrorDescriptionTemplate<TErrorCode>::describeError(
   TErrorCode error_code
 ) {

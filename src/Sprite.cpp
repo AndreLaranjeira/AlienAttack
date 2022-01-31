@@ -11,12 +11,6 @@ Sprite::Sprite(SDL_Renderer* renderer, string file) {
   this->open(renderer, file);
 };
 
-LoadAndConfigSpriteException::LoadAndConfigSpriteException(
-  LoadAndConfigSpriteErrorCode error_code
-) :
-  LoadAndConfigSpriteErrorDescription(error_code),
-  runtime_error(this->describeError(error_code)) {};
-
 // Public method implementations.
 int Sprite::getHeight() {
   return this->height;

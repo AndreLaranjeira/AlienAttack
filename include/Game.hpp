@@ -28,6 +28,7 @@
 
 // Template includes.
 #include "templates/ErrorDescription.hpp"
+#include "templates/RuntimeException.hpp"
 
 // Namespace.
 using namespace std;
@@ -100,14 +101,15 @@ class GameInitErrorDescription :
 
 // Exception definitions.
 class GameInitException :
-  public GameInitErrorDescription,
-  public runtime_error
-{
+  public RuntimeExceptionTemplate<
+    GameInitErrorCode,
+    GameInitErrorDescription
+  > {
   // Public components.
   public:
 
-    // Class method prototypes.
-    GameInitException(GameInitErrorCode error_code);
+    // Inherited methods.
+    using RuntimeExceptionTemplate::RuntimeExceptionTemplate;
 };
 
 // Class definition.

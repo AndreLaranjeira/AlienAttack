@@ -20,6 +20,7 @@
 
 // Template includes.
 #include "templates/ErrorDescription.hpp"
+#include "templates/RuntimeException.hpp"
 
 // Namespace.
 using namespace std;
@@ -56,14 +57,15 @@ class LoadAndConfigSpriteErrorDescription :
 
 // Exception definitions.
 class LoadAndConfigSpriteException :
-  public LoadAndConfigSpriteErrorDescription,
-  public runtime_error
-{
+  public RuntimeExceptionTemplate<
+    LoadAndConfigSpriteErrorCode,
+    LoadAndConfigSpriteErrorDescription
+  > {
   // Public components.
   public:
 
-    // Class method prototypes.
-    LoadAndConfigSpriteException(LoadAndConfigSpriteErrorCode error_code);
+    // Inherited methods.
+    using RuntimeExceptionTemplate::RuntimeExceptionTemplate;
 };
 
 // Class definition.

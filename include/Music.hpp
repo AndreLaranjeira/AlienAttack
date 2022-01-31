@@ -17,6 +17,7 @@
 
 // Template includes.
 #include "templates/ErrorDescription.hpp"
+#include "templates/RuntimeException.hpp"
 
 // Namespace.
 using namespace std;
@@ -91,36 +92,39 @@ class StopMusicErrorDescription :
 
 // Exception definitions.
 class OpenMusicException :
-  public OpenMusicErrorDescription,
-  public runtime_error
-{
+  public RuntimeExceptionTemplate<
+    OpenMusicErrorCode,
+    OpenMusicErrorDescription
+  > {
     // Public components.
   public:
 
-    // Class method prototypes.
-    OpenMusicException(OpenMusicErrorCode error_code);
+    // Inherited methods.
+    using RuntimeExceptionTemplate::RuntimeExceptionTemplate;
 };
 
 class PlayMusicException :
-  public PlayMusicErrorDescription,
-  public runtime_error
-{
+  public RuntimeExceptionTemplate<
+    PlayMusicErrorCode,
+    PlayMusicErrorDescription
+  > {
     // Public components.
   public:
 
-    // Class method prototypes.
-    PlayMusicException(PlayMusicErrorCode error_code);
+    // Inherited methods.
+    using RuntimeExceptionTemplate::RuntimeExceptionTemplate;
 };
 
 class StopMusicException :
-  public StopMusicErrorDescription,
-  public runtime_error
-{
+  public RuntimeExceptionTemplate<
+    StopMusicErrorCode,
+    StopMusicErrorDescription
+  > {
     // Public components.
   public:
 
-    // Class method prototypes.
-    StopMusicException(StopMusicErrorCode error_code);
+    // Inherited methods.
+    using RuntimeExceptionTemplate::RuntimeExceptionTemplate;
 };
 
 // Class definition.

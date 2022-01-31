@@ -11,24 +11,6 @@ Music::Music(string file) {
   this->open(file);
 };
 
-OpenMusicException::OpenMusicException(
-  OpenMusicErrorCode error_code
-) :
-  OpenMusicErrorDescription(error_code),
-  runtime_error(this->describeError(error_code)) {};
-
-PlayMusicException::PlayMusicException(
-  PlayMusicErrorCode error_code
-) :
-  PlayMusicErrorDescription(error_code),
-  runtime_error(this->describeError(error_code)) {};
-
-StopMusicException::StopMusicException(
-  StopMusicErrorCode error_code
-) :
-  StopMusicErrorDescription(error_code),
-  runtime_error(this->describeError(error_code)) {};
-
 // Public method implementations.
 bool Music::isOpen() {
   return (this->music.get() != nullptr);
