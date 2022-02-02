@@ -18,7 +18,7 @@ bool Music::isOpen() {
 
 bool Music::isUsingMixer() {
   return this->usingMixer;
-}
+};
 
 void Music::open(string file) {
   this->music.reset(Mix_LoadMUS(file.c_str()));
@@ -37,7 +37,7 @@ void Music::play(int repetitions) {
   else if(this->mixerInUse())
     throw PlayMusicException(PlayMusicErrorCode::MixerInUseError);
 
-  else if(this->playCurrentMusic(repetitions) != 0)
+  else if(this->playCurrentMusicWithMixer(repetitions) != 0)
     throw PlayMusicException(PlayMusicErrorCode::FailureToPlayMusicError);
 };
 
@@ -51,29 +51,8 @@ void Music::stop(unsigned int fade_out_duration_milliseconds) {
   else if(!this->mixerInUse())
     throw StopMusicException(StopMusicErrorCode::MixerNotInUseError);
 
-  else if(this->stopCurrentMusic(fade_out_duration_milliseconds) != 0)
+  else if(this->stopCurrentMusicWithMixer(fade_out_duration_milliseconds) != 0)
     throw StopMusicException(StopMusicErrorCode::FailureToStopMusicError);
-};
-
-// Private method implementations.
-bool Music::mixerInUse() {
-  return (Mix_PlayingMusic() && Mix_FadingMusic() != MIX_FADING_OUT);
-};
-
-int Music::playCurrentMusic(int repetitions) {
-  if(Mix_PlayMusic(this->music.get(), repetitions) != 0)
-    return -1;
-
-  this->usingMixer = true;
-  return 0;
-};
-
-int Music::stopCurrentMusic(unsigned int fade_out_duration_milliseconds) {
-  if(Mix_FadeOutMusic(fade_out_duration_milliseconds) != 0)
-    return -1;
-
-  this->usingMixer = false;
-  return 0;
 };
 
 string OpenMusicErrorDescription::describeErrorCause(
@@ -133,7 +112,7 @@ string PlayMusicErrorDescription::describeErrorCause(
         "another track is already playing";
       break;
     case PlayMusicErrorCode::FailureToPlayMusicError:
-      error_cause += "a failure to play a music track";
+      error_cause += "a failure to play a music track with the mixer";
       break;
   }
 
@@ -182,7 +161,7 @@ string StopMusicErrorDescription::describeErrorCause(
         "no track is playing";
       break;
     case StopMusicErrorCode::FailureToStopMusicError:
-      error_cause += "a failure to stop a music track";
+      error_cause += "a failure to stop a music track with the mixer";
       break;
   }
 
@@ -212,4 +191,27 @@ string StopMusicErrorDescription::describeErrorSummary() {
   );
 
   return error_summary;
+};
+
+// Private method implementations.
+bool Music::mixerInUse() {
+  return (Mix_PlayingMusic() && Mix_FadingMusic() != MIX_FADING_OUT);
+};
+
+int Music::playCurrentMusicWithMixer(int repetitions) {
+  if(Mix_PlayMusic(this->music.get(), repetitions) != 0)
+    return -1;
+
+  this->usingMixer = true;
+  return 0;
+};
+
+int Music::stopCurrentMusicWithMixer(
+  unsigned int fade_out_duration_milliseconds
+) {
+  if(Mix_FadeOutMusic(fade_out_duration_milliseconds) != 0)
+    return -1;
+
+  this->usingMixer = false;
+  return 0;
 };

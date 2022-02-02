@@ -36,13 +36,13 @@ using SDLTextureUniquePTR = \
 
 // Auxiliary class definitions.
 class LoadAndConfigSpriteErrorDescription :
-  public ErrorDescriptionTemplate<LoadAndConfigSpriteErrorCode>
+  public ErrorDescription<LoadAndConfigSpriteErrorCode>
 {
   // Public components.
   public:
 
     // Inherited methods.
-    using ErrorDescriptionTemplate::ErrorDescriptionTemplate;
+    using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
     string describeErrorCause(
@@ -56,7 +56,7 @@ class LoadAndConfigSpriteErrorDescription :
 
 // Exception definitions.
 class LoadAndConfigSpriteException :
-  public RuntimeExceptionTemplate<
+  public RuntimeException<
     LoadAndConfigSpriteErrorCode,
     LoadAndConfigSpriteErrorDescription
   > {
@@ -64,7 +64,7 @@ class LoadAndConfigSpriteException :
   public:
 
     // Inherited methods.
-    using RuntimeExceptionTemplate::RuntimeExceptionTemplate;
+    using RuntimeException::RuntimeException;
 };
 
 // Class definition.

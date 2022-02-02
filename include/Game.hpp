@@ -83,14 +83,12 @@ struct SDLConfig {
 };
 
 // Auxiliary class definitions.
-class GameInitErrorDescription :
-  public ErrorDescriptionTemplate<GameInitErrorCode>
-{
+class GameInitErrorDescription : public ErrorDescription<GameInitErrorCode> {
   // Public components.
   public:
 
     // Inherited methods.
-    using ErrorDescriptionTemplate::ErrorDescriptionTemplate;
+    using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
     string describeErrorCause(GameInitErrorCode error_code) override;
@@ -100,15 +98,13 @@ class GameInitErrorDescription :
 
 // Exception definitions.
 class GameInitException :
-  public RuntimeExceptionTemplate<
-    GameInitErrorCode,
-    GameInitErrorDescription
-  > {
+  public RuntimeException<GameInitErrorCode, GameInitErrorDescription>
+{
   // Public components.
   public:
 
     // Inherited methods.
-    using RuntimeExceptionTemplate::RuntimeExceptionTemplate;
+    using RuntimeException::RuntimeException;
 };
 
 // Class definition.

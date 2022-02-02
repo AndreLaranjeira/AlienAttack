@@ -172,7 +172,10 @@ void Game::cleanUpGameRenderer() {
 };
 
 void Game::cleanUpGameState() {
-  delete this->state;
+  if(this->state != nullptr) {
+    delete this->state;
+    this->state = nullptr;
+  }
 };
 
 void Game::cleanUpGameWindow() {
@@ -277,7 +280,7 @@ int Game::initSDLAudio(SDLAudioParams audio_params, int mixer_channels) {
   }
   else
     return -1;
-}
+};
 
 int Game::initSDLImage(int image_flags) {
   if(IMG_Init(image_flags) == image_flags)

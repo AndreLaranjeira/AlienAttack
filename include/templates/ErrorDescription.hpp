@@ -1,11 +1,11 @@
 // Copyright (c) 2021 André Filipe Caldas Laranjeira
 // MIT License
 
-// Alien Attack - Error Description Template class - Template file.
+// Alien Attack - Error Description class - Template file.
 
 // Define guard.
-#ifndef ERROR_DESCRIPTION_TEMPLATE_H_
-#define ERROR_DESCRIPTION_TEMPLATE_H_
+#ifndef ERROR_DESCRIPTION_T_
+#define ERROR_DESCRIPTION_T_
 
 // Includes.
 #include <string>
@@ -15,12 +15,12 @@ using namespace std;
 
 // Class definition.
 template <typename TErrorCode>
-class ErrorDescriptionTemplate {
+class ErrorDescription {
   // Public components.
   public:
 
     // Class method prototypes.
-    ErrorDescriptionTemplate(TErrorCode error_code);
+    ErrorDescription(TErrorCode error_code);
 
     // Method prototypes.
     TErrorCode getErrorCode();
@@ -45,22 +45,18 @@ class ErrorDescriptionTemplate {
 
 // Class method implementations.
 template <typename TErrorCode>
-ErrorDescriptionTemplate<TErrorCode>::ErrorDescriptionTemplate(
-  TErrorCode error_code
-) :
+ErrorDescription<TErrorCode>::ErrorDescription(TErrorCode error_code) :
   error_code(error_code) {};
 
 // Public method implementations.
 template <typename TErrorCode>
-TErrorCode ErrorDescriptionTemplate<TErrorCode>::getErrorCode() {
+TErrorCode ErrorDescription<TErrorCode>::getErrorCode() {
   return this->error_code;
 };
 
 // Protected method implementations.
 template <typename TErrorCode>
-string ErrorDescriptionTemplate<TErrorCode>::describeError(
-  TErrorCode error_code
-) {
+string ErrorDescription<TErrorCode>::describeError(TErrorCode error_code) {
   string error_description;
 
   error_description = this->describeErrorSummary();
@@ -74,4 +70,4 @@ string ErrorDescriptionTemplate<TErrorCode>::describeError(
   return error_description;
 };
 
-#endif // ERROR_DESCRIPTION_TEMPLATE_H_
+#endif // ERROR_DESCRIPTION_T_

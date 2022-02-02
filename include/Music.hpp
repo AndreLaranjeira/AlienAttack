@@ -44,14 +44,12 @@ enum StopMusicErrorCode {
 using MixMusicUniquePTR = unique_ptr<Mix_Music, decltype(&Mix_FreeMusic)>;
 
 // Auxiliary class definitions.
-class OpenMusicErrorDescription :
-  public ErrorDescriptionTemplate<OpenMusicErrorCode>
-{
+class OpenMusicErrorDescription : public ErrorDescription<OpenMusicErrorCode> {
   // Public components.
   public:
 
     // Inherited methods.
-    using ErrorDescriptionTemplate::ErrorDescriptionTemplate;
+    using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
     string describeErrorCause(OpenMusicErrorCode error_code) override;
@@ -59,14 +57,12 @@ class OpenMusicErrorDescription :
     string describeErrorSummary() override;
 };
 
-class PlayMusicErrorDescription :
-  public ErrorDescriptionTemplate<PlayMusicErrorCode>
-{
+class PlayMusicErrorDescription : public ErrorDescription<PlayMusicErrorCode> {
   // Public components.
   public:
 
     // Inherited methods.
-    using ErrorDescriptionTemplate::ErrorDescriptionTemplate;
+    using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
     string describeErrorCause(PlayMusicErrorCode error_code) override;
@@ -74,14 +70,12 @@ class PlayMusicErrorDescription :
     string describeErrorSummary() override;
 };
 
-class StopMusicErrorDescription :
-  public ErrorDescriptionTemplate<StopMusicErrorCode>
-{
+class StopMusicErrorDescription : public ErrorDescription<StopMusicErrorCode> {
   // Public components.
   public:
 
     // Inherited methods.
-    using ErrorDescriptionTemplate::ErrorDescriptionTemplate;
+    using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
     string describeErrorCause(StopMusicErrorCode error_code) override;
@@ -91,39 +85,33 @@ class StopMusicErrorDescription :
 
 // Exception definitions.
 class OpenMusicException :
-  public RuntimeExceptionTemplate<
-    OpenMusicErrorCode,
-    OpenMusicErrorDescription
-  > {
+  public RuntimeException<OpenMusicErrorCode, OpenMusicErrorDescription>
+{
     // Public components.
   public:
 
     // Inherited methods.
-    using RuntimeExceptionTemplate::RuntimeExceptionTemplate;
+    using RuntimeException::RuntimeException;
 };
 
 class PlayMusicException :
-  public RuntimeExceptionTemplate<
-    PlayMusicErrorCode,
-    PlayMusicErrorDescription
-  > {
+  public RuntimeException<PlayMusicErrorCode, PlayMusicErrorDescription>
+{
     // Public components.
   public:
 
     // Inherited methods.
-    using RuntimeExceptionTemplate::RuntimeExceptionTemplate;
+    using RuntimeException::RuntimeException;
 };
 
 class StopMusicException :
-  public RuntimeExceptionTemplate<
-    StopMusicErrorCode,
-    StopMusicErrorDescription
-  > {
+  public RuntimeException<StopMusicErrorCode, StopMusicErrorDescription>
+{
     // Public components.
   public:
 
     // Inherited methods.
-    using RuntimeExceptionTemplate::RuntimeExceptionTemplate;
+    using RuntimeException::RuntimeException;
 };
 
 // Class definition.
@@ -151,8 +139,8 @@ class Music {
 
     // Method prototypes.
     bool mixerInUse();
-    int playCurrentMusic(int repetitions);
-    int stopCurrentMusic(unsigned int fade_out_duration_milliseconds);
+    int playCurrentMusicWithMixer(int repetitions);
+    int stopCurrentMusicWithMixer(unsigned int fade_out_duration_milliseconds);
 };
 
 #endif // MUSIC_H_

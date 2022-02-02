@@ -18,7 +18,7 @@ TPL_EXT = hpp
 # Project components.
 MAIN = main
 CLASSES = Game Music Sprite State
-TEMPLATES = ErrorDescription
+TEMPLATES = ErrorDescription RuntimeException
 
 # Compiler name, source file extension and compilation data (flags and libs).
 CC = g++
@@ -32,7 +32,6 @@ FULL_PATH = $(patsubst %,$(2)/%.$(3),$(1))
 DEPS = $(call FULL_PATH,$(CLASSES),$(INC_DIR),$(INC_EXT))
 DEPS += $(call FULL_PATH,$(TEMPLATES),$(TPL_DIR),$(TPL_EXT))
 OBJ = $(call FULL_PATH,$(CLASSES) $(MAIN),$(OBJ_DIR),$(OBJ_EXT))
-# SRC = $(call FULL_PATH,$(CLASSES) $(MAIN),$(SRC_DIR),$(SRC_EXT))
 
 # Project executable compilation rule.
 $(EXE): $(OBJ)
@@ -40,7 +39,9 @@ $(EXE): $(OBJ)
 
 # Object files compilation rule.
 $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT) $(DEPS)
-	@if [ ! -d $(OBJ_DIR) ]; then mkdir $(OBJ_DIR); fi
+	@if [ ! -d $(OBJ_DIR) ]; then \
+		mkdir $(OBJ_DIR); \
+	fi
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 # List of aditional makefile commands.

@@ -115,9 +115,8 @@ int Sprite::configSpriteWithTextureSpecs() {
     this->setClip(0, 0, this->width, this->height);
     return 0;
   }
-  else {
+  else 
     return -1;
-  }
 };
 
 int Sprite::loadSpriteTexture(SDL_Renderer* renderer, string file) {
