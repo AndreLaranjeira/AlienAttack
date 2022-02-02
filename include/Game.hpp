@@ -10,7 +10,6 @@
 // Includes.
 #include <exception>
 #include <iostream>
-#include <stdexcept>
 #include <string>
 
 // SDL2 includes.

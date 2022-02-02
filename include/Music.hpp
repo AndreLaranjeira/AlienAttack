@@ -9,7 +9,6 @@
 
 // Includes.
 #include <memory>
-#include <stdexcept>
 #include <string>
 
 // SDL2 includes.
