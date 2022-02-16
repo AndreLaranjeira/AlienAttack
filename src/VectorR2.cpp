@@ -9,7 +9,7 @@
 // Class method implementations.
 VectorR2::VectorR2(double x, double y) : x(x), y(y) {};
 
-// Method implementations.
+// Public method implementations.
 double VectorR2::angleInRadiansFromSelfTo(VectorR2& reference) {
   return (*this - reference).angleInRadiansFromXAxisToSelf();
 };
@@ -38,6 +38,10 @@ VectorR2 VectorR2::counterClockwiseRotatedVector(
 
 double VectorR2::distanceTo(VectorR2& reference) {
   return (*this - reference).magnitude();
+};
+
+double VectorR2::dotProductWith(VectorR2& vector) {
+  return (this->x * vector.x) + (this->y * vector.y);
 };
 
 double VectorR2::magnitude() {

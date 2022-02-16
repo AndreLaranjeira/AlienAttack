@@ -32,6 +32,7 @@ class VectorR2 {
     VectorR2 clockwiseRotatedVector(double rotation_angle_in_radians);
     VectorR2 counterClockwiseRotatedVector(double rotation_angle_in_radians);
     double distanceTo(VectorR2& reference);
+    double dotProductWith(VectorR2& vector);
     double magnitude();
     VectorR2 normalizedVector();
     void normalizeSelf();
