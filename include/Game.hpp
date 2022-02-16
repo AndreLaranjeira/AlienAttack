@@ -130,8 +130,8 @@ class Game {
     Game(GameParams game_params);
     Game(const Game&) = delete;
 
-    // Class operators.
-    Game& operator=(const Game&) = delete;
+    // Default operator overloadings.
+    Game& operator = (const Game&) = delete;
 
     // Members.
     SDL_Renderer* renderer = nullptr;
