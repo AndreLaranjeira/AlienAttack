@@ -45,6 +45,7 @@ class VectorR2 {
 // Class operator prototypes.
 VectorR2 operator + (const VectorR2& lhs, const VectorR2& rhs);
 void operator += (VectorR2& lhs, const VectorR2& rhs);
+VectorR2 operator - (const VectorR2& operand);
 VectorR2 operator - (const VectorR2& lhs, const VectorR2& rhs);
 void operator -= (VectorR2& lhs, const VectorR2& rhs);
 VectorR2 operator * (double scalar, const VectorR2& vector);

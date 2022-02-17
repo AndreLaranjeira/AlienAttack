@@ -81,11 +81,15 @@ void operator += (VectorR2& lhs, const VectorR2& rhs) {
   lhs = lhs + rhs;
 };
 
-VectorR2 operator - (const VectorR2& lhs, const VectorR2& rhs) {  
+VectorR2 operator - (const VectorR2& operand) {
   return VectorR2(
-    lhs.x - rhs.x,
-    lhs.y - rhs.y
+    -operand.x,
+    -operand.y
   );
+}
+
+VectorR2 operator - (const VectorR2& lhs, const VectorR2& rhs) {  
+  return lhs + (-rhs);
 };
 
 void operator -= (VectorR2& lhs, const VectorR2& rhs) {
