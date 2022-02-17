@@ -10,17 +10,17 @@
 VectorR2::VectorR2(double x, double y) : x(x), y(y) {};
 
 // Public method implementations.
-double VectorR2::angleInRadiansFromSelfTo(VectorR2& reference) {
+double VectorR2::angleInRadiansFromSelfTo(const VectorR2& reference) const {
   return (*this - reference).angleInRadiansFromXAxisToSelf();
 };
 
-double VectorR2::angleInRadiansFromXAxisToSelf() {
+double VectorR2::angleInRadiansFromXAxisToSelf() const {
   return atan2(this->y, this->x);
 };
 
 VectorR2 VectorR2::clockwiseRotatedVector(
   double rotation_angle_in_radians
-) {
+) const {
   double rot_angle_sin = sin(rotation_angle_in_radians); 
   double rot_angle_cos = cos(rotation_angle_in_radians); 
 
@@ -32,23 +32,23 @@ VectorR2 VectorR2::clockwiseRotatedVector(
 
 VectorR2 VectorR2::counterClockwiseRotatedVector(
   double rotation_angle_in_radians
-) {
+) const {
   return this->clockwiseRotatedVector(-rotation_angle_in_radians);
 };
 
-double VectorR2::distanceTo(VectorR2& reference) {
+double VectorR2::distanceTo(const VectorR2& reference) const {
   return (*this - reference).magnitude();
 };
 
-double VectorR2::dotProductWith(VectorR2& vector) {
+double VectorR2::dotProductWith(const VectorR2& vector) const {
   return (this->x * vector.x) + (this->y * vector.y);
 };
 
-double VectorR2::magnitude() {
+double VectorR2::magnitude() const {
   return sqrt(pow(this->x, 2) + pow(this->y, 2));
 };
 
-VectorR2 VectorR2::normalizedVector() {
+VectorR2 VectorR2::normalizedVector() const {
   double vector_magnitude = this->magnitude();
 
   return VectorR2(
@@ -70,35 +70,35 @@ void VectorR2::rotateSelfCounterClockwise(double rotation_angle_in_radians) {
 };
 
 // Class operator implementations.
-VectorR2 operator + (VectorR2& lhs, VectorR2& rhs) {  
+VectorR2 operator + (const VectorR2& lhs, const VectorR2& rhs) {  
   return VectorR2(
     lhs.x + rhs.x,
     lhs.y + rhs.y
   );
 };
 
-void operator += (VectorR2& lhs, VectorR2& rhs) {
+void operator += (VectorR2& lhs, const VectorR2& rhs) {
   lhs = lhs + rhs;
 };
 
-VectorR2 operator - (VectorR2& lhs, VectorR2& rhs) {  
+VectorR2 operator - (const VectorR2& lhs, const VectorR2& rhs) {  
   return VectorR2(
     lhs.x - rhs.x,
     lhs.y - rhs.y
   );
 };
 
-void operator -= (VectorR2& lhs, VectorR2& rhs) {
+void operator -= (VectorR2& lhs, const VectorR2& rhs) {
   lhs = lhs - rhs;
 };
 
-VectorR2 operator * (double scalar, VectorR2& vector) {
+VectorR2 operator * (double scalar, const VectorR2& vector) {
   return VectorR2(
     scalar * vector.x,
     scalar * vector.y
   );
 };
 
-VectorR2 operator * (VectorR2& vector, double scalar) {
+VectorR2 operator * (const VectorR2& vector, double scalar) {
   return scalar * vector;
 };

@@ -27,25 +27,27 @@ class VectorR2 {
     double y = 0;
 
     // Method prototypes.
-    double angleInRadiansFromSelfTo(VectorR2& reference);
-    double angleInRadiansFromXAxisToSelf();
-    VectorR2 clockwiseRotatedVector(double rotation_angle_in_radians);
-    VectorR2 counterClockwiseRotatedVector(double rotation_angle_in_radians);
-    double distanceTo(VectorR2& reference);
-    double dotProductWith(VectorR2& vector);
-    double magnitude();
-    VectorR2 normalizedVector();
+    double angleInRadiansFromSelfTo(const VectorR2& reference) const;
+    double angleInRadiansFromXAxisToSelf() const;
+    VectorR2 clockwiseRotatedVector(double rotation_angle_in_radians) const;
+    VectorR2 counterClockwiseRotatedVector(
+      double rotation_angle_in_radians
+    ) const;
+    double distanceTo(const VectorR2& reference) const;
+    double dotProductWith(const VectorR2& vector) const;
+    double magnitude() const;
+    VectorR2 normalizedVector() const;
     void normalizeSelf();
     void rotateSelfClockwise(double rotation_angle_in_radians);
     void rotateSelfCounterClockwise(double rotation_angle_in_radians);
 };
 
 // Class operator prototypes.
-VectorR2 operator + (VectorR2& lhs, VectorR2& rhs);
-void operator += (VectorR2& lhs, VectorR2& rhs);
-VectorR2 operator - (VectorR2& lhs, VectorR2& rhs);
-void operator -= (VectorR2& lhs, VectorR2& rhs);
-VectorR2 operator * (double scalar, VectorR2& vector);
-VectorR2 operator * (VectorR2& vector, double scalar);
+VectorR2 operator + (const VectorR2& lhs, const VectorR2& rhs);
+void operator += (VectorR2& lhs, const VectorR2& rhs);
+VectorR2 operator - (const VectorR2& lhs, const VectorR2& rhs);
+void operator -= (VectorR2& lhs, const VectorR2& rhs);
+VectorR2 operator * (double scalar, const VectorR2& vector);
+VectorR2 operator * (const VectorR2& vector, double scalar);
 
 #endif // VECTOR_R2_H_

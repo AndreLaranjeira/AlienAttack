@@ -47,11 +47,11 @@ class LoadAndConfigSpriteErrorDescription :
     // Method prototypes.
     string describeErrorCause(
       LoadAndConfigSpriteErrorCode error_code
-    ) override;
+    ) const override;
     string describeErrorDetails(
       LoadAndConfigSpriteErrorCode error_code
-    ) override;
-    string describeErrorSummary() override;
+    ) const override;
+    string describeErrorSummary() const override;
 };
 
 // Exception definitions.
@@ -77,9 +77,9 @@ class Sprite {
     Sprite(SDL_Renderer* renderer, string file);
 
     // Method prototypes.
-    int getHeight();
-    int getWidth();
-    bool isOpen();
+    int getHeight() const;
+    int getWidth() const;
+    bool isOpen() const;
     void open(SDL_Renderer* renderer, string file);
     void render(SDL_Renderer* renderer, int x_pos, int y_pos);
     void setClip(int x_pos, int y_pos, int width, int height);

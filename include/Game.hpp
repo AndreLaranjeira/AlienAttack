@@ -91,9 +91,9 @@ class GameInitErrorDescription : public ErrorDescription<GameInitErrorCode> {
     using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
-    string describeErrorCause(GameInitErrorCode error_code) override;
-    string describeErrorDetails(GameInitErrorCode error_code) override;
-    string describeErrorSummary() override;
+    string describeErrorCause(GameInitErrorCode error_code) const override;
+    string describeErrorDetails(GameInitErrorCode error_code) const override;
+    string describeErrorSummary() const override;
 };
 
 // Exception definitions.
@@ -116,8 +116,8 @@ class Game {
     ~Game();
 
     // Method prototypes.
-    SDL_Renderer* getRenderer();
-    State& getState();
+    SDL_Renderer* getRenderer() const;
+    State& getState() const;
     void run();
 
     // Static method prototypes.
@@ -147,7 +147,7 @@ class Game {
     void cleanUpGameState();
     void cleanUpGameWindow();
     void cleanUpSDLModules();
-    SDLConfig generateDefaultSDLConfig(GameParams game_params);
+    SDLConfig generateDefaultSDLConfig(GameParams game_params) const;
     void initGame(SDLConfig SDL_module_params);
     int initGameState();
     int initSDL(Uint32 flags);
@@ -157,10 +157,10 @@ class Game {
     int initSDLRenderer(SDLRendererParams renderer_params);
     int initSDLWindow(SDLWindowParams window_params);
     void renderAndPresentGameState(SDL_Renderer* renderer);
-    bool shouldKeepRunning();
+    bool shouldKeepRunning() const;
     void updateGameState();
-    int verifySingletonProperty();
-    void waitTimeIntervalBetweenFrames();
+    int verifySingletonProperty() const;
+    void waitTimeIntervalBetweenFrames() const;
 };
 
 #endif // GAME_H_

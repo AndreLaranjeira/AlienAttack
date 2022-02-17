@@ -12,15 +12,15 @@ Sprite::Sprite(SDL_Renderer* renderer, string file) {
 };
 
 // Public method implementations.
-int Sprite::getHeight() {
+int Sprite::getHeight() const {
   return this->height;
 };
 
-int Sprite::getWidth() {
+int Sprite::getWidth() const {
   return this->width;
 };
 
-bool Sprite::isOpen() {
+bool Sprite::isOpen() const {
   return (this->texture.get() != nullptr);
 };
 
@@ -58,7 +58,7 @@ void Sprite::setClip(int x_pos, int y_pos, int width, int height) {
 
 string LoadAndConfigSpriteErrorDescription::describeErrorCause(
   LoadAndConfigSpriteErrorCode error_code
-) {
+) const {
   string error_cause = string("This error was caused by ");
   
   switch (error_code) {
@@ -79,7 +79,7 @@ string LoadAndConfigSpriteErrorDescription::describeErrorCause(
 
 string LoadAndConfigSpriteErrorDescription::describeErrorDetails(
   LoadAndConfigSpriteErrorCode error_code
-) {
+) const {
   string error_details;
 
   switch (error_code) {
@@ -92,7 +92,7 @@ string LoadAndConfigSpriteErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-string LoadAndConfigSpriteErrorDescription::describeErrorSummary() {
+string LoadAndConfigSpriteErrorDescription::describeErrorSummary() const {
   string error_summary = string(
     "LoadAndConfigSpriteError: An error occurred when loading and configuring " 
     "a sprite!"

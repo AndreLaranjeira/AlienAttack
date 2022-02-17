@@ -52,9 +52,9 @@ class OpenMusicErrorDescription : public ErrorDescription<OpenMusicErrorCode> {
     using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
-    string describeErrorCause(OpenMusicErrorCode error_code) override;
-    string describeErrorDetails(OpenMusicErrorCode error_code) override;
-    string describeErrorSummary() override;
+    string describeErrorCause(OpenMusicErrorCode error_code) const override;
+    string describeErrorDetails(OpenMusicErrorCode error_code) const override;
+    string describeErrorSummary() const override;
 };
 
 class PlayMusicErrorDescription : public ErrorDescription<PlayMusicErrorCode> {
@@ -65,9 +65,9 @@ class PlayMusicErrorDescription : public ErrorDescription<PlayMusicErrorCode> {
     using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
-    string describeErrorCause(PlayMusicErrorCode error_code) override;
-    string describeErrorDetails(PlayMusicErrorCode error_code) override;
-    string describeErrorSummary() override;
+    string describeErrorCause(PlayMusicErrorCode error_code) const override;
+    string describeErrorDetails(PlayMusicErrorCode error_code) const override;
+    string describeErrorSummary() const override;
 };
 
 class StopMusicErrorDescription : public ErrorDescription<StopMusicErrorCode> {
@@ -78,9 +78,9 @@ class StopMusicErrorDescription : public ErrorDescription<StopMusicErrorCode> {
     using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
-    string describeErrorCause(StopMusicErrorCode error_code) override;
-    string describeErrorDetails(StopMusicErrorCode error_code) override;
-    string describeErrorSummary() override;
+    string describeErrorCause(StopMusicErrorCode error_code) const override;
+    string describeErrorDetails(StopMusicErrorCode error_code) const override;
+    string describeErrorSummary() const override;
 };
 
 // Exception definitions.
@@ -124,8 +124,8 @@ class Music {
     Music(string file);
 
     // Method prototypes.
-    bool isOpen();
-    bool isUsingMixer();
+    bool isOpen() const;
+    bool isUsingMixer() const;
     void open(string file);
     void play(int repetitions = -1);
     void stop(unsigned int fade_out_duration_milliseconds = 1500);
@@ -138,7 +138,7 @@ class Music {
     bool usingMixer = false;
 
     // Method prototypes.
-    bool mixerInUse();
+    bool mixerInUse() const;
     int playCurrentMusicWithMixer(int repetitions);
     int stopCurrentMusicWithMixer(unsigned int fade_out_duration_milliseconds);
 };

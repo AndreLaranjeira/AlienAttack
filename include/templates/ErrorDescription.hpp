@@ -23,18 +23,18 @@ class ErrorDescription {
     ErrorDescription(TErrorCode error_code);
 
     // Method prototypes.
-    TErrorCode getErrorCode();
+    TErrorCode getErrorCode() const;
 
     // Virtual method prototypes.
-    virtual string describeErrorCause(TErrorCode error_code) = 0;
-    virtual string describeErrorDetails(TErrorCode error_code) = 0;
-    virtual string describeErrorSummary() = 0;
+    virtual string describeErrorCause(TErrorCode error_code) const = 0;
+    virtual string describeErrorDetails(TErrorCode error_code) const = 0;
+    virtual string describeErrorSummary() const = 0;
 
   // Protected components.
   protected:
 
     // Method prototypes.
-    string describeError(TErrorCode error_code);
+    string describeError(TErrorCode error_code) const;
 
   // Private components.
   private:
@@ -50,13 +50,15 @@ ErrorDescription<TErrorCode>::ErrorDescription(TErrorCode error_code) :
 
 // Public method implementations.
 template <typename TErrorCode>
-TErrorCode ErrorDescription<TErrorCode>::getErrorCode() {
+TErrorCode ErrorDescription<TErrorCode>::getErrorCode() const {
   return this->error_code;
 };
 
 // Protected method implementations.
 template <typename TErrorCode>
-string ErrorDescription<TErrorCode>::describeError(TErrorCode error_code) {
+string ErrorDescription<TErrorCode>::describeError(
+  TErrorCode error_code
+) const {
   string error_description;
 
   error_description = this->describeErrorSummary();

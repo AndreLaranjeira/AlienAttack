@@ -20,7 +20,7 @@ catch(exception& e) {
 // Public method implementations.
 void State::loadAssets() {};
 
-bool State::quitRequested() {
+bool State::quitRequested() const {
   return this->quit_requested;
 };
 
@@ -34,7 +34,7 @@ void State::update(double dt) {
 };
 
 // Private method implementations.
-bool State::musicIsUsingMixer() {
+bool State::musicIsUsingMixer() const {
   return this->music.isUsingMixer();
 };
 

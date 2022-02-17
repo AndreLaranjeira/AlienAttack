@@ -35,7 +35,7 @@ class State {
 
     // Method prototypes.
     void loadAssets();
-    bool quitRequested();
+    bool quitRequested() const;
     void render(SDL_Renderer* renderer);
     void update(double dt);
 
@@ -48,7 +48,7 @@ class State {
     bool quit_requested = false;
 
     // Method prototypes.
-    bool musicIsUsingMixer();
+    bool musicIsUsingMixer() const;
     void playMusic();
     void stopMusic();
 };

@@ -49,11 +49,11 @@ Game& Game::getInstance() {
   return *Game::instance;
 };
 
-SDL_Renderer* Game::getRenderer() {
+SDL_Renderer* Game::getRenderer() const {
   return this->renderer;
 };
 
-State& Game::getState() {
+State& Game::getState() const {
   return *(this->state);
 };
 
@@ -67,7 +67,7 @@ void Game::run() {
 
 string GameInitErrorDescription::describeErrorCause(
   GameInitErrorCode error_code
-) {
+) const {
   string error_cause = string("This error was caused by ");
   
   switch (error_code) {
@@ -104,7 +104,7 @@ string GameInitErrorDescription::describeErrorCause(
 
 string GameInitErrorDescription::describeErrorDetails(
   GameInitErrorCode error_code
-) {
+) const {
   string error_details;
 
   switch (error_code) {
@@ -129,7 +129,7 @@ string GameInitErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-string GameInitErrorDescription::describeErrorSummary() {
+string GameInitErrorDescription::describeErrorSummary() const {
   string error_summary = string(
     "GameInitError: An error occurred when initializing the Game!"
   );
@@ -192,7 +192,7 @@ void Game::cleanUpSDLModules() {
   SDL_Quit();
 };
 
-SDLConfig Game::generateDefaultSDLConfig(GameParams game_params) {
+SDLConfig Game::generateDefaultSDLConfig(GameParams game_params) const {
   return {
     .SDL_flags =  SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_VIDEO,
     .image_flags = IMG_INIT_JPG | IMG_INIT_PNG,
@@ -331,7 +331,7 @@ void Game::renderAndPresentGameState(SDL_Renderer* state_renderer) {
   SDL_RenderPresent(state_renderer);
 };
 
-bool Game::shouldKeepRunning() {
+bool Game::shouldKeepRunning() const {
   return !(this->state->quitRequested());
 };
 
@@ -339,13 +339,13 @@ void Game::updateGameState() {
   this->state->update(0);
 };
 
-int Game::verifySingletonProperty() {
+int Game::verifySingletonProperty() const {
   if (Game::instance == nullptr)
     return 0;
   else
     return -1;
 };
 
-void Game::waitTimeIntervalBetweenFrames() {
+void Game::waitTimeIntervalBetweenFrames() const {
   SDL_Delay(33);
 };

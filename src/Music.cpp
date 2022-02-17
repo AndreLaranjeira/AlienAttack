@@ -12,11 +12,11 @@ Music::Music(string file) {
 };
 
 // Public method implementations.
-bool Music::isOpen() {
+bool Music::isOpen() const {
   return (this->music.get() != nullptr);
 };
 
-bool Music::isUsingMixer() {
+bool Music::isUsingMixer() const {
   return this->usingMixer;
 };
 
@@ -57,7 +57,7 @@ void Music::stop(unsigned int fade_out_duration_milliseconds) {
 
 string OpenMusicErrorDescription::describeErrorCause(
   OpenMusicErrorCode error_code
-) {
+) const {
   string error_cause = string("This error was caused by ");
 
   switch (error_code) {
@@ -73,7 +73,7 @@ string OpenMusicErrorDescription::describeErrorCause(
 
 string OpenMusicErrorDescription::describeErrorDetails(
   OpenMusicErrorCode error_code
-) {
+) const {
   string error_details;
 
   switch (error_code) {
@@ -86,7 +86,7 @@ string OpenMusicErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-string OpenMusicErrorDescription::describeErrorSummary() {
+string OpenMusicErrorDescription::describeErrorSummary() const {
   string error_summary = string(
     "OpenMusicError: An error occurred when opening a music track!"
   );
@@ -96,7 +96,7 @@ string OpenMusicErrorDescription::describeErrorSummary() {
 
 string PlayMusicErrorDescription::describeErrorCause(
   PlayMusicErrorCode error_code
-) {
+) const {
   string error_cause = string("This error was caused by ");
 
   switch (error_code) {
@@ -123,7 +123,7 @@ string PlayMusicErrorDescription::describeErrorCause(
 
 string PlayMusicErrorDescription::describeErrorDetails(
   PlayMusicErrorCode error_code
-) {
+) const {
   string error_details;
 
   switch (error_code) {
@@ -136,7 +136,7 @@ string PlayMusicErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-string PlayMusicErrorDescription::describeErrorSummary() {
+string PlayMusicErrorDescription::describeErrorSummary() const {
   string error_summary = string(
     "PlayMusicError: An error occurred when playing a music track!"
   );
@@ -146,7 +146,7 @@ string PlayMusicErrorDescription::describeErrorSummary() {
 
 string StopMusicErrorDescription::describeErrorCause(
   StopMusicErrorCode error_code
-) {
+) const {
   string error_cause = string("This error was caused by ");
 
   switch (error_code) {
@@ -172,7 +172,7 @@ string StopMusicErrorDescription::describeErrorCause(
 
 string StopMusicErrorDescription::describeErrorDetails(
   StopMusicErrorCode error_code
-) {
+) const {
   string error_details;
 
   switch (error_code) {
@@ -185,7 +185,7 @@ string StopMusicErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-string StopMusicErrorDescription::describeErrorSummary() {
+string StopMusicErrorDescription::describeErrorSummary() const {
   string error_summary = string(
     "StopMusicError: An error occurred when stopping a music track!"
   );
@@ -194,7 +194,7 @@ string StopMusicErrorDescription::describeErrorSummary() {
 };
 
 // Private method implementations.
-bool Music::mixerInUse() {
+bool Music::mixerInUse() const {
   return (Mix_PlayingMusic() && Mix_FadingMusic() != MIX_FADING_OUT);
 };
 
