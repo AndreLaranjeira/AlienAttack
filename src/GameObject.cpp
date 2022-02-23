@@ -54,7 +54,7 @@ component_const_iter GameObject::searchComponentsByType(
   string search_parameter
 ) const {
   auto component_type_matches_search_parameter = [&search_parameter](
-    unique_ptr<Component>& component
+    const unique_ptr<Component>& component
   ) {
     return component->is(search_parameter);
   };
@@ -70,7 +70,7 @@ component_const_iter GameObject::searchComponentsByValue(
   Component* search_parameter
 ) const {
   auto component_matches_search_parameter = [&search_parameter](
-    unique_ptr<Component>& component
+    const unique_ptr<Component>& component
   ) {
     return component.get() == search_parameter;
   };
