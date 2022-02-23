@@ -21,8 +21,8 @@
 #include "Music.hpp"
 #include "Sprite.hpp"
 
-// Namespace.
-using namespace std;
+// Declarations.
+class State;
 
 // Class definition.
 class State {

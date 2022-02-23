@@ -7,7 +7,7 @@
 #include "Sprite.hpp"
 
 // Class method implementations.
-Sprite::Sprite(SDL_Renderer* renderer, string file) {
+Sprite::Sprite(SDL_Renderer* renderer, std::string file) {
   this->open(renderer, file);
 };
 
@@ -24,7 +24,7 @@ bool Sprite::isOpen() const {
   return (this->texture.get() != nullptr);
 };
 
-void Sprite::open(SDL_Renderer* renderer, string file) {
+void Sprite::open(SDL_Renderer* renderer, std::string file) {
   try {
     this->loadAndConfigSprite(renderer, file);
   }
@@ -56,10 +56,10 @@ void Sprite::setClip(int x_pos, int y_pos, int width, int height) {
   this->clip_rect.h = height;
 };
 
-string LoadAndConfigSpriteErrorDescription::describeErrorCause(
+std::string LoadAndConfigSpriteErrorDescription::describeErrorCause(
   LoadAndConfigSpriteErrorCode error_code
 ) const {
-  string error_cause = string("This error was caused by ");
+  std::string error_cause = std::string("This error was caused by ");
   
   switch (error_code) {
     case LoadAndConfigSpriteErrorCode::LoadSpriteTextureError:
@@ -77,10 +77,10 @@ string LoadAndConfigSpriteErrorDescription::describeErrorCause(
   return error_cause;
 };
 
-string LoadAndConfigSpriteErrorDescription::describeErrorDetails(
+std::string LoadAndConfigSpriteErrorDescription::describeErrorDetails(
   LoadAndConfigSpriteErrorCode error_code
 ) const {
-  string error_details;
+  std::string error_details;
 
   switch (error_code) {
     default:
@@ -92,8 +92,8 @@ string LoadAndConfigSpriteErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-string LoadAndConfigSpriteErrorDescription::describeErrorSummary() const {
-  string error_summary = string(
+std::string LoadAndConfigSpriteErrorDescription::describeErrorSummary() const {
+  std::string error_summary = std::string(
     "LoadAndConfigSpriteError: An error occurred when loading and configuring " 
     "a sprite!"
   );
@@ -119,7 +119,7 @@ int Sprite::configSpriteWithTextureSpecs() {
     return -1;
 };
 
-int Sprite::loadSpriteTexture(SDL_Renderer* renderer, string file) {
+int Sprite::loadSpriteTexture(SDL_Renderer* renderer, std::string file) {
   this->texture.reset(IMG_LoadTexture(renderer, file.c_str()));
   
   if(this->texture.get() != nullptr)
@@ -131,7 +131,7 @@ int Sprite::loadSpriteTexture(SDL_Renderer* renderer, string file) {
 
 void Sprite::loadAndConfigSprite(
   SDL_Renderer* renderer,
-  string file
+  std::string file
 ) {
   if(loadSpriteTexture(renderer, file) != 0)
     throw LoadAndConfigSpriteException(

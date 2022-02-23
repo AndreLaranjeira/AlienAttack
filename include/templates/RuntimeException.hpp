@@ -14,15 +14,15 @@
 // Template includes.
 #include "../templates/ErrorDescription.hpp"
 
-// Namespace.
-using namespace std;
+// Declarations.
+template <typename TErrorCode, class TErrorDescription> class RuntimeException;
 
 // Class definition.
 template <typename TErrorCode, class TErrorDescription>
-class RuntimeException : public TErrorDescription, public runtime_error {
+class RuntimeException : public TErrorDescription, public std::runtime_error {
   // Construction pre-requisites.
   static_assert(
-    is_base_of<ErrorDescription<TErrorCode>, TErrorDescription>::value,
+    std::is_base_of<ErrorDescription<TErrorCode>, TErrorDescription>::value,
     "TErrorDescription must be derived from ErrorDescription template."
   );
 

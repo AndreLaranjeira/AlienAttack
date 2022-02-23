@@ -21,18 +21,21 @@
 #include "templates/ErrorDescription.hpp"
 #include "templates/RuntimeException.hpp"
 
-// Namespace.
-using namespace std;
+// Declarations.
+enum LoadAndConfigSpriteErrorCode : unsigned short;
+class LoadAndConfigSpriteErrorDescription;
+class LoadAndConfigSpriteException;
+class Sprite;
 
 // Enumeration definitions.
-enum LoadAndConfigSpriteErrorCode {
+enum LoadAndConfigSpriteErrorCode : unsigned short {
   LoadSpriteTextureError = 1,
   ConfigureSpriteError
 };
 
 // Type definitions.
 using SDLTextureUniquePTR = \
-  unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
+  std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
 
 // Auxiliary class definitions.
 class LoadAndConfigSpriteErrorDescription :
@@ -45,13 +48,13 @@ class LoadAndConfigSpriteErrorDescription :
     using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
-    string describeErrorCause(
+    std::string describeErrorCause(
       LoadAndConfigSpriteErrorCode error_code
     ) const override;
-    string describeErrorDetails(
+    std::string describeErrorDetails(
       LoadAndConfigSpriteErrorCode error_code
     ) const override;
-    string describeErrorSummary() const override;
+    std::string describeErrorSummary() const override;
 };
 
 // Exception definitions.
@@ -74,13 +77,13 @@ class Sprite {
 
     // Class method prototypes.
     Sprite() = default;
-    Sprite(SDL_Renderer* renderer, string file);
+    Sprite(SDL_Renderer* renderer, std::string file);
 
     // Method prototypes.
     int getHeight() const;
     int getWidth() const;
     bool isOpen() const;
-    void open(SDL_Renderer* renderer, string file);
+    void open(SDL_Renderer* renderer, std::string file);
     void render(SDL_Renderer* renderer, int x_pos, int y_pos);
     void setClip(int x_pos, int y_pos, int width, int height);
 
@@ -98,8 +101,8 @@ class Sprite {
 
     // Method prototypes.
     int configSpriteWithTextureSpecs();
-    void loadAndConfigSprite(SDL_Renderer* renderer, string file);
-    int loadSpriteTexture(SDL_Renderer* renderer, string file);
+    void loadAndConfigSprite(SDL_Renderer* renderer, std::string file);
+    int loadSpriteTexture(SDL_Renderer* renderer, std::string file);
 };
 
 #endif // SPRITE_H_

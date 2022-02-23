@@ -41,7 +41,7 @@ Game& Game::getInstance() {
     try {
       Game::instance = new Game(game_params);
     }
-    catch(exception& e) {
+    catch(std::exception& e) {
       throw;
     }
   }
@@ -65,10 +65,10 @@ void Game::run() {
   }
 };
 
-string GameInitErrorDescription::describeErrorCause(
+std::string GameInitErrorDescription::describeErrorCause(
   GameInitErrorCode error_code
 ) const {
-  string error_cause = string("This error was caused by ");
+  std::string error_cause = std::string("This error was caused by ");
   
   switch (error_code) {
     case GameInitErrorCode::DuplicateGameInstanceError:
@@ -102,10 +102,10 @@ string GameInitErrorDescription::describeErrorCause(
   return error_cause;
 };
 
-string GameInitErrorDescription::describeErrorDetails(
+std::string GameInitErrorDescription::describeErrorDetails(
   GameInitErrorCode error_code
 ) const {
-  string error_details;
+  std::string error_details;
 
   switch (error_code) {
     case GameInitErrorCode::DuplicateGameInstanceError:
@@ -129,8 +129,8 @@ string GameInitErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-string GameInitErrorDescription::describeErrorSummary() const {
-  string error_summary = string(
+std::string GameInitErrorDescription::describeErrorSummary() const {
+  std::string error_summary = std::string(
     "GameInitError: An error occurred when initializing the Game!"
   );
 
@@ -251,8 +251,8 @@ int Game::initGameState() {
   try {
     this->state = new State(this->renderer);
   }
-  catch(exception& e) {
-    cerr << "[Game] " << e.what();
+  catch(std::exception& e) {
+    std::cerr << "[Game] " << e.what();
     return -1;
   }
 

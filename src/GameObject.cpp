@@ -11,10 +11,10 @@ Component::Component(GameObject& associated) : associated(associated) {};
 
 // Public method implementations.
 void GameObject::addComponent(Component* new_component) {
-  this->components.push_back(unique_ptr<Component>(new_component));
+  this->components.push_back(std::unique_ptr<Component>(new_component));
 };
 
-Component* GameObject::getComponent(string type) {
+Component* GameObject::getComponent(std::string type) {
   component_const_iter result = this->searchComponentsByType(type);
 
   return result != this->components.end() ?
@@ -51,10 +51,10 @@ void GameObject::update(double dt) {
 
 // Private method implementations.
 component_const_iter GameObject::searchComponentsByType(
-  string search_parameter
+  std::string search_parameter
 ) const {
   auto component_type_matches_search_parameter = [&search_parameter](
-    const unique_ptr<Component>& component
+    const std::unique_ptr<Component>& component
   ) {
     return component->is(search_parameter);
   };
@@ -70,7 +70,7 @@ component_const_iter GameObject::searchComponentsByValue(
   Component* search_parameter
 ) const {
   auto component_matches_search_parameter = [&search_parameter](
-    const unique_ptr<Component>& component
+    const std::unique_ptr<Component>& component
   ) {
     return component.get() == search_parameter;
   };

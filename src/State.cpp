@@ -13,7 +13,7 @@ State::State(SDL_Renderer* renderer) try :
 {
   this->playMusic();
 }
-catch(exception& e) {
+catch(std::exception& e) {
   throw;
 };
 
@@ -43,8 +43,8 @@ void State::playMusic() {
     this->music.play();
   }
   catch(PlayMusicException& play_music_exception) {
-    cerr << "[State] " << play_music_exception.what();
-    cerr << "[State] Ignoring previous exception and continuing execution!\n";
+    std::cerr << "[State] " << play_music_exception.what();
+    std::cerr << "[State] Ignoring last exception and resuming execution!\n";
   }
 };
 
@@ -53,7 +53,7 @@ void State::stopMusic() {
     this->music.stop();
   }
   catch(StopMusicException& stop_music_exception) {
-    cerr << "[State] " << stop_music_exception.what();
-    cerr << "[State] Ignoring previous exception and continuing execution!\n";
+    std::cerr << "[State] " << stop_music_exception.what();
+    std::cerr << "[State] Ignoring last exception and resuming execution!\n";
   }
 };

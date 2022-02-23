@@ -29,11 +29,19 @@
 #include "templates/ErrorDescription.hpp"
 #include "templates/RuntimeException.hpp"
 
-// Namespace.
-using namespace std;
+// Declarations.
+class Game;
+enum GameInitErrorCode : unsigned short;
+class GameInitErrorDescription;
+class GameInitException;
+struct GameParams;
+struct SDLAudioParams;
+struct SDLConfig;
+struct SDLRendererParams;
+struct SDLWindowParams;
 
 // Enumeration definitions.
-enum GameInitErrorCode {
+enum GameInitErrorCode : unsigned short {
   DuplicateGameInstanceError = 1,
   SDLError,
   SDLImageError,
@@ -46,7 +54,7 @@ enum GameInitErrorCode {
 
 // Type definitions.
 struct GameParams {
-  string title;
+  std::string title;
   int width;
   int height;
 };
@@ -91,9 +99,13 @@ class GameInitErrorDescription : public ErrorDescription<GameInitErrorCode> {
     using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
-    string describeErrorCause(GameInitErrorCode error_code) const override;
-    string describeErrorDetails(GameInitErrorCode error_code) const override;
-    string describeErrorSummary() const override;
+    std::string describeErrorCause(
+      GameInitErrorCode error_code
+    ) const override;
+    std::string describeErrorDetails(
+      GameInitErrorCode error_code
+    ) const override;
+    std::string describeErrorSummary() const override;
 };
 
 // Exception definitions.

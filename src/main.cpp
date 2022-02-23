@@ -11,9 +11,6 @@
 // User includes.
 #include "Game.hpp"
 
-// Namespace.
-using namespace std;
-
 // Enumeration definitions.
 enum MainFunctionStatusCode {
   MainFunctionSuccess,
@@ -22,14 +19,14 @@ enum MainFunctionStatusCode {
 
 // Main function.
 int main(int argc, char** argv) {
-  unique_ptr<Game> game;
+  std::unique_ptr<Game> game;
 
   try {
-    game = unique_ptr<Game>(&Game::getInstance());
+    game = std::unique_ptr<Game>(&Game::getInstance());
     game->run();
   }
   catch (GameInitException& e) {
-      cerr << "[Main] " << e.what();
+      std::cerr << "[Main] " << e.what();
       return MainFunctionStatusCode::GameInitError;
   }
 

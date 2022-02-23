@@ -18,22 +18,31 @@
 #include "templates/ErrorDescription.hpp"
 #include "templates/RuntimeException.hpp"
 
-// Namespace.
-using namespace std;
+// Declarations.
+class Music;
+enum OpenMusicErrorCode : unsigned short;
+class OpenMusicErrorDescription;
+class OpenMusicException;
+enum PlayMusicErrorCode : unsigned short;
+class PlayMusicErrorDescription;
+class PlayMusicException;
+enum StopMusicErrorCode : unsigned short;
+class StopMusicErrorDescription;
+class StopMusicException;
 
 // Enumeration definitions.
-enum OpenMusicErrorCode {
+enum OpenMusicErrorCode : unsigned short {
   LoadMusicError = 1
 };
 
-enum PlayMusicErrorCode {
+enum PlayMusicErrorCode : unsigned short {
   PlayUnopenedMusicError = 1,
   MusicAlreadyPlayingError,
   MixerInUseError,
   FailureToPlayMusicError
 };
 
-enum StopMusicErrorCode {
+enum StopMusicErrorCode : unsigned short {
   StopUnopenedMusicError = 1,
   MusicNotPlayedError,
   MixerNotInUseError,
@@ -41,7 +50,7 @@ enum StopMusicErrorCode {
 };
 
 // Type definitions.
-using MixMusicUniquePTR = unique_ptr<Mix_Music, decltype(&Mix_FreeMusic)>;
+using MixMusicUniquePTR = std::unique_ptr<Mix_Music, decltype(&Mix_FreeMusic)>;
 
 // Auxiliary class definitions.
 class OpenMusicErrorDescription : public ErrorDescription<OpenMusicErrorCode> {
@@ -52,9 +61,13 @@ class OpenMusicErrorDescription : public ErrorDescription<OpenMusicErrorCode> {
     using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
-    string describeErrorCause(OpenMusicErrorCode error_code) const override;
-    string describeErrorDetails(OpenMusicErrorCode error_code) const override;
-    string describeErrorSummary() const override;
+    std::string describeErrorCause(
+      OpenMusicErrorCode error_code
+    ) const override;
+    std::string describeErrorDetails(
+      OpenMusicErrorCode error_code
+    ) const override;
+    std::string describeErrorSummary() const override;
 };
 
 class PlayMusicErrorDescription : public ErrorDescription<PlayMusicErrorCode> {
@@ -65,9 +78,13 @@ class PlayMusicErrorDescription : public ErrorDescription<PlayMusicErrorCode> {
     using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
-    string describeErrorCause(PlayMusicErrorCode error_code) const override;
-    string describeErrorDetails(PlayMusicErrorCode error_code) const override;
-    string describeErrorSummary() const override;
+    std::string describeErrorCause(
+      PlayMusicErrorCode error_code
+    ) const override;
+    std::string describeErrorDetails(
+      PlayMusicErrorCode error_code
+    ) const override;
+    std::string describeErrorSummary() const override;
 };
 
 class StopMusicErrorDescription : public ErrorDescription<StopMusicErrorCode> {
@@ -78,9 +95,13 @@ class StopMusicErrorDescription : public ErrorDescription<StopMusicErrorCode> {
     using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
-    string describeErrorCause(StopMusicErrorCode error_code) const override;
-    string describeErrorDetails(StopMusicErrorCode error_code) const override;
-    string describeErrorSummary() const override;
+    std::string describeErrorCause(
+      StopMusicErrorCode error_code
+    ) const override;
+    std::string describeErrorDetails(
+      StopMusicErrorCode error_code
+    ) const override;
+    std::string describeErrorSummary() const override;
 };
 
 // Exception definitions.
@@ -121,12 +142,12 @@ class Music {
 
     // Class method prototypes.
     Music() = default;
-    Music(string file);
+    Music(std::string file);
 
     // Method prototypes.
     bool isOpen() const;
     bool isUsingMixer() const;
-    void open(string file);
+    void open(std::string file);
     void play(int repetitions = -1);
     void stop(unsigned int fade_out_duration_milliseconds = 1500);
 

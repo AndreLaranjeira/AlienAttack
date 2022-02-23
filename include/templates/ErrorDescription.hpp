@@ -10,8 +10,8 @@
 // Includes.
 #include <string>
 
-// Namespace.
-using namespace std;
+// Declarations.
+template <typename TErrorCode> class ErrorDescription;
 
 // Class definition.
 template <typename TErrorCode>
@@ -26,15 +26,15 @@ class ErrorDescription {
     TErrorCode getErrorCode() const;
 
     // Virtual method prototypes.
-    virtual string describeErrorCause(TErrorCode error_code) const = 0;
-    virtual string describeErrorDetails(TErrorCode error_code) const = 0;
-    virtual string describeErrorSummary() const = 0;
+    virtual std::string describeErrorCause(TErrorCode error_code) const = 0;
+    virtual std::string describeErrorDetails(TErrorCode error_code) const = 0;
+    virtual std::string describeErrorSummary() const = 0;
 
   // Protected components.
   protected:
 
     // Method prototypes.
-    string describeError(TErrorCode error_code) const;
+    std::string describeError(TErrorCode error_code) const;
 
   // Private components.
   private:
@@ -56,10 +56,10 @@ TErrorCode ErrorDescription<TErrorCode>::getErrorCode() const {
 
 // Protected method implementations.
 template <typename TErrorCode>
-string ErrorDescription<TErrorCode>::describeError(
+std::string ErrorDescription<TErrorCode>::describeError(
   TErrorCode error_code
 ) const {
-  string error_description;
+  std::string error_description;
 
   error_description = this->describeErrorSummary();
   error_description += " ";

@@ -10,8 +10,8 @@
 // User includes.
 #include "VectorR2.hpp"
 
-// Namespace.
-using namespace std;
+// Declarations.
+class Rectangle;
 
 // Class definition.
 class Rectangle {

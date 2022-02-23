@@ -16,15 +16,13 @@
 // User includes.
 #include "Rectangle.hpp"
 
-// Namespace.
-using namespace std;
-
-// Foward declarations.
+// Declarations.
 class Component;
 class GameObject;
 
 // Type definitions.
-using component_const_iter = vector<unique_ptr<Component>>::const_iterator;
+using component_const_iter = \
+  std::vector<std::unique_ptr<Component>>::const_iterator;
 
 // Auxiliary class definitions.
 class Component {
@@ -36,7 +34,7 @@ class Component {
     virtual ~Component() = default;
 
     // Virtual method prototypes.
-    virtual bool is(string type) const = 0;
+    virtual bool is(std::string type) const = 0;
     virtual void render() = 0;
     virtual void update(double dt) = 0;
 
@@ -54,7 +52,7 @@ class GameObject {
 
     // Method prototypes.
     void addComponent(Component* new_component);
-    Component* getComponent(string type);
+    Component* getComponent(std::string type);
     bool isDead() const;
     void removeComponent(Component* component_to_remove);
     void render();
@@ -68,11 +66,13 @@ class GameObject {
   private:
 
     // Members.
-    vector<unique_ptr<Component>> components;
+    std::vector<std::unique_ptr<Component>> components;
     bool is_dead = false;
 
     // Method prototypes.
-    component_const_iter searchComponentsByType(string search_parameter) const;
+    component_const_iter searchComponentsByType(
+      std::string search_parameter
+    ) const;
     component_const_iter searchComponentsByValue(
       Component* search_parameter
     ) const;

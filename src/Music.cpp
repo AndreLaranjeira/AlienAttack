@@ -7,7 +7,7 @@
 #include "Music.hpp"
 
 // Class method implementations.
-Music::Music(string file) {
+Music::Music(std::string file) {
   this->open(file);
 };
 
@@ -20,7 +20,7 @@ bool Music::isUsingMixer() const {
   return this->usingMixer;
 };
 
-void Music::open(string file) {
+void Music::open(std::string file) {
   this->music.reset(Mix_LoadMUS(file.c_str()));
 
   if(this->music.get() == nullptr)
@@ -55,10 +55,10 @@ void Music::stop(unsigned int fade_out_duration_milliseconds) {
     throw StopMusicException(StopMusicErrorCode::FailureToStopMusicError);
 };
 
-string OpenMusicErrorDescription::describeErrorCause(
+std::string OpenMusicErrorDescription::describeErrorCause(
   OpenMusicErrorCode error_code
 ) const {
-  string error_cause = string("This error was caused by ");
+  std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
     case LoadMusicError:
@@ -71,10 +71,10 @@ string OpenMusicErrorDescription::describeErrorCause(
   return error_cause;
 };
 
-string OpenMusicErrorDescription::describeErrorDetails(
+std::string OpenMusicErrorDescription::describeErrorDetails(
   OpenMusicErrorCode error_code
 ) const {
-  string error_details;
+  std::string error_details;
 
   switch (error_code) {
     default:
@@ -86,18 +86,18 @@ string OpenMusicErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-string OpenMusicErrorDescription::describeErrorSummary() const {
-  string error_summary = string(
+std::string OpenMusicErrorDescription::describeErrorSummary() const {
+  std::string error_summary = std::string(
     "OpenMusicError: An error occurred when opening a music track!"
   );
 
   return error_summary;
 };
 
-string PlayMusicErrorDescription::describeErrorCause(
+std::string PlayMusicErrorDescription::describeErrorCause(
   PlayMusicErrorCode error_code
 ) const {
-  string error_cause = string("This error was caused by ");
+  std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
     case PlayMusicErrorCode::PlayUnopenedMusicError:
@@ -121,10 +121,10 @@ string PlayMusicErrorDescription::describeErrorCause(
   return error_cause;
 };
 
-string PlayMusicErrorDescription::describeErrorDetails(
+std::string PlayMusicErrorDescription::describeErrorDetails(
   PlayMusicErrorCode error_code
 ) const {
-  string error_details;
+  std::string error_details;
 
   switch (error_code) {
     default:
@@ -136,18 +136,18 @@ string PlayMusicErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-string PlayMusicErrorDescription::describeErrorSummary() const {
-  string error_summary = string(
+std::string PlayMusicErrorDescription::describeErrorSummary() const {
+  std::string error_summary = std::string(
     "PlayMusicError: An error occurred when playing a music track!"
   );
 
   return error_summary;
 };
 
-string StopMusicErrorDescription::describeErrorCause(
+std::string StopMusicErrorDescription::describeErrorCause(
   StopMusicErrorCode error_code
 ) const {
-  string error_cause = string("This error was caused by ");
+  std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
     case StopMusicErrorCode::StopUnopenedMusicError:
@@ -170,10 +170,10 @@ string StopMusicErrorDescription::describeErrorCause(
   return error_cause;
 };
 
-string StopMusicErrorDescription::describeErrorDetails(
+std::string StopMusicErrorDescription::describeErrorDetails(
   StopMusicErrorCode error_code
 ) const {
-  string error_details;
+  std::string error_details;
 
   switch (error_code) {
     default:
@@ -185,8 +185,8 @@ string StopMusicErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-string StopMusicErrorDescription::describeErrorSummary() const {
-  string error_summary = string(
+std::string StopMusicErrorDescription::describeErrorSummary() const {
+  std::string error_summary = std::string(
     "StopMusicError: An error occurred when stopping a music track!"
   );
 

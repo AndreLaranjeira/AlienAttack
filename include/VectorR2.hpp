@@ -10,8 +10,8 @@
 // Includes.
 #include <cmath>
 
-// Namespace.
-using namespace std;
+// Declarations.
+class VectorR2;
 
 // Class definition.
 class VectorR2 {
