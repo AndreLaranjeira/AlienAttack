@@ -17,7 +17,7 @@ TPL_EXT = hpp
 
 # Project components.
 MAIN = main
-CLASSES = Component Game GameObject Music Rectangle Sprite State VectorR2
+CLASSES = Game GameObject Music Rectangle Sprite State VectorR2
 TEMPLATES = ErrorDescription RuntimeException
 
 # Compiler name, source file extension and compilation data (flags and libs).
