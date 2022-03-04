@@ -7,7 +7,15 @@
 #include "Sprite.hpp"
 
 // Class method implementations.
-Sprite::Sprite(SDL_Renderer* renderer, std::string file) {
+Sprite::Sprite(
+  GameObject& associated
+) : Component(associated, ComponentType::SpriteComponent) {};
+
+Sprite::Sprite(
+  GameObject& associated,
+  SDL_Renderer* renderer,
+  std::string file
+) : Component(associated, ComponentType::SpriteComponent) {
   this->open(renderer, file);
 };
 
@@ -33,10 +41,10 @@ void Sprite::open(SDL_Renderer* renderer, std::string file) {
   }
 };
 
-void Sprite::render(SDL_Renderer* renderer, int x_pos, int y_pos) {
+void Sprite::render(SDL_Renderer* renderer) {
   SDL_Rect destination_rect = {
-    .x = x_pos,
-    .y = y_pos,
+    .x = (int) this->associated.box.upper_left_corner.x,
+    .y = (int) this->associated.box.upper_left_corner.y,
     .w = this->clip_rect.w,
     .h = this->clip_rect.h
   };
@@ -55,6 +63,8 @@ void Sprite::setClip(int x_pos, int y_pos, int width, int height) {
   this->clip_rect.w = width;
   this->clip_rect.h = height;
 };
+
+void Sprite::update(double dt) {};
 
 std::string LoadAndConfigSpriteErrorDescription::describeErrorCause(
   LoadAndConfigSpriteErrorCode error_code
@@ -113,6 +123,10 @@ int Sprite::configSpriteWithTextureSpecs() {
     ) == 0
   ) {
     this->setClip(0, 0, this->width, this->height);
+    this->associated.setDimensions(
+      (double) this->width,
+      (double) this->height
+    );
     return 0;
   }
   else 

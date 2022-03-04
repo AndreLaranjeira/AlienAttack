@@ -10,15 +10,25 @@
 // Includes.
 #include <algorithm>
 #include <memory>
-#include <string>
 #include <vector>
+
+// SDL2 includes.
+#include <SDL2/SDL_render.h>
 
 // User includes.
 #include "Rectangle.hpp"
 
 // Declarations.
 class Component;
+enum ComponentType : short;
 class GameObject;
+
+// Enumeration definitions.
+enum ComponentType : short {
+  FaceComponent,
+  SoundComponent,
+  SpriteComponent
+};
 
 // Type definitions.
 using component_const_iter = \
@@ -30,12 +40,14 @@ class Component {
   public:
 
     // Class method prototypes.
-    Component(GameObject& associated);
+    Component(GameObject& associated, ComponentType type);
     virtual ~Component() = default;
 
+    // Method prototypes.
+    bool is(ComponentType type) const;
+    
     // Virtual method prototypes.
-    virtual bool is(std::string type) const = 0;
-    virtual void render() = 0;
+    virtual void render(SDL_Renderer* renderer) = 0;
     virtual void update(double dt) = 0;
 
   // Protected components.
@@ -43,6 +55,12 @@ class Component {
 
     // Members.
     GameObject& associated;
+
+  // Private components.
+  private:
+
+    // Members.
+    ComponentType type;
 };
 
 // Class definition.
@@ -52,11 +70,12 @@ class GameObject {
 
     // Method prototypes.
     void addComponent(Component* new_component);
-    Component* getComponent(std::string type);
+    Component* getComponent(ComponentType type);
     bool isDead() const;
     void removeComponent(Component* component_to_remove);
-    void render();
+    void render(SDL_Renderer* renderer);
     void requestDelete();
+    void setDimensions(double width, double height);
     void update(double dt);
     
     // Members.
@@ -71,7 +90,7 @@ class GameObject {
 
     // Method prototypes.
     component_const_iter searchComponentsByType(
-      std::string search_parameter
+      ComponentType search_parameter
     ) const;
     component_const_iter searchComponentsByValue(
       Component* search_parameter

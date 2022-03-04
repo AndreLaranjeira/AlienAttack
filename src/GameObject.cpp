@@ -7,14 +7,20 @@
 #include "GameObject.hpp"
 
 // Class method implementations.
-Component::Component(GameObject& associated) : associated(associated) {};
+Component::Component(GameObject& associated, ComponentType type) :
+  associated(associated),
+  type(type) {};
 
 // Public method implementations.
-void GameObject::addComponent(Component* new_component) {
-  this->components.push_back(std::unique_ptr<Component>(new_component));
+bool Component::is(ComponentType type) const {
+  return this->type == type;
 };
 
-Component* GameObject::getComponent(std::string type) {
+void GameObject::addComponent(Component* new_component) {
+  this->components.emplace_back(std::unique_ptr<Component>(new_component));
+};
+
+Component* GameObject::getComponent(ComponentType type) {
   component_const_iter result = this->searchComponentsByType(type);
 
   return result != this->components.end() ?
@@ -35,13 +41,18 @@ void GameObject::removeComponent(Component* removal_target) {
     this->components.erase(removal_position);
 };
 
-void GameObject::render() {
+void GameObject::render(SDL_Renderer* renderer) {
   for(auto& component : this->components)
-    component->render();
+    component->render(renderer);
 };
 
 void GameObject::requestDelete() {
   this->is_dead = true;
+};
+
+void GameObject::setDimensions(double width, double height) {
+  this->box.width = width;
+  this->box.height = height;
 };
 
 void GameObject::update(double dt) {
@@ -51,7 +62,7 @@ void GameObject::update(double dt) {
 
 // Private method implementations.
 component_const_iter GameObject::searchComponentsByType(
-  std::string search_parameter
+  ComponentType search_parameter
 ) const {
   auto component_type_matches_search_parameter = [&search_parameter](
     const std::unique_ptr<Component>& component

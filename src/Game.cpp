@@ -201,7 +201,7 @@ SDLConfig Game::generateDefaultSDLConfig(GameParams game_params) const {
       .frequency = MIX_DEFAULT_FREQUENCY,
       .format = MIX_DEFAULT_FORMAT,
       .output_channels = MIX_DEFAULT_CHANNELS,
-      .chunksize = 1024,
+      .chunksize = 1024
     },
     .mixer_channels = 32,
     .window_params = {

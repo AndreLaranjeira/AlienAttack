@@ -17,6 +17,9 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 
+// User includes.
+#include "GameObject.hpp"
+
 // Template includes.
 #include "templates/ErrorDescription.hpp"
 #include "templates/RuntimeException.hpp"
@@ -71,21 +74,22 @@ class LoadAndConfigSpriteException :
 };
 
 // Class definition.
-class Sprite {
+class Sprite : public Component {
   // Public components.
   public:
 
     // Class method prototypes.
-    Sprite() = default;
-    Sprite(SDL_Renderer* renderer, std::string file);
+    Sprite(GameObject& associated);
+    Sprite(GameObject& associated, SDL_Renderer* renderer, std::string file);
 
     // Method prototypes.
     int getHeight() const;
     int getWidth() const;
     bool isOpen() const;
     void open(SDL_Renderer* renderer, std::string file);
-    void render(SDL_Renderer* renderer, int x_pos, int y_pos);
+    void render(SDL_Renderer* renderer) override;
     void setClip(int x_pos, int y_pos, int width, int height);
+    void update(double dt) override;
 
   // Private components.
   private:
