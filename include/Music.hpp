@@ -148,7 +148,7 @@ class Music {
     bool isOpen() const;
     bool isUsingMixer() const;
     void open(std::string file);
-    void play(int repetitions = -1);
+    void play(int times = -1);
     void stop(unsigned int fade_out_duration_milliseconds = 1500);
 
   // Private components.
@@ -160,7 +160,7 @@ class Music {
 
     // Method prototypes.
     bool mixerInUse() const;
-    int playCurrentMusicWithMixer(int repetitions);
+    int playCurrentMusicWithMixer(int times);
     int stopCurrentMusicWithMixer(unsigned int fade_out_duration_milliseconds);
 };
 

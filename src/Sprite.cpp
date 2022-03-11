@@ -15,7 +15,7 @@ Sprite::Sprite(
   GameObject& associated,
   SDL_Renderer* renderer,
   std::string file
-) : Component(associated, ComponentType::SpriteComponent) {
+) : Sprite(associated) {
   this->open(renderer, file);
 };
 

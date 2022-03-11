@@ -27,7 +27,7 @@ void Music::open(std::string file) {
     throw OpenMusicException(OpenMusicErrorCode::LoadMusicError);
 };
 
-void Music::play(int repetitions) {
+void Music::play(int times) {
   if(!this->isOpen())
     throw PlayMusicException(PlayMusicErrorCode::PlayUnopenedMusicError);
 
@@ -37,7 +37,7 @@ void Music::play(int repetitions) {
   else if(this->mixerInUse())
     throw PlayMusicException(PlayMusicErrorCode::MixerInUseError);
 
-  else if(this->playCurrentMusicWithMixer(repetitions) != 0)
+  else if(this->playCurrentMusicWithMixer(times) != 0)
     throw PlayMusicException(PlayMusicErrorCode::FailureToPlayMusicError);
 };
 
@@ -198,8 +198,8 @@ bool Music::mixerInUse() const {
   return (Mix_PlayingMusic() && Mix_FadingMusic() != MIX_FADING_OUT);
 };
 
-int Music::playCurrentMusicWithMixer(int repetitions) {
-  if(Mix_PlayMusic(this->music.get(), repetitions) != 0)
+int Music::playCurrentMusicWithMixer(int times) {
+  if(Mix_PlayMusic(this->music.get(), times) != 0)
     return -1;
 
   this->usingMixer = true;
