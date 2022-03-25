@@ -8,6 +8,8 @@
 #define GAME_H_
 
 // Includes.
+#include <cstddef>
+#include <ctime>
 #include <exception>
 #include <iostream>
 #include <string>
@@ -35,10 +37,18 @@ enum GameInitErrorCode : unsigned short;
 class GameInitErrorDescription;
 class GameInitException;
 struct GameParams;
+enum GameRunErrorCode : unsigned short;
+class GameRunErrorDescription;
+class GameRunException;
 struct SDLAudioParams;
 struct SDLConfig;
 struct SDLRendererParams;
 struct SDLWindowParams;
+
+// Macros.
+#define GAME_WINDOW_TITLE "AlienAttack"
+#define GAME_WINDOW_HEIGHT 600
+#define GAME_WINDOW_WIDTH 1024
 
 // Enumeration definitions.
 enum GameInitErrorCode : unsigned short {
@@ -50,6 +60,11 @@ enum GameInitErrorCode : unsigned short {
   SDLWindowError,
   SDLRendererError,
   GameStateError
+};
+
+enum GameRunErrorCode : unsigned short {
+  StateUpdateError,
+  StateRenderAndPresentError
 };
 
 // Type definitions.
@@ -108,9 +123,36 @@ class GameInitErrorDescription : public ErrorDescription<GameInitErrorCode> {
     std::string describeErrorSummary() const override;
 };
 
+class GameRunErrorDescription : public ErrorDescription<GameRunErrorCode> {
+  // Public components.
+  public:
+
+    // Inherited methods.
+    using ErrorDescription::ErrorDescription;
+
+    // Method prototypes.
+    std::string describeErrorCause(
+      GameRunErrorCode error_code
+    ) const override;
+    std::string describeErrorDetails(
+      GameRunErrorCode error_code
+    ) const override;
+    std::string describeErrorSummary() const override;
+};
+
 // Exception definitions.
 class GameInitException :
   public RuntimeException<GameInitErrorCode, GameInitErrorDescription>
+{
+  // Public components.
+  public:
+
+    // Inherited methods.
+    using RuntimeException::RuntimeException;
+};
+
+class GameRunException :
+  public RuntimeException<GameRunErrorCode, GameRunErrorDescription>
 {
   // Public components.
   public:
@@ -159,8 +201,9 @@ class Game {
     void cleanUpGameState();
     void cleanUpGameWindow();
     void cleanUpSDLModules();
-    SDLConfig generateDefaultSDLConfig(GameParams game_params) const;
+    SDLConfig defaultSDLConfig(GameParams game_params) const;
     void initGame(SDLConfig SDL_module_params);
+    void initRandomNumberGeneration();
     int initGameState();
     int initSDL(Uint32 flags);
     int initSDLAudio(SDLAudioParams audio_params, int audio_channels);
@@ -168,7 +211,7 @@ class Game {
     int initSDLMix(int flags);
     int initSDLRenderer(SDLRendererParams renderer_params);
     int initSDLWindow(SDLWindowParams window_params);
-    void renderAndPresentGameState(SDL_Renderer* renderer);
+    void renderAndPresentGameState();
     bool shouldKeepRunning() const;
     void updateGameState();
     int verifySingletonProperty() const;

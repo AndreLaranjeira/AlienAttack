@@ -20,6 +20,9 @@
 // Declarations.
 class Face;
 
+// Macros.
+#define DEFAULT_HITPOINTS 100
+
 // Class definition.
 class Face : public Component {
   // Public components.
@@ -37,12 +40,12 @@ class Face : public Component {
   private:
 
     // Members
-    unsigned int hitpoints = 100;
+    unsigned int hitpoints = DEFAULT_HITPOINTS;
 
     // Method prototypes.
     bool isDead() const;
-    void handleDeath();
-    void playDeathSound();
+    void handleAssociatedGameObjectDeath();
+    void playAssociatedGameObjectDeathSound();
     void subtractDamageFromHitpoints(unsigned int damage);
 };
 

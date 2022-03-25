@@ -25,13 +25,13 @@
 #include "templates/RuntimeException.hpp"
 
 // Declarations.
-enum LoadAndConfigSpriteErrorCode : unsigned short;
-class LoadAndConfigSpriteErrorDescription;
-class LoadAndConfigSpriteException;
+enum OpenSpriteErrorCode : unsigned short;
+class OpenSpriteErrorDescription;
+class OpenSpriteException;
 class Sprite;
 
 // Enumeration definitions.
-enum LoadAndConfigSpriteErrorCode : unsigned short {
+enum OpenSpriteErrorCode : unsigned short {
   LoadSpriteTextureError = 1,
   ConfigureSpriteError
 };
@@ -41,8 +41,8 @@ using SDLTextureUniquePTR = \
   std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
 
 // Auxiliary class definitions.
-class LoadAndConfigSpriteErrorDescription :
-  public ErrorDescription<LoadAndConfigSpriteErrorCode>
+class OpenSpriteErrorDescription :
+  public ErrorDescription<OpenSpriteErrorCode>
 {
   // Public components.
   public:
@@ -52,20 +52,18 @@ class LoadAndConfigSpriteErrorDescription :
 
     // Method prototypes.
     std::string describeErrorCause(
-      LoadAndConfigSpriteErrorCode error_code
+      OpenSpriteErrorCode error_code
     ) const override;
     std::string describeErrorDetails(
-      LoadAndConfigSpriteErrorCode error_code
+      OpenSpriteErrorCode error_code
     ) const override;
     std::string describeErrorSummary() const override;
 };
 
 // Exception definitions.
-class LoadAndConfigSpriteException :
-  public RuntimeException<
-    LoadAndConfigSpriteErrorCode,
-    LoadAndConfigSpriteErrorDescription
-  > {
+class OpenSpriteException :
+  public RuntimeException<OpenSpriteErrorCode, OpenSpriteErrorDescription>
+{
   // Public components.
   public:
 
@@ -105,7 +103,6 @@ class Sprite : public Component {
 
     // Method prototypes.
     int configSpriteWithTextureSpecs();
-    void loadAndConfigSprite(SDL_Renderer* renderer, std::string file);
     int loadSpriteTexture(SDL_Renderer* renderer, std::string file);
 };
 

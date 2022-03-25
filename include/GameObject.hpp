@@ -9,6 +9,7 @@
 
 // Includes.
 #include <algorithm>
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -17,11 +18,13 @@
 
 // User includes.
 #include "Rectangle.hpp"
+#include "VectorR2.hpp"
 
 // Declarations.
 class Component;
 enum ComponentType : short;
 class GameObject;
+enum GameObjectState : short;
 
 // Enumeration definitions.
 enum ComponentType : short {
@@ -30,9 +33,21 @@ enum ComponentType : short {
   SpriteComponent
 };
 
+enum GameObjectState : short {
+  AliveState,
+  DeadState,
+  DeletionState
+};
+
 // Type definitions.
 using component_const_iter = \
   std::vector<std::unique_ptr<Component>>::const_iterator;
+using game_object_const_iter = \
+  std::vector<std::unique_ptr<GameObject>>::const_iterator;
+using game_object_iter = \
+  std::vector<std::unique_ptr<GameObject>>::iterator;  
+using game_object_reverse_iter = \
+  std::vector<std::unique_ptr<GameObject>>::reverse_iterator;
 
 // Auxiliary class definitions.
 class Component {
@@ -44,6 +59,7 @@ class Component {
     virtual ~Component() = default;
 
     // Method prototypes.
+    void attachToAssociatedGameObject();
     bool is(ComponentType type) const;
     
     // Virtual method prototypes.
@@ -70,11 +86,17 @@ class GameObject {
 
     // Method prototypes.
     void addComponent(Component* new_component);
+    bool deletionWasRequested() const;
     Component* getComponent(ComponentType type);
-    bool isDead() const;
+    GameObjectState getState() const;
+    bool hasComponentType(ComponentType type) const;
+    bool isAlive() const;
     void removeComponent(Component* component_to_remove);
+    void removeComponent(ComponentType removal_target_type);
     void render(SDL_Renderer* renderer);
-    void requestDelete();
+    void requestDeletion();
+    void resolveDeath();
+    void setCenterCoordinates(const VectorR2& center_coordinates);
     void setDimensions(double width, double height);
     void update(double dt);
     
@@ -86,7 +108,7 @@ class GameObject {
 
     // Members.
     std::vector<std::unique_ptr<Component>> components;
-    bool is_dead = false;
+    GameObjectState state = AliveState;
 
     // Method prototypes.
     component_const_iter searchComponentsByType(

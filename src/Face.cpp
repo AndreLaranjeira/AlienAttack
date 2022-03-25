@@ -5,19 +5,20 @@
 
 // Class header include.
 #include "Face.hpp"
-#include "Sound.hpp"
 
 // Class method implementations.
 Face::Face(
   GameObject& associated
-) : Component(associated, ComponentType::FaceComponent) {};
+) : Component(associated, ComponentType::FaceComponent) {
+  this->attachToAssociatedGameObject();
+};
 
 // Public method implementations.
 void Face::registerDamage(unsigned int damage) {
   this->subtractDamageFromHitpoints(damage);
 
   if(this->isDead())
-    this->handleDeath();
+    this->handleAssociatedGameObjectDeath();
 };
 
 void Face::render(SDL_Renderer* renderer) {};
@@ -25,23 +26,23 @@ void Face::render(SDL_Renderer* renderer) {};
 void Face::update(double dt) {};
 
 // Private method implementations.
-void Face::handleDeath() {
-  this->playDeathSound();
-  this->associated.requestDelete();
+void Face::handleAssociatedGameObjectDeath() {
+  this->playAssociatedGameObjectDeathSound();
+  this->associated.resolveDeath();
 };
 
 bool Face::isDead() const {
   return this->hitpoints == 0;
 };
 
-void Face::playDeathSound() {
+void Face::playAssociatedGameObjectDeathSound() {
   Sound* associated_sound_component;
 
   associated_sound_component = static_cast<Sound*>(
     this->associated.getComponent(ComponentType::SoundComponent)
   );
 
-  if(associated_sound_component != nullptr) {
+  if(associated_sound_component != nullptr) {    
     try {
       associated_sound_component->play();
     }

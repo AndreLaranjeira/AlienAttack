@@ -12,12 +12,20 @@ Component::Component(GameObject& associated, ComponentType type) :
   type(type) {};
 
 // Public method implementations.
+void Component::attachToAssociatedGameObject() {
+  associated.addComponent(this);
+};
+
 bool Component::is(ComponentType type) const {
   return this->type == type;
 };
 
 void GameObject::addComponent(Component* new_component) {
   this->components.emplace_back(std::unique_ptr<Component>(new_component));
+};
+
+bool GameObject::deletionWasRequested() const {
+  return this->state == DeletionState;
 };
 
 Component* GameObject::getComponent(ComponentType type) {
@@ -28,8 +36,16 @@ Component* GameObject::getComponent(ComponentType type) {
     nullptr;
 };
 
-bool GameObject::isDead() const {
-  return this->is_dead;
+GameObjectState GameObject::getState() const {
+  return this->state;
+};
+
+bool GameObject::hasComponentType(ComponentType type) const {
+  return this->searchComponentsByType(type) != this->components.end();
+};
+
+bool GameObject::isAlive() const {
+  return this->state == AliveState;
 };
 
 void GameObject::removeComponent(Component* removal_target) {
@@ -41,13 +57,34 @@ void GameObject::removeComponent(Component* removal_target) {
     this->components.erase(removal_position);
 };
 
+void GameObject::removeComponent(ComponentType removal_target_type) {
+  if(this->hasComponentType(removal_target_type))
+    this->removeComponent(this->getComponent(removal_target_type));  
+};
+
 void GameObject::render(SDL_Renderer* renderer) {
   for(auto& component : this->components)
     component->render(renderer);
 };
 
-void GameObject::requestDelete() {
-  this->is_dead = true;
+void GameObject::requestDeletion() {
+  this->state = DeletionState;
+};
+
+void GameObject::resolveDeath() {
+  this->state = DeadState;
+  this->removeComponent(ComponentType::FaceComponent);
+  this->removeComponent(ComponentType::SpriteComponent);
+};
+
+void GameObject::setCenterCoordinates(const VectorR2& center_coordinates) {
+  VectorR2 distance_from_upper_left_corner_to_center = VectorR2(
+    this->box.width,
+    this->box.height
+  );
+
+  this->box.upper_left_corner = \
+    center_coordinates - distance_from_upper_left_corner_to_center;
 };
 
 void GameObject::setDimensions(double width, double height) {

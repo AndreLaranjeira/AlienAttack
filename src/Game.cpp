@@ -11,7 +11,7 @@ Game* Game::instance = nullptr;
 
 // Class method implementations.
 Game::Game(GameParams game_params) {
-  SDLConfig game_SDL_config = this->generateDefaultSDLConfig(game_params);
+  SDLConfig game_SDL_config = this->defaultSDLConfig(game_params);
 
   try {
     this->initGame(game_SDL_config);
@@ -32,19 +32,13 @@ Game::~Game() {
 // Public method implementations.
 Game& Game::getInstance() {
   GameParams game_params = {
-    .title = "AlienAttack",
-    .width = 1024,
-    .height = 600
+    .title = GAME_WINDOW_TITLE,
+    .width = GAME_WINDOW_WIDTH,
+    .height = GAME_WINDOW_HEIGHT
   };
 
-  if(Game::instance == nullptr) {
-    try {
-      Game::instance = new Game(game_params);
-    }
-    catch(std::exception& e) {
-      throw;
-    }
-  }
+  if(Game::instance == nullptr)
+    Game::instance = new Game(game_params);
 
   return *Game::instance;
 };
@@ -60,7 +54,7 @@ State& Game::getState() const {
 void Game::run() {
   while (this->shouldKeepRunning()) {
     this->updateGameState();
-    this->renderAndPresentGameState(this->renderer);
+    this->renderAndPresentGameState();
     this->waitTimeIntervalBetweenFrames();
   }
 };
@@ -137,6 +131,49 @@ std::string GameInitErrorDescription::describeErrorSummary() const {
   return error_summary;
 };
 
+std::string GameRunErrorDescription::describeErrorCause(
+  GameRunErrorCode error_code
+) const {
+  std::string error_cause = std::string("This error was caused by ");
+  
+  switch (error_code) {
+    case GameRunErrorCode::StateUpdateError:
+      error_cause += "a failure to update the internal Game State";
+      break;
+    case GameRunErrorCode::StateRenderAndPresentError:
+      error_cause += "a failure to render and present the internal Game State";
+      break;
+  }
+
+  error_cause += ".";
+
+  return error_cause;
+};
+
+std::string GameRunErrorDescription::describeErrorDetails(
+  GameRunErrorCode error_code
+) const {
+  std::string error_details;
+
+  switch (error_code) {
+    default:
+      error_details += "The Game State threw an exception";
+      break;
+  }
+
+  error_details += ".";
+
+  return error_details;
+};
+
+std::string GameRunErrorDescription::describeErrorSummary() const {
+  std::string error_summary = std::string(
+    "GameRunError: An error occurred when running the Game!"
+  );
+
+  return error_summary;
+};
+
 // Private method implementations.
 void Game::cleanUpFailedGameInit(GameInitErrorCode error_code) {
   switch (error_code) {
@@ -192,7 +229,7 @@ void Game::cleanUpSDLModules() {
   SDL_Quit();
 };
 
-SDLConfig Game::generateDefaultSDLConfig(GameParams game_params) const {
+SDLConfig Game::defaultSDLConfig(GameParams game_params) const {
   return {
     .SDL_flags =  SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_VIDEO,
     .image_flags = IMG_INIT_JPG | IMG_INIT_PNG,
@@ -245,6 +282,8 @@ void Game::initGame(SDLConfig SDL_config) {
 
   if(this->initGameState() != 0)
     throw GameInitException(GameInitErrorCode::GameStateError);
+
+  this->initRandomNumberGeneration(); 
 };
 
 int Game::initGameState() {
@@ -257,6 +296,10 @@ int Game::initGameState() {
   }
 
   return 0;
+};
+
+void Game::initRandomNumberGeneration() {
+  srand(time(nullptr));
 };
 
 int Game::initSDL(Uint32 SDL_flags) {
@@ -325,10 +368,14 @@ int Game::initSDLWindow(SDLWindowParams window_params) {
     return -1;
 };
 
-void Game::renderAndPresentGameState(SDL_Renderer* state_renderer) {
-  SDL_RenderClear(state_renderer);
-  this->state->render(state_renderer);
-  SDL_RenderPresent(state_renderer);
+void Game::renderAndPresentGameState() {
+  try {
+    this->state->renderAndPresent();
+  }
+  catch(std::exception& e) {
+    std::cerr << "[Game] " << e.what();
+    throw GameRunException(GameRunErrorCode::StateRenderAndPresentError);
+  }
 };
 
 bool Game::shouldKeepRunning() const {
@@ -336,7 +383,13 @@ bool Game::shouldKeepRunning() const {
 };
 
 void Game::updateGameState() {
-  this->state->update(0);
+  try {
+    this->state->update(0);
+  }
+  catch(std::exception& e) {
+    std::cerr << "[Game] " << e.what();
+    throw GameRunException(GameRunErrorCode::StateUpdateError);
+  }
 };
 
 int Game::verifySingletonProperty() const {

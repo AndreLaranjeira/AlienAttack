@@ -9,17 +9,64 @@
 // Class method implementations.
 Sprite::Sprite(
   GameObject& associated
-) : Component(associated, ComponentType::SpriteComponent) {};
+) : Component(associated, ComponentType::SpriteComponent) {
+  this->attachToAssociatedGameObject();
+};
 
 Sprite::Sprite(
   GameObject& associated,
   SDL_Renderer* renderer,
   std::string file
-) : Sprite(associated) {
+) : Component(associated, ComponentType::SpriteComponent) {
   this->open(renderer, file);
+  this->attachToAssociatedGameObject();
 };
 
 // Public method implementations.
+std::string OpenSpriteErrorDescription::describeErrorCause(
+  OpenSpriteErrorCode error_code
+) const {
+  std::string error_cause = std::string("This error was caused by ");
+  
+  switch (error_code) {
+    case OpenSpriteErrorCode::LoadSpriteTextureError:
+      error_cause += "attempting to load a sprite's texture from the file "
+        "system";
+      break;
+    case OpenSpriteErrorCode::ConfigureSpriteError:
+      error_cause += "attempting to configure the sprite using the texture "
+        "information";
+      break;
+  }
+
+  error_cause += ".";
+
+  return error_cause;
+};
+
+std::string OpenSpriteErrorDescription::describeErrorDetails(
+  OpenSpriteErrorCode error_code
+) const {
+  std::string error_details;
+
+  switch (error_code) {
+    default:
+      error_details += SDL_GetError();
+  }
+
+  error_details += ".";
+
+  return error_details;
+};
+
+std::string OpenSpriteErrorDescription::describeErrorSummary() const {
+  std::string error_summary = std::string(
+    "OpenSpriteError: An error occurred when opening a sprite!"
+  );
+
+  return error_summary;
+};
+
 int Sprite::getHeight() const {
   return this->height;
 };
@@ -33,12 +80,11 @@ bool Sprite::isOpen() const {
 };
 
 void Sprite::open(SDL_Renderer* renderer, std::string file) {
-  try {
-    this->loadAndConfigSprite(renderer, file);
-  }
-  catch(LoadAndConfigSpriteException& load_and_config_sprite_exception) {
-    throw;
-  }
+  if(loadSpriteTexture(renderer, file) != 0)
+    throw OpenSpriteException(OpenSpriteErrorCode::LoadSpriteTextureError);
+  
+  if(configSpriteWithTextureSpecs() != 0)
+    throw OpenSpriteException(OpenSpriteErrorCode::ConfigureSpriteError);
 };
 
 void Sprite::render(SDL_Renderer* renderer) {
@@ -65,51 +111,6 @@ void Sprite::setClip(int x_pos, int y_pos, int width, int height) {
 };
 
 void Sprite::update(double dt) {};
-
-std::string LoadAndConfigSpriteErrorDescription::describeErrorCause(
-  LoadAndConfigSpriteErrorCode error_code
-) const {
-  std::string error_cause = std::string("This error was caused by ");
-  
-  switch (error_code) {
-    case LoadAndConfigSpriteErrorCode::LoadSpriteTextureError:
-      error_cause += "attempting to load a sprite's texture from the file "
-        "system";
-      break;
-    case LoadAndConfigSpriteErrorCode::ConfigureSpriteError:
-      error_cause += "attempting to configure the sprite using the texture "
-        "information";
-      break;
-  }
-
-  error_cause += ".";
-
-  return error_cause;
-};
-
-std::string LoadAndConfigSpriteErrorDescription::describeErrorDetails(
-  LoadAndConfigSpriteErrorCode error_code
-) const {
-  std::string error_details;
-
-  switch (error_code) {
-    default:
-      error_details += SDL_GetError();
-  }
-
-  error_details += ".";
-
-  return error_details;
-};
-
-std::string LoadAndConfigSpriteErrorDescription::describeErrorSummary() const {
-  std::string error_summary = std::string(
-    "LoadAndConfigSpriteError: An error occurred when loading and configuring " 
-    "a sprite!"
-  );
-
-  return error_summary;
-};
 
 // Private method implementations.
 int Sprite::configSpriteWithTextureSpecs() {
@@ -141,19 +142,4 @@ int Sprite::loadSpriteTexture(SDL_Renderer* renderer, std::string file) {
 
   else
     return -1;
-};
-
-void Sprite::loadAndConfigSprite(
-  SDL_Renderer* renderer,
-  std::string file
-) {
-  if(loadSpriteTexture(renderer, file) != 0)
-    throw LoadAndConfigSpriteException(
-      LoadAndConfigSpriteErrorCode::LoadSpriteTextureError
-    );
-  
-  if(configSpriteWithTextureSpecs() != 0)
-    throw LoadAndConfigSpriteException(
-      LoadAndConfigSpriteErrorCode::ConfigureSpriteError
-    );
 };

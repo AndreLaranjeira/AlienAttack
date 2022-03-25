@@ -144,6 +144,7 @@ class Sound : public Component {
     ~Sound();
 
     // Method prototypes.
+    bool finishedPlaying() const;
     bool hasReservedChannel() const;
     bool isOpen() const;
     void open(std::string file);
@@ -163,7 +164,6 @@ class Sound : public Component {
 
     // Members.
     int channel = -1;
-    bool has_reserved_channel = false;
     Mix_Chunk* sound = nullptr;
 
     // Method prototypes.
@@ -173,6 +173,7 @@ class Sound : public Component {
     bool reservedChannelHasNotBeenReassigned() const;
     bool reservedChannelIsInUse() const;
     bool soundIsPlaying() const;
+    bool startedPlaying() const;
     void stopSoundCurrentlyPlaying();
     void stopSoundOnReservedChannel();
 };

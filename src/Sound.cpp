@@ -9,13 +9,16 @@
 // Class method implementations.
 Sound::Sound(
   GameObject& associated
-) : Component(associated, ComponentType::SoundComponent) {};
+) : Component(associated, ComponentType::SoundComponent) {
+  this->attachToAssociatedGameObject();
+};
 
 Sound::Sound(
   GameObject& associated,
   std::string file
-) : Sound(associated) {
+) : Component(associated, ComponentType::SoundComponent) {
   this->open(file);
+  this->attachToAssociatedGameObject();
 };
 
 Sound::~Sound() {
@@ -109,8 +112,15 @@ std::string PlaySoundErrorDescription::describeErrorSummary() const {
   return error_summary;
 };
 
+bool Sound::finishedPlaying() const {
+  return (
+    this->startedPlaying() &&
+    !this->soundIsPlaying()
+  );
+};
+
 bool Sound::hasReservedChannel() const {
-  return this->has_reserved_channel;
+  return this->channel != -1;
 };
 
 bool Sound::isOpen() const {
@@ -213,7 +223,7 @@ int Sound::loadSoundFile(std::string file) {
 
 int Sound::playCurrentSoundWithMixer(int loops_after_first_time_played) {
   int auto_assign_channel = -1, assigned_channel;
-  
+
   assigned_channel = Mix_PlayChannel(
     auto_assign_channel,
     this->sound,
@@ -229,7 +239,6 @@ int Sound::playCurrentSoundWithMixer(int loops_after_first_time_played) {
 
 bool Sound::reservedChannelHasNotBeenReassigned() const {
   return (
-    this->isOpen() &&
     this->hasReservedChannel() &&
     Mix_GetChunk(this->channel) == this->sound
   );
@@ -241,10 +250,16 @@ bool Sound::reservedChannelIsInUse() const {
 
 bool Sound::soundIsPlaying() const {
   return (
-    this->isOpen() &&
-    this->hasReservedChannel() &&
+    this->startedPlaying() &&
     this->reservedChannelIsInUse() &&
     this->reservedChannelHasNotBeenReassigned()
+  );
+};
+
+bool Sound::startedPlaying() const {
+  return (
+    this->isOpen() &&
+    this->hasReservedChannel()
   );
 };
 
@@ -256,5 +271,4 @@ void Sound::stopSoundCurrentlyPlaying() {
 void Sound::stopSoundOnReservedChannel() {
   Mix_HaltChannel(this->channel);
   this->channel = -1;
-  this->has_reserved_channel = false;
 };
