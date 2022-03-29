@@ -21,7 +21,7 @@ Sound::Sound(
   this->attachToAssociatedGameObject();
 };
 
-Sound::~Sound() {
+Sound::~Sound() noexcept {
   this->stopSoundCurrentlyPlaying();
   this->cleanUpCurrentSound();
 }
@@ -29,7 +29,7 @@ Sound::~Sound() {
 // Public method implementations.
 std::string OpenSoundErrorDescription::describeErrorCause(
   OpenSoundErrorCode error_code
-) const {
+) const noexcept {
   std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
@@ -45,7 +45,7 @@ std::string OpenSoundErrorDescription::describeErrorCause(
 
 std::string OpenSoundErrorDescription::describeErrorDetails(
   OpenSoundErrorCode error_code
-) const {
+) const noexcept {
   std::string error_details;
 
   switch (error_code) {
@@ -58,7 +58,7 @@ std::string OpenSoundErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-std::string OpenSoundErrorDescription::describeErrorSummary() const {
+std::string OpenSoundErrorDescription::describeErrorSummary() const noexcept {
   std::string error_summary = std::string(
     "OpenSoundError: An error occurred when opening a sound asset!"
   );
@@ -68,7 +68,7 @@ std::string OpenSoundErrorDescription::describeErrorSummary() const {
 
 std::string PlaySoundErrorDescription::describeErrorCause(
   PlaySoundErrorCode error_code
-) const {
+) const noexcept {
   std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
@@ -91,7 +91,7 @@ std::string PlaySoundErrorDescription::describeErrorCause(
 
 std::string PlaySoundErrorDescription::describeErrorDetails(
   PlaySoundErrorCode error_code
-) const {
+) const noexcept {
   std::string error_details;
 
   switch (error_code) {
@@ -104,7 +104,7 @@ std::string PlaySoundErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-std::string PlaySoundErrorDescription::describeErrorSummary() const {
+std::string PlaySoundErrorDescription::describeErrorSummary() const noexcept {
   std::string error_summary = std::string(
     "PlaySoundError: An error occurred when playing a sound asset!"
   );
@@ -112,18 +112,18 @@ std::string PlaySoundErrorDescription::describeErrorSummary() const {
   return error_summary;
 };
 
-bool Sound::finishedPlaying() const {
+bool Sound::finishedPlaying() const noexcept {
   return (
     this->startedPlaying() &&
     !this->soundIsPlaying()
   );
 };
 
-bool Sound::hasReservedChannel() const {
+bool Sound::hasReservedChannel() const noexcept {
   return this->channel != -1;
 };
 
-bool Sound::isOpen() const {
+bool Sound::isOpen() const noexcept {
   return this->sound != nullptr;
 };
 
@@ -145,7 +145,7 @@ void Sound::play(int loops_after_first_time_played) {
     throw PlaySoundException(PlaySoundErrorCode::FailureToPlaySoundError);
 };
 
-void Sound::render(SDL_Renderer* renderer) {};
+void Sound::render(SDL_Renderer* renderer) noexcept {};
 
 void Sound::stop() {
   if(!this->isOpen())
@@ -158,11 +158,11 @@ void Sound::stop() {
     this->stopSoundCurrentlyPlaying();
 };
 
-void Sound::update(double dt) {};
+void Sound::update(double dt) noexcept {};
 
 std::string StopSoundErrorDescription::describeErrorCause(
   StopSoundErrorCode error_code
-) const {
+) const noexcept {
   std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
@@ -182,7 +182,7 @@ std::string StopSoundErrorDescription::describeErrorCause(
 
 std::string StopSoundErrorDescription::describeErrorDetails(
   StopSoundErrorCode error_code
-) const {
+) const noexcept {
   std::string error_details;
 
   switch (error_code) {
@@ -195,7 +195,7 @@ std::string StopSoundErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-std::string StopSoundErrorDescription::describeErrorSummary() const {
+std::string StopSoundErrorDescription::describeErrorSummary() const noexcept {
   std::string error_summary = std::string(
     "StopSoundError: An error occurred when stopping a sound asset!"
   );
@@ -204,14 +204,14 @@ std::string StopSoundErrorDescription::describeErrorSummary() const {
 };
 
 // Private method implementations.
-void Sound::cleanUpCurrentSound() {
+void Sound::cleanUpCurrentSound() noexcept {
   if(this->isOpen()) {
     Mix_FreeChunk(this->sound);
     this->sound = nullptr;
   }
 };
 
-int Sound::loadSoundFile(std::string file) {
+int Sound::loadSoundFile(std::string file) noexcept {
   this->sound = Mix_LoadWAV(file.c_str());
 
   if(this->sound != nullptr)
@@ -221,7 +221,9 @@ int Sound::loadSoundFile(std::string file) {
     return -1;
 };
 
-int Sound::playCurrentSoundWithMixer(int loops_after_first_time_played) {
+int Sound::playCurrentSoundWithMixer(
+  int loops_after_first_time_played
+) noexcept {
   int auto_assign_channel = -1, assigned_channel;
 
   assigned_channel = Mix_PlayChannel(
@@ -237,18 +239,18 @@ int Sound::playCurrentSoundWithMixer(int loops_after_first_time_played) {
   return 0;
 };
 
-bool Sound::reservedChannelHasNotBeenReassigned() const {
+bool Sound::reservedChannelHasNotBeenReassigned() const noexcept {
   return (
     this->hasReservedChannel() &&
     Mix_GetChunk(this->channel) == this->sound
   );
 };
 
-bool Sound::reservedChannelIsInUse() const {
+bool Sound::reservedChannelIsInUse() const noexcept {
   return (this->hasReservedChannel() && Mix_Playing(this->channel));
 };
 
-bool Sound::soundIsPlaying() const {
+bool Sound::soundIsPlaying() const noexcept {
   return (
     this->startedPlaying() &&
     this->reservedChannelIsInUse() &&
@@ -256,19 +258,19 @@ bool Sound::soundIsPlaying() const {
   );
 };
 
-bool Sound::startedPlaying() const {
+bool Sound::startedPlaying() const noexcept {
   return (
     this->isOpen() &&
     this->hasReservedChannel()
   );
 };
 
-void Sound::stopSoundCurrentlyPlaying() {
+void Sound::stopSoundCurrentlyPlaying() noexcept {
   if(this->soundIsPlaying())
     this->stopSoundOnReservedChannel();
 };
 
-void Sound::stopSoundOnReservedChannel() {
+void Sound::stopSoundOnReservedChannel() noexcept {
   Mix_HaltChannel(this->channel);
   this->channel = -1;
 };

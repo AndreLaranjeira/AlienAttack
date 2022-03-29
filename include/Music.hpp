@@ -63,11 +63,11 @@ class OpenMusicErrorDescription : public ErrorDescription<OpenMusicErrorCode> {
     // Method prototypes.
     std::string describeErrorCause(
       OpenMusicErrorCode error_code
-    ) const override;
+    ) const noexcept override;
     std::string describeErrorDetails(
       OpenMusicErrorCode error_code
-    ) const override;
-    std::string describeErrorSummary() const override;
+    ) const noexcept override;
+    std::string describeErrorSummary() const noexcept override;
 };
 
 class PlayMusicErrorDescription : public ErrorDescription<PlayMusicErrorCode> {
@@ -80,11 +80,11 @@ class PlayMusicErrorDescription : public ErrorDescription<PlayMusicErrorCode> {
     // Method prototypes.
     std::string describeErrorCause(
       PlayMusicErrorCode error_code
-    ) const override;
+    ) const noexcept override;
     std::string describeErrorDetails(
       PlayMusicErrorCode error_code
-    ) const override;
-    std::string describeErrorSummary() const override;
+    ) const noexcept override;
+    std::string describeErrorSummary() const noexcept override;
 };
 
 class StopMusicErrorDescription : public ErrorDescription<StopMusicErrorCode> {
@@ -97,11 +97,11 @@ class StopMusicErrorDescription : public ErrorDescription<StopMusicErrorCode> {
     // Method prototypes.
     std::string describeErrorCause(
       StopMusicErrorCode error_code
-    ) const override;
+    ) const noexcept override;
     std::string describeErrorDetails(
       StopMusicErrorCode error_code
-    ) const override;
-    std::string describeErrorSummary() const override;
+    ) const noexcept override;
+    std::string describeErrorSummary() const noexcept override;
 };
 
 // Exception definitions.
@@ -141,12 +141,12 @@ class Music {
   public:
 
     // Class method prototypes.
-    Music() = default;
+    Music() noexcept = default;
     Music(std::string file);
 
     // Method prototypes.
-    bool isOpen() const;
-    bool isUsingMixer() const;
+    bool isOpen() const noexcept;
+    bool isUsingMixer() const noexcept;
     void open(std::string file);
     void play(int times = -1);
     void stop(unsigned int fade_out_duration_milliseconds = 1500);
@@ -159,9 +159,11 @@ class Music {
     bool usingMixer = false;
 
     // Method prototypes.
-    bool mixerInUse() const;
-    int playCurrentMusicWithMixer(int times);
-    int stopCurrentMusicWithMixer(unsigned int fade_out_duration_milliseconds);
+    bool mixerInUse() const noexcept;
+    int playCurrentMusicWithMixer(int times) noexcept;
+    int stopCurrentMusicWithMixer(
+      unsigned int fade_out_duration_milliseconds
+    ) noexcept;
 };
 
 #endif // MUSIC_H_

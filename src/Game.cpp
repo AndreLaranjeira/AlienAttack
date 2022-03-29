@@ -22,7 +22,7 @@ Game::Game(GameParams game_params) {
   }
 };
 
-Game::~Game() {
+Game::~Game() noexcept {
   this->cleanUpGameState();
   this->cleanUpGameRenderer();
   this->cleanUpGameWindow();
@@ -43,11 +43,11 @@ Game& Game::getInstance() {
   return *Game::instance;
 };
 
-SDL_Renderer* Game::getRenderer() const {
+SDL_Renderer* Game::getRenderer() const noexcept {
   return this->renderer;
 };
 
-State& Game::getState() const {
+State& Game::getState() const noexcept {
   return *(this->state);
 };
 
@@ -61,7 +61,7 @@ void Game::run() {
 
 std::string GameInitErrorDescription::describeErrorCause(
   GameInitErrorCode error_code
-) const {
+) const noexcept {
   std::string error_cause = std::string("This error was caused by ");
   
   switch (error_code) {
@@ -98,7 +98,7 @@ std::string GameInitErrorDescription::describeErrorCause(
 
 std::string GameInitErrorDescription::describeErrorDetails(
   GameInitErrorCode error_code
-) const {
+) const noexcept {
   std::string error_details;
 
   switch (error_code) {
@@ -123,7 +123,7 @@ std::string GameInitErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-std::string GameInitErrorDescription::describeErrorSummary() const {
+std::string GameInitErrorDescription::describeErrorSummary() const noexcept {
   std::string error_summary = std::string(
     "GameInitError: An error occurred when initializing the Game!"
   );
@@ -133,7 +133,7 @@ std::string GameInitErrorDescription::describeErrorSummary() const {
 
 std::string GameRunErrorDescription::describeErrorCause(
   GameRunErrorCode error_code
-) const {
+) const noexcept {
   std::string error_cause = std::string("This error was caused by ");
   
   switch (error_code) {
@@ -152,7 +152,7 @@ std::string GameRunErrorDescription::describeErrorCause(
 
 std::string GameRunErrorDescription::describeErrorDetails(
   GameRunErrorCode error_code
-) const {
+) const noexcept {
   std::string error_details;
 
   switch (error_code) {
@@ -166,7 +166,7 @@ std::string GameRunErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-std::string GameRunErrorDescription::describeErrorSummary() const {
+std::string GameRunErrorDescription::describeErrorSummary() const noexcept {
   std::string error_summary = std::string(
     "GameRunError: An error occurred when running the Game!"
   );
@@ -175,7 +175,7 @@ std::string GameRunErrorDescription::describeErrorSummary() const {
 };
 
 // Private method implementations.
-void Game::cleanUpFailedGameInit(GameInitErrorCode error_code) {
+void Game::cleanUpFailedGameInit(GameInitErrorCode error_code) noexcept {
   switch (error_code) {
     case GameInitErrorCode::GameStateError:
       this->cleanUpGameRenderer();
@@ -201,35 +201,35 @@ void Game::cleanUpFailedGameInit(GameInitErrorCode error_code) {
   }
 };
 
-void Game::cleanUpGameRenderer() {
+void Game::cleanUpGameRenderer() noexcept {
   if(this->renderer != nullptr) {
     SDL_DestroyRenderer(this->renderer);
     this->renderer = nullptr;
   }
 };
 
-void Game::cleanUpGameState() {
+void Game::cleanUpGameState() noexcept {
   if(this->state != nullptr) {
     delete this->state;
     this->state = nullptr;
   }
 };
 
-void Game::cleanUpGameWindow() {
+void Game::cleanUpGameWindow() noexcept {
   if(this->window != nullptr) {
     SDL_DestroyWindow(this->window);
     this->window = nullptr;
   }
 };
 
-void Game::cleanUpSDLModules() {
+void Game::cleanUpSDLModules() noexcept {
   Mix_CloseAudio();
   Mix_Quit();
   IMG_Quit();
   SDL_Quit();
 };
 
-SDLConfig Game::defaultSDLConfig(GameParams game_params) const {
+SDLConfig Game::defaultSDLConfig(GameParams game_params) const noexcept {
   return {
     .SDL_flags =  SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_VIDEO,
     .image_flags = IMG_INIT_JPG | IMG_INIT_PNG,
@@ -286,7 +286,7 @@ void Game::initGame(SDLConfig SDL_config) {
   this->initRandomNumberGeneration(); 
 };
 
-int Game::initGameState() {
+int Game::initGameState() noexcept {
   try {
     this->state = new State(this->renderer);
   }
@@ -298,18 +298,21 @@ int Game::initGameState() {
   return 0;
 };
 
-void Game::initRandomNumberGeneration() {
+void Game::initRandomNumberGeneration() noexcept {
   srand(time(nullptr));
 };
 
-int Game::initSDL(Uint32 SDL_flags) {
+int Game::initSDL(Uint32 SDL_flags) noexcept {
   if(SDL_Init(SDL_flags) == 0)
     return 0;
   else
     return -1;
 };
 
-int Game::initSDLAudio(SDLAudioParams audio_params, int mixer_channels) {
+int Game::initSDLAudio(
+  SDLAudioParams audio_params,
+  int mixer_channels
+) noexcept {
   if(
     Mix_OpenAudio(
       audio_params.frequency,
@@ -325,21 +328,21 @@ int Game::initSDLAudio(SDLAudioParams audio_params, int mixer_channels) {
     return -1;
 };
 
-int Game::initSDLImage(int image_flags) {
+int Game::initSDLImage(int image_flags) noexcept {
   if(IMG_Init(image_flags) == image_flags)
     return 0;
   else
     return -1;
 };
 
-int Game::initSDLMix(int mix_flags) {
+int Game::initSDLMix(int mix_flags) noexcept {
   if(Mix_Init(mix_flags) == mix_flags)
     return 0;
   else
     return -1;  
 };
 
-int Game::initSDLRenderer(SDLRendererParams renderer_params) {
+int Game::initSDLRenderer(SDLRendererParams renderer_params) noexcept {
   this->renderer = SDL_CreateRenderer(
     this->window,
     renderer_params.index,
@@ -352,7 +355,7 @@ int Game::initSDLRenderer(SDLRendererParams renderer_params) {
     return -1;
 };
 
-int Game::initSDLWindow(SDLWindowParams window_params) {
+int Game::initSDLWindow(SDLWindowParams window_params) noexcept {
   this->window = SDL_CreateWindow(
     window_params.title,
     window_params.x_offset,
@@ -378,7 +381,7 @@ void Game::renderAndPresentGameState() {
   }
 };
 
-bool Game::shouldKeepRunning() const {
+bool Game::shouldKeepRunning() const noexcept {
   return !(this->state->quitRequested());
 };
 
@@ -392,13 +395,13 @@ void Game::updateGameState() {
   }
 };
 
-int Game::verifySingletonProperty() const {
+int Game::verifySingletonProperty() const noexcept {
   if (Game::instance == nullptr)
     return 0;
   else
     return -1;
 };
 
-void Game::waitTimeIntervalBetweenFrames() const {
+void Game::waitTimeIntervalBetweenFrames() const noexcept {
   SDL_Delay(33);
 };

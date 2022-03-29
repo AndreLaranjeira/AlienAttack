@@ -62,7 +62,7 @@ class State {
     // Method prototypes.
     void loadAssets();
     void processInput();
-    bool quitRequested() const;
+    bool quitRequested() const noexcept;
     void renderAndPresent();
     void update(double dt);
 
@@ -88,10 +88,10 @@ class State {
     ) const;
     bool gameObjectFinishedPlayingDeathSound(
       std::unique_ptr<GameObject>& game_object
-    ) const;
+    ) const noexcept;
     bool gameObjectIsAptForDeletion(
       std::unique_ptr<GameObject>& game_object
-    ) const;
+    ) const noexcept;
     void handleClickOnGameObject(game_object_iter target_iter);
     void handleEvent(
       const SDL_Event& event,
@@ -105,17 +105,17 @@ class State {
     game_object_iter livingGameObjectWithLeastDepthLocatedAt(
       const VectorR2& search_coordinates
     );
-    VectorR2 mouseCoordinates() const;
-    bool musicIsUsingMixer() const;
-    void playMusic();
+    VectorR2 mouseCoordinates() const noexcept;
+    bool musicIsUsingMixer() const noexcept;
+    void playMusic() noexcept;
     VectorR2 randomCoordinatesWithMagnitude(
       unsigned int coordinates_magnitude
-    ) const;
+    ) const noexcept;
     void removeGameObjectAt(size_t index);
     void removeGameObjectsWhoseDeletionWasRequested();
     void renderGameObjects();
-    void requestDeletionOfGameObjectsAptForDeletion();
-    void stopMusic();
+    void requestDeletionOfGameObjectsAptForDeletion() noexcept;
+    void stopMusic() noexcept;
     void updateGameObjects(double dt);
 };
 

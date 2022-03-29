@@ -12,11 +12,11 @@ Music::Music(std::string file) {
 };
 
 // Public method implementations.
-bool Music::isOpen() const {
+bool Music::isOpen() const noexcept {
   return (this->music.get() != nullptr);
 };
 
-bool Music::isUsingMixer() const {
+bool Music::isUsingMixer() const noexcept {
   return this->usingMixer;
 };
 
@@ -57,7 +57,7 @@ void Music::stop(unsigned int fade_out_duration_milliseconds) {
 
 std::string OpenMusicErrorDescription::describeErrorCause(
   OpenMusicErrorCode error_code
-) const {
+) const noexcept {
   std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
@@ -73,7 +73,7 @@ std::string OpenMusicErrorDescription::describeErrorCause(
 
 std::string OpenMusicErrorDescription::describeErrorDetails(
   OpenMusicErrorCode error_code
-) const {
+) const noexcept {
   std::string error_details;
 
   switch (error_code) {
@@ -86,7 +86,7 @@ std::string OpenMusicErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-std::string OpenMusicErrorDescription::describeErrorSummary() const {
+std::string OpenMusicErrorDescription::describeErrorSummary() const noexcept {
   std::string error_summary = std::string(
     "OpenMusicError: An error occurred when opening a music track!"
   );
@@ -96,7 +96,7 @@ std::string OpenMusicErrorDescription::describeErrorSummary() const {
 
 std::string PlayMusicErrorDescription::describeErrorCause(
   PlayMusicErrorCode error_code
-) const {
+) const noexcept {
   std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
@@ -123,7 +123,7 @@ std::string PlayMusicErrorDescription::describeErrorCause(
 
 std::string PlayMusicErrorDescription::describeErrorDetails(
   PlayMusicErrorCode error_code
-) const {
+) const noexcept {
   std::string error_details;
 
   switch (error_code) {
@@ -136,7 +136,7 @@ std::string PlayMusicErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-std::string PlayMusicErrorDescription::describeErrorSummary() const {
+std::string PlayMusicErrorDescription::describeErrorSummary() const noexcept {
   std::string error_summary = std::string(
     "PlayMusicError: An error occurred when playing a music track!"
   );
@@ -146,7 +146,7 @@ std::string PlayMusicErrorDescription::describeErrorSummary() const {
 
 std::string StopMusicErrorDescription::describeErrorCause(
   StopMusicErrorCode error_code
-) const {
+) const noexcept {
   std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
@@ -172,7 +172,7 @@ std::string StopMusicErrorDescription::describeErrorCause(
 
 std::string StopMusicErrorDescription::describeErrorDetails(
   StopMusicErrorCode error_code
-) const {
+) const noexcept {
   std::string error_details;
 
   switch (error_code) {
@@ -185,7 +185,7 @@ std::string StopMusicErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-std::string StopMusicErrorDescription::describeErrorSummary() const {
+std::string StopMusicErrorDescription::describeErrorSummary() const noexcept {
   std::string error_summary = std::string(
     "StopMusicError: An error occurred when stopping a music track!"
   );
@@ -194,11 +194,11 @@ std::string StopMusicErrorDescription::describeErrorSummary() const {
 };
 
 // Private method implementations.
-bool Music::mixerInUse() const {
+bool Music::mixerInUse() const noexcept {
   return (Mix_PlayingMusic() && Mix_FadingMusic() != MIX_FADING_OUT);
 };
 
-int Music::playCurrentMusicWithMixer(int times) {
+int Music::playCurrentMusicWithMixer(int times) noexcept {
   if(Mix_PlayMusic(this->music.get(), times) != 0)
     return -1;
 
@@ -208,7 +208,7 @@ int Music::playCurrentMusicWithMixer(int times) {
 
 int Music::stopCurrentMusicWithMixer(
   unsigned int fade_out_duration_milliseconds
-) {
+) noexcept {
   if(Mix_FadeOutMusic(fade_out_duration_milliseconds) != 0)
     return -1;
 

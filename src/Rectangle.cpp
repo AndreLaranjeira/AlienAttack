@@ -7,26 +7,34 @@
 #include "Rectangle.hpp"
 
 // Class method implementations.
-Rectangle::Rectangle(VectorR2 upper_left_corner, double width, double height) :
+Rectangle::Rectangle(
+  VectorR2 upper_left_corner,
+  double width,
+  double height
+) noexcept :
   height(height),
   upper_left_corner(upper_left_corner),
   width(width) {};
 
 // Public method implementations.
-VectorR2 Rectangle::coordinatesOfCenter() const {
+VectorR2 Rectangle::coordinatesOfCenter() const noexcept {
   return VectorR2(
     this->upper_left_corner.x + (this->width / 2),
     this->upper_left_corner.y + (this->height / 2)
   );
 };
 
-double Rectangle::distanceBetweenCenters(const Rectangle& reference) const {
+double Rectangle::distanceBetweenCenters(
+  const Rectangle& reference
+) const noexcept {
   return this->coordinatesOfCenter().distanceTo(
     reference.coordinatesOfCenter()
   );
 };
 
-bool Rectangle::isGivenReferenceInsideOfSelf(const VectorR2& reference) const {
+bool Rectangle::isGivenReferenceInsideOfSelf(
+  const VectorR2& reference
+) const noexcept {
   return (
     reference.x > this->upper_left_corner.x &&
     reference.x < this->upper_left_corner.x + width &&
@@ -37,7 +45,7 @@ bool Rectangle::isGivenReferenceInsideOfSelf(const VectorR2& reference) const {
 
 bool Rectangle::isGivenReferenceOnTheBoundaryOfSelf(
   const VectorR2& reference
-) const {
+) const noexcept {
   return (
     (
       reference.x == this->upper_left_corner.x ||
@@ -57,7 +65,7 @@ bool Rectangle::isGivenReferenceOnTheBoundaryOfSelf(
 
 bool Rectangle::isGivenReferenceInsideOrOnTheBoundaryOfSelf(
   const VectorR2& reference
-) const {
+) const noexcept {
   return (
     reference.x >= this->upper_left_corner.x &&
     reference.x <= this->upper_left_corner.x + width &&
@@ -67,7 +75,10 @@ bool Rectangle::isGivenReferenceInsideOrOnTheBoundaryOfSelf(
 };
 
 // Class operator implementations.
-Rectangle operator + (const Rectangle& rectangle, const VectorR2& vectorR2) {
+Rectangle operator + (
+  const Rectangle& rectangle,
+  const VectorR2& vectorR2
+) noexcept {
   return Rectangle(
     rectangle.upper_left_corner + vectorR2,
     rectangle.width,
@@ -75,18 +86,24 @@ Rectangle operator + (const Rectangle& rectangle, const VectorR2& vectorR2) {
   );
 };
 
-Rectangle operator + (const VectorR2& vectorR2, const Rectangle& rectangle) {
+Rectangle operator + (
+  const VectorR2& vectorR2,
+  const Rectangle& rectangle
+) noexcept {
   return rectangle + vectorR2;
 };
 
-void operator += (Rectangle& rectangle, const VectorR2& vectorR2) {
+void operator += (Rectangle& rectangle, const VectorR2& vectorR2) noexcept {
   rectangle = rectangle + vectorR2;
 };
 
-Rectangle operator - (const Rectangle& rectangle, const VectorR2& vectorR2) {
+Rectangle operator - (
+  const Rectangle& rectangle,
+  const VectorR2& vectorR2
+) noexcept {
   return rectangle + (-vectorR2);
 };
 
-void operator -= (Rectangle& rectangle, const VectorR2& vectorR2) {
+void operator -= (Rectangle& rectangle, const VectorR2& vectorR2) noexcept {
   rectangle = rectangle - vectorR2;
 };

@@ -21,9 +21,9 @@ void Face::registerDamage(unsigned int damage) {
     this->handleAssociatedGameObjectDeath();
 };
 
-void Face::render(SDL_Renderer* renderer) {};
+void Face::render(SDL_Renderer* renderer) noexcept {};
 
-void Face::update(double dt) {};
+void Face::update(double dt) noexcept {};
 
 // Private method implementations.
 void Face::handleAssociatedGameObjectDeath() {
@@ -31,11 +31,11 @@ void Face::handleAssociatedGameObjectDeath() {
   this->associated.resolveDeath();
 };
 
-bool Face::isDead() const {
+bool Face::isDead() const noexcept {
   return this->hitpoints == 0;
 };
 
-void Face::playAssociatedGameObjectDeathSound() {
+void Face::playAssociatedGameObjectDeathSound() noexcept {
   Sound* associated_sound_component;
 
   associated_sound_component = static_cast<Sound*>(
@@ -53,6 +53,6 @@ void Face::playAssociatedGameObjectDeathSound() {
   }
 };
 
-void Face::subtractDamageFromHitpoints(unsigned int damage) {
-  this->hitpoints -= damage;
+void Face::subtractDamageFromHitpoints(unsigned int damage) noexcept {
+    this->hitpoints -= damage;
 };

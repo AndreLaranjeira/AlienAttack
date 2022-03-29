@@ -19,8 +19,12 @@ class Rectangle {
   public:
 
     // Class method prototypes.
-    Rectangle() = default;
-    Rectangle(VectorR2 upper_left_corner, double width, double height);
+    Rectangle() noexcept = default;
+    Rectangle(
+      VectorR2 upper_left_corner,
+      double width,
+      double height
+    ) noexcept;
 
     // Members.
     double height = 0;
@@ -28,20 +32,33 @@ class Rectangle {
     double width = 0;
 
     // Method prototypes.
-    VectorR2 coordinatesOfCenter() const;
-    double distanceBetweenCenters(const Rectangle& reference) const;
-    bool isGivenReferenceInsideOfSelf(const VectorR2& reference) const;
-    bool isGivenReferenceOnTheBoundaryOfSelf(const VectorR2& reference) const;
+    VectorR2 coordinatesOfCenter() const noexcept;
+    double distanceBetweenCenters(const Rectangle& reference) const noexcept;
+    bool isGivenReferenceInsideOfSelf(
+      const VectorR2& reference
+    ) const noexcept;
+    bool isGivenReferenceOnTheBoundaryOfSelf(
+      const VectorR2& reference
+    ) const noexcept;
     bool isGivenReferenceInsideOrOnTheBoundaryOfSelf(
       const VectorR2& reference
-    ) const;
+    ) const noexcept;
 };
 
 // Class operator prototypes.
-Rectangle operator + (const Rectangle& rectangle, const VectorR2& vectorR2);
-Rectangle operator + (const VectorR2& vectorR2, const Rectangle& rectangle);
-void operator += (Rectangle& rectangle, const VectorR2& vectorR2);
-Rectangle operator - (const Rectangle& rectangle, const VectorR2& vectorR2);
-void operator -= (Rectangle& rectangle, const VectorR2& vectorR2);
+Rectangle operator + (
+  const Rectangle& rectangle,
+  const VectorR2& vectorR2
+) noexcept;
+Rectangle operator + (
+  const VectorR2& vectorR2,
+  const Rectangle& rectangle
+) noexcept;
+void operator += (Rectangle& rectangle, const VectorR2& vectorR2) noexcept;
+Rectangle operator - (
+  const Rectangle& rectangle,
+  const VectorR2& vectorR2
+) noexcept;
+void operator -= (Rectangle& rectangle, const VectorR2& vectorR2) noexcept;
 
 #endif // RECTANGLE_H_

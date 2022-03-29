@@ -55,12 +55,12 @@ class Component {
   public:
 
     // Class method prototypes.
-    Component(GameObject& associated, ComponentType type);
-    virtual ~Component() = default;
+    Component(GameObject& associated, ComponentType type) noexcept;
+    virtual ~Component() noexcept = default;
 
     // Method prototypes.
     void attachToAssociatedGameObject();
-    bool is(ComponentType type) const;
+    bool is(ComponentType type) const noexcept;
     
     // Virtual method prototypes.
     virtual void render(SDL_Renderer* renderer) = 0;
@@ -86,18 +86,18 @@ class GameObject {
 
     // Method prototypes.
     void addComponent(Component* new_component);
-    bool deletionWasRequested() const;
-    Component* getComponent(ComponentType type);
-    GameObjectState getState() const;
-    bool hasComponentType(ComponentType type) const;
-    bool isAlive() const;
+    bool deletionWasRequested() const noexcept;
+    Component* getComponent(ComponentType type) noexcept;
+    GameObjectState getState() const noexcept;
+    bool hasComponentType(ComponentType type) const noexcept;
+    bool isAlive() const noexcept;
     void removeComponent(Component* component_to_remove);
     void removeComponent(ComponentType removal_target_type);
     void render(SDL_Renderer* renderer);
-    void requestDeletion();
+    void requestDeletion() noexcept;
     void resolveDeath();
-    void setCenterCoordinates(const VectorR2& center_coordinates);
-    void setDimensions(double width, double height);
+    void setCenterCoordinates(const VectorR2& center_coordinates) noexcept;
+    void setDimensions(double width, double height) noexcept;
     void update(double dt);
     
     // Members.
@@ -113,10 +113,10 @@ class GameObject {
     // Method prototypes.
     component_const_iter searchComponentsByType(
       ComponentType search_parameter
-    ) const;
+    ) const noexcept;
     component_const_iter searchComponentsByValue(
       Component* search_parameter
-    ) const;
+    ) const noexcept;
 
 };
 

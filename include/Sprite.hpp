@@ -53,11 +53,11 @@ class OpenSpriteErrorDescription :
     // Method prototypes.
     std::string describeErrorCause(
       OpenSpriteErrorCode error_code
-    ) const override;
+    ) const noexcept override;
     std::string describeErrorDetails(
       OpenSpriteErrorCode error_code
-    ) const override;
-    std::string describeErrorSummary() const override;
+    ) const noexcept override;
+    std::string describeErrorSummary() const noexcept override;
 };
 
 // Exception definitions.
@@ -81,13 +81,13 @@ class Sprite : public Component {
     Sprite(GameObject& associated, SDL_Renderer* renderer, std::string file);
 
     // Method prototypes.
-    int getHeight() const;
-    int getWidth() const;
-    bool isOpen() const;
+    int getHeight() const noexcept;
+    int getWidth() const noexcept;
+    bool isOpen() const noexcept;
     void open(SDL_Renderer* renderer, std::string file);
-    void render(SDL_Renderer* renderer) override;
-    void setClip(int x_pos, int y_pos, int width, int height);
-    void update(double dt) override;
+    void render(SDL_Renderer* renderer) noexcept override;
+    void setClip(int x_pos, int y_pos, int width, int height) noexcept;
+    void update(double dt) noexcept override;
 
   // Private components.
   private:
@@ -102,8 +102,8 @@ class Sprite : public Component {
     int width = 0;
 
     // Method prototypes.
-    int configSpriteWithTextureSpecs();
-    int loadSpriteTexture(SDL_Renderer* renderer, std::string file);
+    int configSpriteWithTextureSpecs() noexcept;
+    int loadSpriteTexture(SDL_Renderer* renderer, std::string file) noexcept;
 };
 
 #endif // SPRITE_H_

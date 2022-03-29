@@ -60,11 +60,11 @@ class OpenSoundErrorDescription : public ErrorDescription<OpenSoundErrorCode> {
     // Method prototypes.
     std::string describeErrorCause(
       OpenSoundErrorCode error_code
-    ) const override;
+    ) const noexcept override;
     std::string describeErrorDetails(
       OpenSoundErrorCode error_code
-    ) const override;
-    std::string describeErrorSummary() const override;
+    ) const noexcept override;
+    std::string describeErrorSummary() const noexcept override;
 };
 
 class PlaySoundErrorDescription : public ErrorDescription<PlaySoundErrorCode> {
@@ -77,11 +77,11 @@ class PlaySoundErrorDescription : public ErrorDescription<PlaySoundErrorCode> {
     // Method prototypes.
     std::string describeErrorCause(
       PlaySoundErrorCode error_code
-    ) const override;
+    ) const noexcept override;
     std::string describeErrorDetails(
       PlaySoundErrorCode error_code
-    ) const override;
-    std::string describeErrorSummary() const override;
+    ) const noexcept override;
+    std::string describeErrorSummary() const noexcept override;
 };
 
 class StopSoundErrorDescription : public ErrorDescription<StopSoundErrorCode> {
@@ -94,11 +94,11 @@ class StopSoundErrorDescription : public ErrorDescription<StopSoundErrorCode> {
     // Method prototypes.
     std::string describeErrorCause(
       StopSoundErrorCode error_code
-    ) const override;
+    ) const noexcept override;
     std::string describeErrorDetails(
       StopSoundErrorCode error_code
-    ) const override;
-    std::string describeErrorSummary() const override;
+    ) const noexcept override;
+    std::string describeErrorSummary() const noexcept override;
 };
 
 // Exception definitions.
@@ -141,17 +141,17 @@ class Sound : public Component {
     // Class method prototypes.
     Sound(GameObject& associated);
     Sound(GameObject& associated, std::string file);
-    ~Sound();
+    ~Sound() noexcept;
 
     // Method prototypes.
-    bool finishedPlaying() const;
-    bool hasReservedChannel() const;
-    bool isOpen() const;
+    bool finishedPlaying() const noexcept;
+    bool hasReservedChannel() const noexcept;
+    bool isOpen() const noexcept;
     void open(std::string file);
     void play(int loops_after_first_time_played = 0);
-    void render(SDL_Renderer* renderer) override;
+    void render(SDL_Renderer* renderer) noexcept override;
     void stop();
-    void update(double dt) override;
+    void update(double dt) noexcept override;
 
   // Private components.
   private:
@@ -167,15 +167,15 @@ class Sound : public Component {
     Mix_Chunk* sound = nullptr;
 
     // Method prototypes.
-    void cleanUpCurrentSound();
-    int loadSoundFile(std::string file);
-    int playCurrentSoundWithMixer(int loops_after_first_time_played);
-    bool reservedChannelHasNotBeenReassigned() const;
-    bool reservedChannelIsInUse() const;
-    bool soundIsPlaying() const;
-    bool startedPlaying() const;
-    void stopSoundCurrentlyPlaying();
-    void stopSoundOnReservedChannel();
+    void cleanUpCurrentSound() noexcept;
+    int loadSoundFile(std::string file) noexcept;
+    int playCurrentSoundWithMixer(int loops_after_first_time_played) noexcept;
+    bool reservedChannelHasNotBeenReassigned() const noexcept;
+    bool reservedChannelIsInUse() const noexcept;
+    bool soundIsPlaying() const noexcept;
+    bool startedPlaying() const noexcept;
+    void stopSoundCurrentlyPlaying() noexcept;
+    void stopSoundOnReservedChannel() noexcept;
 };
 
 #endif // SOUND_H_

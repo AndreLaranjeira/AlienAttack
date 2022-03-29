@@ -28,7 +28,7 @@ void State::processInput() {
 		this->handleEvent(event, mouse_coordinates);
 };
 
-bool State::quitRequested() const {
+bool State::quitRequested() const noexcept {
   return this->quit_requested;
 };
 
@@ -101,7 +101,7 @@ game_object_iter State::convertReverseIterToIter(
 
 bool State::gameObjectFinishedPlayingDeathSound(
 	std::unique_ptr<GameObject>& game_object
-) const {
+) const noexcept {
 	Sound* game_object_sound_component;
 
 	if(game_object->hasComponentType(ComponentType::SoundComponent)) {
@@ -118,34 +118,11 @@ bool State::gameObjectFinishedPlayingDeathSound(
 
 bool State::gameObjectIsAptForDeletion(
 	std::unique_ptr<GameObject>& game_object
-) const {
+) const noexcept {
 	return(
 		game_object->getState() == GameObjectState::DeadState &&
 		this->gameObjectFinishedPlayingDeathSound(game_object)
 	);
-};
-
-game_object_iter State::livingGameObjectWithLeastDepthLocatedAt(
-	const VectorR2& search_coordinates
-) {
-	game_object_reverse_iter search_result_reverse_iter;
-
-	auto coordinates_are_inside_of_living_game_object = [&search_coordinates](
-  	const std::unique_ptr<GameObject>& game_object
-  ) {
-    return (
-			game_object->isAlive() &&
-			game_object->box.isGivenReferenceInsideOfSelf(search_coordinates)
-		);
-  };
-
-	search_result_reverse_iter = find_if(
-		this->objectArray.rbegin(),
-    this->objectArray.rend(),
-    coordinates_are_inside_of_living_game_object
-  );
-
-  return this->convertReverseIterToIter(search_result_reverse_iter);
 };
 
 void State::handleClickOnGameObject(game_object_iter target_iter) {
@@ -205,7 +182,30 @@ void State::handleMouseButtonDown(const VectorR2& mouse_coordinates) {
 	this->handleClickOnGameObject(game_object_clicked_on);
 };
 
-VectorR2 State::mouseCoordinates() const {
+game_object_iter State::livingGameObjectWithLeastDepthLocatedAt(
+	const VectorR2& search_coordinates
+) {
+	game_object_reverse_iter search_result_reverse_iter;
+
+	auto coordinates_are_inside_of_living_game_object = [&search_coordinates](
+  	const std::unique_ptr<GameObject>& game_object
+  ) {
+    return (
+			game_object->isAlive() &&
+			game_object->box.isGivenReferenceInsideOfSelf(search_coordinates)
+		);
+  };
+
+	search_result_reverse_iter = find_if(
+		this->objectArray.rbegin(),
+    this->objectArray.rend(),
+    coordinates_are_inside_of_living_game_object
+  );
+
+  return this->convertReverseIterToIter(search_result_reverse_iter);
+};
+
+VectorR2 State::mouseCoordinates() const noexcept {
 	int mouseX, mouseY;
 
 	SDL_GetMouseState(&mouseX, &mouseY);
@@ -213,11 +213,11 @@ VectorR2 State::mouseCoordinates() const {
 	return VectorR2((double) mouseX, (double) mouseY);
 };
 
-bool State::musicIsUsingMixer() const {
+bool State::musicIsUsingMixer() const noexcept {
   return this->music.isUsingMixer();
 };
 
-void State::playMusic() {
+void State::playMusic() noexcept {
   try {
     this->music.play();
   }
@@ -229,7 +229,7 @@ void State::playMusic() {
 
 VectorR2 State::randomCoordinatesWithMagnitude(
 	unsigned int coordinates_magnitude
-) const {
+) const noexcept {
 	double random_angle = M_PI * (rand() % 2001)/1000.0;
 
 	return VectorR2((int) coordinates_magnitude, 0)\
@@ -258,13 +258,13 @@ void State::renderGameObjects() {
     game_object->render(this->renderer);
 };
 
-void State::requestDeletionOfGameObjectsAptForDeletion() {
+void State::requestDeletionOfGameObjectsAptForDeletion() noexcept {
 	for(auto& game_object : this->objectArray)
 		if(this->gameObjectIsAptForDeletion(game_object))
 			game_object->requestDeletion();
 };
 
-void State::stopMusic() {
+void State::stopMusic() noexcept {
   try {
     this->music.stop();
   }

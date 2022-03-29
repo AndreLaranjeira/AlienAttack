@@ -33,8 +33,8 @@ class Face : public Component {
 
     // Method prototypes.
     void registerDamage(unsigned int damage);
-    void render(SDL_Renderer* renderer) override;
-    void update(double dt) override;
+    void render(SDL_Renderer* renderer) noexcept override;
+    void update(double dt) noexcept override;
 
   // Private components.
   private:
@@ -43,10 +43,10 @@ class Face : public Component {
     unsigned int hitpoints = DEFAULT_HITPOINTS;
 
     // Method prototypes.
-    bool isDead() const;
     void handleAssociatedGameObjectDeath();
-    void playAssociatedGameObjectDeathSound();
-    void subtractDamageFromHitpoints(unsigned int damage);
+    bool isDead() const noexcept;
+    void playAssociatedGameObjectDeathSound() noexcept;
+    void subtractDamageFromHitpoints(unsigned int damage) noexcept;
 };
 
 #endif // FACE_H_

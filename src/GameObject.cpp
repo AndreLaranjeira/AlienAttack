@@ -7,7 +7,7 @@
 #include "GameObject.hpp"
 
 // Class method implementations.
-Component::Component(GameObject& associated, ComponentType type) :
+Component::Component(GameObject& associated, ComponentType type) noexcept :
   associated(associated),
   type(type) {};
 
@@ -16,7 +16,7 @@ void Component::attachToAssociatedGameObject() {
   associated.addComponent(this);
 };
 
-bool Component::is(ComponentType type) const {
+bool Component::is(ComponentType type) const noexcept {
   return this->type == type;
 };
 
@@ -24,11 +24,11 @@ void GameObject::addComponent(Component* new_component) {
   this->components.emplace_back(std::unique_ptr<Component>(new_component));
 };
 
-bool GameObject::deletionWasRequested() const {
+bool GameObject::deletionWasRequested() const noexcept {
   return this->state == DeletionState;
 };
 
-Component* GameObject::getComponent(ComponentType type) {
+Component* GameObject::getComponent(ComponentType type) noexcept {
   component_const_iter result = this->searchComponentsByType(type);
 
   return result != this->components.end() ?
@@ -36,15 +36,15 @@ Component* GameObject::getComponent(ComponentType type) {
     nullptr;
 };
 
-GameObjectState GameObject::getState() const {
+GameObjectState GameObject::getState() const noexcept {
   return this->state;
 };
 
-bool GameObject::hasComponentType(ComponentType type) const {
+bool GameObject::hasComponentType(ComponentType type) const noexcept {
   return this->searchComponentsByType(type) != this->components.end();
 };
 
-bool GameObject::isAlive() const {
+bool GameObject::isAlive() const noexcept {
   return this->state == AliveState;
 };
 
@@ -67,7 +67,7 @@ void GameObject::render(SDL_Renderer* renderer) {
     component->render(renderer);
 };
 
-void GameObject::requestDeletion() {
+void GameObject::requestDeletion() noexcept {
   this->state = DeletionState;
 };
 
@@ -77,7 +77,9 @@ void GameObject::resolveDeath() {
   this->removeComponent(ComponentType::SpriteComponent);
 };
 
-void GameObject::setCenterCoordinates(const VectorR2& center_coordinates) {
+void GameObject::setCenterCoordinates(
+  const VectorR2& center_coordinates
+) noexcept {
   VectorR2 distance_from_upper_left_corner_to_center = VectorR2(
     this->box.width,
     this->box.height
@@ -87,7 +89,7 @@ void GameObject::setCenterCoordinates(const VectorR2& center_coordinates) {
     center_coordinates - distance_from_upper_left_corner_to_center;
 };
 
-void GameObject::setDimensions(double width, double height) {
+void GameObject::setDimensions(double width, double height) noexcept {
   this->box.width = width;
   this->box.height = height;
 };
@@ -100,10 +102,10 @@ void GameObject::update(double dt) {
 // Private method implementations.
 component_const_iter GameObject::searchComponentsByType(
   ComponentType search_parameter
-) const {
+) const noexcept {
   auto component_type_matches_search_parameter = [&search_parameter](
     const std::unique_ptr<Component>& component
-  ) {
+  ) noexcept {
     return component->is(search_parameter);
   };
 
@@ -116,10 +118,10 @@ component_const_iter GameObject::searchComponentsByType(
 
 component_const_iter GameObject::searchComponentsByValue(
   Component* search_parameter
-) const {
+) const noexcept {
   auto component_matches_search_parameter = [&search_parameter](
     const std::unique_ptr<Component>& component
-  ) {
+  ) noexcept {
     return component.get() == search_parameter;
   };
 

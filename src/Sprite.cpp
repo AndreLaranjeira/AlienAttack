@@ -25,7 +25,7 @@ Sprite::Sprite(
 // Public method implementations.
 std::string OpenSpriteErrorDescription::describeErrorCause(
   OpenSpriteErrorCode error_code
-) const {
+) const noexcept {
   std::string error_cause = std::string("This error was caused by ");
   
   switch (error_code) {
@@ -46,7 +46,7 @@ std::string OpenSpriteErrorDescription::describeErrorCause(
 
 std::string OpenSpriteErrorDescription::describeErrorDetails(
   OpenSpriteErrorCode error_code
-) const {
+) const noexcept {
   std::string error_details;
 
   switch (error_code) {
@@ -59,7 +59,7 @@ std::string OpenSpriteErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-std::string OpenSpriteErrorDescription::describeErrorSummary() const {
+std::string OpenSpriteErrorDescription::describeErrorSummary() const noexcept {
   std::string error_summary = std::string(
     "OpenSpriteError: An error occurred when opening a sprite!"
   );
@@ -67,15 +67,15 @@ std::string OpenSpriteErrorDescription::describeErrorSummary() const {
   return error_summary;
 };
 
-int Sprite::getHeight() const {
+int Sprite::getHeight() const noexcept {
   return this->height;
 };
 
-int Sprite::getWidth() const {
+int Sprite::getWidth() const noexcept {
   return this->width;
 };
 
-bool Sprite::isOpen() const {
+bool Sprite::isOpen() const noexcept {
   return (this->texture.get() != nullptr);
 };
 
@@ -87,7 +87,7 @@ void Sprite::open(SDL_Renderer* renderer, std::string file) {
     throw OpenSpriteException(OpenSpriteErrorCode::ConfigureSpriteError);
 };
 
-void Sprite::render(SDL_Renderer* renderer) {
+void Sprite::render(SDL_Renderer* renderer) noexcept {
   SDL_Rect destination_rect = {
     .x = (int) this->associated.box.upper_left_corner.x,
     .y = (int) this->associated.box.upper_left_corner.y,
@@ -103,17 +103,17 @@ void Sprite::render(SDL_Renderer* renderer) {
   );
 };
 
-void Sprite::setClip(int x_pos, int y_pos, int width, int height) {
+void Sprite::setClip(int x_pos, int y_pos, int width, int height) noexcept {
   this->clip_rect.x = x_pos;
   this->clip_rect.y = y_pos;
   this->clip_rect.w = width;
   this->clip_rect.h = height;
 };
 
-void Sprite::update(double dt) {};
+void Sprite::update(double dt) noexcept {};
 
 // Private method implementations.
-int Sprite::configSpriteWithTextureSpecs() {
+int Sprite::configSpriteWithTextureSpecs() noexcept {
   if(
     SDL_QueryTexture(
       this->texture.get(),
@@ -134,7 +134,10 @@ int Sprite::configSpriteWithTextureSpecs() {
     return -1;
 };
 
-int Sprite::loadSpriteTexture(SDL_Renderer* renderer, std::string file) {
+int Sprite::loadSpriteTexture(
+  SDL_Renderer* renderer,
+  std::string file
+) noexcept {
   this->texture.reset(IMG_LoadTexture(renderer, file.c_str()));
   
   if(this->texture.get() != nullptr)

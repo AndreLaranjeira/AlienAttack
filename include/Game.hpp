@@ -116,11 +116,11 @@ class GameInitErrorDescription : public ErrorDescription<GameInitErrorCode> {
     // Method prototypes.
     std::string describeErrorCause(
       GameInitErrorCode error_code
-    ) const override;
+    ) const noexcept override;
     std::string describeErrorDetails(
       GameInitErrorCode error_code
-    ) const override;
-    std::string describeErrorSummary() const override;
+    ) const noexcept override;
+    std::string describeErrorSummary() const noexcept override;
 };
 
 class GameRunErrorDescription : public ErrorDescription<GameRunErrorCode> {
@@ -133,11 +133,11 @@ class GameRunErrorDescription : public ErrorDescription<GameRunErrorCode> {
     // Method prototypes.
     std::string describeErrorCause(
       GameRunErrorCode error_code
-    ) const override;
+    ) const noexcept override;
     std::string describeErrorDetails(
       GameRunErrorCode error_code
-    ) const override;
-    std::string describeErrorSummary() const override;
+    ) const noexcept override;
+    std::string describeErrorSummary() const noexcept override;
 };
 
 // Exception definitions.
@@ -167,11 +167,11 @@ class Game {
   public:
   
     // Class method prototypes.
-    ~Game();
+    ~Game() noexcept;
 
     // Method prototypes.
-    SDL_Renderer* getRenderer() const;
-    State& getState() const;
+    SDL_Renderer* getRenderer() const noexcept;
+    State& getState() const noexcept;
     void run();
 
     // Static method prototypes.
@@ -196,26 +196,26 @@ class Game {
     static Game* instance;
 
     // Method prototypes.
-    void cleanUpFailedGameInit(GameInitErrorCode error_code);
-    void cleanUpGameRenderer();
-    void cleanUpGameState();
-    void cleanUpGameWindow();
-    void cleanUpSDLModules();
-    SDLConfig defaultSDLConfig(GameParams game_params) const;
+    void cleanUpFailedGameInit(GameInitErrorCode error_code) noexcept;
+    void cleanUpGameRenderer() noexcept;
+    void cleanUpGameState() noexcept;
+    void cleanUpGameWindow() noexcept;
+    void cleanUpSDLModules() noexcept;
+    SDLConfig defaultSDLConfig(GameParams game_params) const noexcept;
     void initGame(SDLConfig SDL_module_params);
-    void initRandomNumberGeneration();
-    int initGameState();
-    int initSDL(Uint32 flags);
-    int initSDLAudio(SDLAudioParams audio_params, int audio_channels);
-    int initSDLImage(int flags);
-    int initSDLMix(int flags);
-    int initSDLRenderer(SDLRendererParams renderer_params);
-    int initSDLWindow(SDLWindowParams window_params);
+    int initGameState() noexcept;
+    void initRandomNumberGeneration() noexcept;
+    int initSDL(Uint32 flags) noexcept;
+    int initSDLAudio(SDLAudioParams audio_params, int audio_channels) noexcept;
+    int initSDLImage(int flags) noexcept;
+    int initSDLMix(int flags) noexcept;
+    int initSDLRenderer(SDLRendererParams renderer_params) noexcept;
+    int initSDLWindow(SDLWindowParams window_params) noexcept;
     void renderAndPresentGameState();
-    bool shouldKeepRunning() const;
+    bool shouldKeepRunning() const noexcept;
     void updateGameState();
-    int verifySingletonProperty() const;
-    void waitTimeIntervalBetweenFrames() const;
+    int verifySingletonProperty() const noexcept;
+    void waitTimeIntervalBetweenFrames() const noexcept;
 };
 
 #endif // GAME_H_

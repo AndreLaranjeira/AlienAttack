@@ -20,21 +20,25 @@ class ErrorDescription {
   public:
 
     // Class method prototypes.
-    ErrorDescription(TErrorCode error_code);
+    ErrorDescription(TErrorCode error_code) noexcept;
 
     // Method prototypes.
-    TErrorCode getErrorCode() const;
+    TErrorCode getErrorCode() const noexcept;
 
     // Virtual method prototypes.
-    virtual std::string describeErrorCause(TErrorCode error_code) const = 0;
-    virtual std::string describeErrorDetails(TErrorCode error_code) const = 0;
-    virtual std::string describeErrorSummary() const = 0;
+    virtual std::string describeErrorCause(
+      TErrorCode error_code
+    ) const noexcept = 0;
+    virtual std::string describeErrorDetails(
+      TErrorCode error_code
+    ) const noexcept = 0;
+    virtual std::string describeErrorSummary() const noexcept = 0;
 
   // Protected components.
   protected:
 
     // Method prototypes.
-    std::string describeError(TErrorCode error_code) const;
+    std::string describeError(TErrorCode error_code) const noexcept;
 
   // Private components.
   private:
@@ -45,12 +49,13 @@ class ErrorDescription {
 
 // Class method implementations.
 template <typename TErrorCode>
-ErrorDescription<TErrorCode>::ErrorDescription(TErrorCode error_code) :
-  error_code(error_code) {};
+ErrorDescription<TErrorCode>::ErrorDescription(
+  TErrorCode error_code
+) noexcept : error_code(error_code) {};
 
 // Public method implementations.
 template <typename TErrorCode>
-TErrorCode ErrorDescription<TErrorCode>::getErrorCode() const {
+TErrorCode ErrorDescription<TErrorCode>::getErrorCode() const noexcept {
   return this->error_code;
 };
 
@@ -58,7 +63,7 @@ TErrorCode ErrorDescription<TErrorCode>::getErrorCode() const {
 template <typename TErrorCode>
 std::string ErrorDescription<TErrorCode>::describeError(
   TErrorCode error_code
-) const {
+) const noexcept {
   std::string error_description;
 
   error_description = this->describeErrorSummary();
