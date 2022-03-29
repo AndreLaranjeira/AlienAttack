@@ -54,5 +54,9 @@ void Face::playAssociatedGameObjectDeathSound() noexcept {
 };
 
 void Face::subtractDamageFromHitpoints(unsigned int damage) noexcept {
+  if(damage >= this->hitpoints)
+    this->hitpoints = 0;
+
+  else
     this->hitpoints -= damage;
 };
