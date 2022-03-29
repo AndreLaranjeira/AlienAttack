@@ -81,8 +81,8 @@ void GameObject::setCenterCoordinates(
   const VectorR2& center_coordinates
 ) noexcept {
   VectorR2 distance_from_upper_left_corner_to_center = VectorR2(
-    this->box.width,
-    this->box.height
+    this->box.width / 2,
+    this->box.height / 2
   );
 
   this->box.upper_left_corner = \
