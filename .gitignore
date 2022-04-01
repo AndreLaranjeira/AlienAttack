@@ -1,5 +1,8 @@
+# Project executable.
+alien-attack
+
 # Object folder.
 src/obj
 
-# Project executable.
-alien-attack
+# Valgrind suppressions folder.
+suppressions

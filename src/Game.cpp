@@ -11,7 +11,7 @@ Game* Game::instance = nullptr;
 
 // Class method implementations.
 Game::Game(GameParams game_params) {
-  SDLConfig game_SDL_config = this->generateDefaultSDLConfig(game_params);
+  SDLConfig game_SDL_config = this->defaultSDLConfig(game_params);
 
   try {
     this->initGame(game_SDL_config);
@@ -22,7 +22,7 @@ Game::Game(GameParams game_params) {
   }
 };
 
-Game::~Game() {
+Game::~Game() noexcept {
   this->cleanUpGameState();
   this->cleanUpGameRenderer();
   this->cleanUpGameWindow();
@@ -32,43 +32,37 @@ Game::~Game() {
 // Public method implementations.
 Game& Game::getInstance() {
   GameParams game_params = {
-    .title = "AlienAttack",
-    .width = 1024,
-    .height = 600
+    .title = GAME_WINDOW_TITLE,
+    .width = GAME_WINDOW_WIDTH,
+    .height = GAME_WINDOW_HEIGHT
   };
 
-  if(Game::instance == nullptr) {
-    try {
-      Game::instance = new Game(game_params);
-    }
-    catch(exception& e) {
-      throw;
-    }
-  }
+  if(Game::instance == nullptr)
+    Game::instance = new Game(game_params);
 
   return *Game::instance;
 };
 
-SDL_Renderer* Game::getRenderer() {
+SDL_Renderer* Game::getRenderer() noexcept {
   return this->renderer;
 };
 
-State& Game::getState() {
+State& Game::getState() noexcept {
   return *(this->state);
 };
 
 void Game::run() {
   while (this->shouldKeepRunning()) {
     this->updateGameState();
-    this->renderAndPresentGameState(this->renderer);
+    this->renderAndPresentGameState();
     this->waitTimeIntervalBetweenFrames();
   }
 };
 
-string GameInitErrorDescription::describeErrorCause(
+std::string GameInitErrorDescription::describeErrorCause(
   GameInitErrorCode error_code
-) {
-  string error_cause = string("This error was caused by ");
+) const noexcept {
+  std::string error_cause = std::string("This error was caused by ");
   
   switch (error_code) {
     case GameInitErrorCode::DuplicateGameInstanceError:
@@ -102,10 +96,10 @@ string GameInitErrorDescription::describeErrorCause(
   return error_cause;
 };
 
-string GameInitErrorDescription::describeErrorDetails(
+std::string GameInitErrorDescription::describeErrorDetails(
   GameInitErrorCode error_code
-) {
-  string error_details;
+) const noexcept {
+  std::string error_details;
 
   switch (error_code) {
     case GameInitErrorCode::DuplicateGameInstanceError:
@@ -129,16 +123,59 @@ string GameInitErrorDescription::describeErrorDetails(
   return error_details;
 };
 
-string GameInitErrorDescription::describeErrorSummary() {
-  string error_summary = string(
+std::string GameInitErrorDescription::describeErrorSummary() const noexcept {
+  std::string error_summary = std::string(
     "GameInitError: An error occurred when initializing the Game!"
   );
 
   return error_summary;
 };
 
+std::string GameRunErrorDescription::describeErrorCause(
+  GameRunErrorCode error_code
+) const noexcept {
+  std::string error_cause = std::string("This error was caused by ");
+  
+  switch (error_code) {
+    case GameRunErrorCode::StateUpdateError:
+      error_cause += "a failure to update the internal Game State";
+      break;
+    case GameRunErrorCode::StateRenderAndPresentError:
+      error_cause += "a failure to render and present the internal Game State";
+      break;
+  }
+
+  error_cause += ".";
+
+  return error_cause;
+};
+
+std::string GameRunErrorDescription::describeErrorDetails(
+  GameRunErrorCode error_code
+) const noexcept {
+  std::string error_details;
+
+  switch (error_code) {
+    default:
+      error_details += "The Game State threw an exception";
+      break;
+  }
+
+  error_details += ".";
+
+  return error_details;
+};
+
+std::string GameRunErrorDescription::describeErrorSummary() const noexcept {
+  std::string error_summary = std::string(
+    "GameRunError: An error occurred when running the Game!"
+  );
+
+  return error_summary;
+};
+
 // Private method implementations.
-void Game::cleanUpFailedGameInit(GameInitErrorCode error_code) {
+void Game::cleanUpFailedGameInit(GameInitErrorCode error_code) noexcept {
   switch (error_code) {
     case GameInitErrorCode::GameStateError:
       this->cleanUpGameRenderer();
@@ -164,35 +201,35 @@ void Game::cleanUpFailedGameInit(GameInitErrorCode error_code) {
   }
 };
 
-void Game::cleanUpGameRenderer() {
+void Game::cleanUpGameRenderer() noexcept {
   if(this->renderer != nullptr) {
     SDL_DestroyRenderer(this->renderer);
     this->renderer = nullptr;
   }
 };
 
-void Game::cleanUpGameState() {
+void Game::cleanUpGameState() noexcept {
   if(this->state != nullptr) {
     delete this->state;
     this->state = nullptr;
   }
 };
 
-void Game::cleanUpGameWindow() {
+void Game::cleanUpGameWindow() noexcept {
   if(this->window != nullptr) {
     SDL_DestroyWindow(this->window);
     this->window = nullptr;
   }
 };
 
-void Game::cleanUpSDLModules() {
+void Game::cleanUpSDLModules() noexcept {
   Mix_CloseAudio();
   Mix_Quit();
   IMG_Quit();
   SDL_Quit();
 };
 
-SDLConfig Game::generateDefaultSDLConfig(GameParams game_params) {
+SDLConfig Game::defaultSDLConfig(GameParams game_params) const noexcept {
   return {
     .SDL_flags =  SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_VIDEO,
     .image_flags = IMG_INIT_JPG | IMG_INIT_PNG,
@@ -201,7 +238,7 @@ SDLConfig Game::generateDefaultSDLConfig(GameParams game_params) {
       .frequency = MIX_DEFAULT_FREQUENCY,
       .format = MIX_DEFAULT_FORMAT,
       .output_channels = MIX_DEFAULT_CHANNELS,
-      .chunksize = 1024,
+      .chunksize = 1024
     },
     .mixer_channels = 32,
     .window_params = {
@@ -245,28 +282,37 @@ void Game::initGame(SDLConfig SDL_config) {
 
   if(this->initGameState() != 0)
     throw GameInitException(GameInitErrorCode::GameStateError);
+
+  this->initRandomNumberGeneration(); 
 };
 
-int Game::initGameState() {
+int Game::initGameState() noexcept {
   try {
     this->state = new State(this->renderer);
   }
-  catch(exception& e) {
-    cerr << "[Game] " << e.what();
+  catch(std::exception& e) {
+    std::cerr << "[Game] " << e.what();
     return -1;
   }
 
   return 0;
 };
 
-int Game::initSDL(Uint32 SDL_flags) {
+void Game::initRandomNumberGeneration() noexcept {
+  srand(time(nullptr));
+};
+
+int Game::initSDL(Uint32 SDL_flags) noexcept {
   if(SDL_Init(SDL_flags) == 0)
     return 0;
   else
     return -1;
 };
 
-int Game::initSDLAudio(SDLAudioParams audio_params, int mixer_channels) {
+int Game::initSDLAudio(
+  SDLAudioParams audio_params,
+  int mixer_channels
+) noexcept {
   if(
     Mix_OpenAudio(
       audio_params.frequency,
@@ -282,21 +328,21 @@ int Game::initSDLAudio(SDLAudioParams audio_params, int mixer_channels) {
     return -1;
 };
 
-int Game::initSDLImage(int image_flags) {
+int Game::initSDLImage(int image_flags) noexcept {
   if(IMG_Init(image_flags) == image_flags)
     return 0;
   else
     return -1;
 };
 
-int Game::initSDLMix(int mix_flags) {
+int Game::initSDLMix(int mix_flags) noexcept {
   if(Mix_Init(mix_flags) == mix_flags)
     return 0;
   else
     return -1;  
 };
 
-int Game::initSDLRenderer(SDLRendererParams renderer_params) {
+int Game::initSDLRenderer(SDLRendererParams renderer_params) noexcept {
   this->renderer = SDL_CreateRenderer(
     this->window,
     renderer_params.index,
@@ -309,7 +355,7 @@ int Game::initSDLRenderer(SDLRendererParams renderer_params) {
     return -1;
 };
 
-int Game::initSDLWindow(SDLWindowParams window_params) {
+int Game::initSDLWindow(SDLWindowParams window_params) noexcept {
   this->window = SDL_CreateWindow(
     window_params.title,
     window_params.x_offset,
@@ -325,27 +371,37 @@ int Game::initSDLWindow(SDLWindowParams window_params) {
     return -1;
 };
 
-void Game::renderAndPresentGameState(SDL_Renderer* state_renderer) {
-  SDL_RenderClear(state_renderer);
-  this->state->render(state_renderer);
-  SDL_RenderPresent(state_renderer);
+void Game::renderAndPresentGameState() {
+  try {
+    this->state->renderAndPresent();
+  }
+  catch(std::exception& e) {
+    std::cerr << "[Game] " << e.what();
+    throw GameRunException(GameRunErrorCode::StateRenderAndPresentError);
+  }
 };
 
-bool Game::shouldKeepRunning() {
+bool Game::shouldKeepRunning() const noexcept {
   return !(this->state->quitRequested());
 };
 
 void Game::updateGameState() {
-  this->state->update(0);
+  try {
+    this->state->update(0);
+  }
+  catch(std::exception& e) {
+    std::cerr << "[Game] " << e.what();
+    throw GameRunException(GameRunErrorCode::StateUpdateError);
+  }
 };
 
-int Game::verifySingletonProperty() {
+int Game::verifySingletonProperty() const noexcept {
   if (Game::instance == nullptr)
     return 0;
   else
     return -1;
 };
 
-void Game::waitTimeIntervalBetweenFrames() {
+void Game::waitTimeIntervalBetweenFrames() const noexcept {
   SDL_Delay(33);
 };

@@ -10,8 +10,8 @@
 // Includes.
 #include <string>
 
-// Namespace.
-using namespace std;
+// Declarations.
+template <typename TErrorCode> class ErrorDescription;
 
 // Class definition.
 template <typename TErrorCode>
@@ -19,45 +19,28 @@ class ErrorDescription {
   // Public components.
   public:
 
-    // Class method prototypes.
-    ErrorDescription(TErrorCode error_code);
-
-    // Method prototypes.
-    TErrorCode getErrorCode();
-
     // Virtual method prototypes.
-    virtual string describeErrorCause(TErrorCode error_code) = 0;
-    virtual string describeErrorDetails(TErrorCode error_code) = 0;
-    virtual string describeErrorSummary() = 0;
+    virtual std::string describeErrorCause(
+      TErrorCode error_code
+    ) const noexcept = 0;
+    virtual std::string describeErrorDetails(
+      TErrorCode error_code
+    ) const noexcept = 0;
+    virtual std::string describeErrorSummary() const noexcept = 0;
 
   // Protected components.
   protected:
 
     // Method prototypes.
-    string describeError(TErrorCode error_code);
-
-  // Private components.
-  private:
-
-    // Members.
-    TErrorCode error_code;
-};
-
-// Class method implementations.
-template <typename TErrorCode>
-ErrorDescription<TErrorCode>::ErrorDescription(TErrorCode error_code) :
-  error_code(error_code) {};
-
-// Public method implementations.
-template <typename TErrorCode>
-TErrorCode ErrorDescription<TErrorCode>::getErrorCode() {
-  return this->error_code;
+    std::string describeError(TErrorCode error_code) const noexcept;
 };
 
 // Protected method implementations.
 template <typename TErrorCode>
-string ErrorDescription<TErrorCode>::describeError(TErrorCode error_code) {
-  string error_description;
+std::string ErrorDescription<TErrorCode>::describeError(
+  TErrorCode error_code
+) const noexcept {
+  std::string error_description;
 
   error_description = this->describeErrorSummary();
   error_description += " ";

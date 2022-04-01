@@ -14,15 +14,15 @@
 // Template includes.
 #include "../templates/ErrorDescription.hpp"
 
-// Namespace.
-using namespace std;
+// Declarations.
+template <typename TErrorCode, class TErrorDescription> class RuntimeException;
 
 // Class definition.
 template <typename TErrorCode, class TErrorDescription>
-class RuntimeException : public TErrorDescription, public runtime_error {
+class RuntimeException : public TErrorDescription, public std::runtime_error {
   // Construction pre-requisites.
   static_assert(
-    is_base_of<ErrorDescription<TErrorCode>, TErrorDescription>::value,
+    std::is_base_of<ErrorDescription<TErrorCode>, TErrorDescription>::value,
     "TErrorDescription must be derived from ErrorDescription template."
   );
 
@@ -31,14 +31,31 @@ class RuntimeException : public TErrorDescription, public runtime_error {
 
     // Class method prototypes.
     RuntimeException(TErrorCode error_code);
+
+    // Method prototypes.
+    TErrorCode getErrorCode() const noexcept;
+
+  // Private components.
+  private:
+
+    // Members.
+    TErrorCode error_code;
 };
 
 // Class method implementations.
 template <typename TErrorCode, class TErrorDescription>
-RuntimeException<TErrorCode,TErrorDescription>::RuntimeException(
+RuntimeException<TErrorCode, TErrorDescription>::RuntimeException(
   TErrorCode error_code
 ) :
-  TErrorDescription(error_code),
-  runtime_error(this->describeError(error_code)) {};
+  TErrorDescription(),
+  runtime_error(this->describeError(error_code)),
+  error_code(error_code) {};
+
+// Public method implementations.
+template <typename TErrorCode, class TErrorDescription>
+TErrorCode RuntimeException<TErrorCode, TErrorDescription>::getErrorCode() \
+const noexcept {
+  return this->error_code;
+};
 
 #endif // RUNTIME_EXCEPTION_T_

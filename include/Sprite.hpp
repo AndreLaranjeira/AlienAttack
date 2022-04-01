@@ -17,26 +17,32 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 
+// User includes.
+#include "GameObject.hpp"
+
 // Template includes.
 #include "templates/ErrorDescription.hpp"
 #include "templates/RuntimeException.hpp"
 
-// Namespace.
-using namespace std;
+// Declarations.
+enum OpenSpriteErrorCode : unsigned short;
+class OpenSpriteErrorDescription;
+class OpenSpriteException;
+class Sprite;
 
 // Enumeration definitions.
-enum LoadAndConfigSpriteErrorCode {
+enum OpenSpriteErrorCode : unsigned short {
   LoadSpriteTextureError = 1,
   ConfigureSpriteError
 };
 
 // Type definitions.
 using SDLTextureUniquePTR = \
-  unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
+  std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
 
 // Auxiliary class definitions.
-class LoadAndConfigSpriteErrorDescription :
-  public ErrorDescription<LoadAndConfigSpriteErrorCode>
+class OpenSpriteErrorDescription :
+  public ErrorDescription<OpenSpriteErrorCode>
 {
   // Public components.
   public:
@@ -45,21 +51,19 @@ class LoadAndConfigSpriteErrorDescription :
     using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
-    string describeErrorCause(
-      LoadAndConfigSpriteErrorCode error_code
-    ) override;
-    string describeErrorDetails(
-      LoadAndConfigSpriteErrorCode error_code
-    ) override;
-    string describeErrorSummary() override;
+    std::string describeErrorCause(
+      OpenSpriteErrorCode error_code
+    ) const noexcept override;
+    std::string describeErrorDetails(
+      OpenSpriteErrorCode error_code
+    ) const noexcept override;
+    std::string describeErrorSummary() const noexcept override;
 };
 
 // Exception definitions.
-class LoadAndConfigSpriteException :
-  public RuntimeException<
-    LoadAndConfigSpriteErrorCode,
-    LoadAndConfigSpriteErrorDescription
-  > {
+class OpenSpriteException :
+  public RuntimeException<OpenSpriteErrorCode, OpenSpriteErrorDescription>
+{
   // Public components.
   public:
 
@@ -68,21 +72,22 @@ class LoadAndConfigSpriteException :
 };
 
 // Class definition.
-class Sprite {
+class Sprite : public Component {
   // Public components.
   public:
 
     // Class method prototypes.
-    Sprite() = default;
-    Sprite(SDL_Renderer* renderer, string file);
+    Sprite(GameObject& associated);
+    Sprite(GameObject& associated, SDL_Renderer* renderer, std::string file);
 
     // Method prototypes.
-    int getHeight();
-    int getWidth();
-    bool isOpen();
-    void open(SDL_Renderer* renderer, string file);
-    void render(SDL_Renderer* renderer, int x_pos, int y_pos);
-    void setClip(int x_pos, int y_pos, int width, int height);
+    int getHeight() const noexcept;
+    int getWidth() const noexcept;
+    bool isOpen() const noexcept;
+    void open(SDL_Renderer* renderer, std::string file);
+    void render(SDL_Renderer* renderer) noexcept override;
+    void setClip(int x_pos, int y_pos, int width, int height) noexcept;
+    void update(double dt) noexcept override;
 
   // Private components.
   private:
@@ -97,9 +102,8 @@ class Sprite {
     int width = 0;
 
     // Method prototypes.
-    int configSpriteWithTextureSpecs();
-    void loadAndConfigSprite(SDL_Renderer* renderer, string file);
-    int loadSpriteTexture(SDL_Renderer* renderer, string file);
+    int configSpriteWithTextureSpecs() noexcept;
+    int loadSpriteTexture(SDL_Renderer* renderer, std::string file) noexcept;
 };
 
 #endif // SPRITE_H_

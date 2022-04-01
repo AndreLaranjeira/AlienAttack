@@ -8,6 +8,8 @@
 #define GAME_H_
 
 // Includes.
+#include <cstddef>
+#include <ctime>
 #include <exception>
 #include <iostream>
 #include <string>
@@ -29,11 +31,27 @@
 #include "templates/ErrorDescription.hpp"
 #include "templates/RuntimeException.hpp"
 
-// Namespace.
-using namespace std;
+// Declarations.
+class Game;
+enum GameInitErrorCode : unsigned short;
+class GameInitErrorDescription;
+class GameInitException;
+struct GameParams;
+enum GameRunErrorCode : unsigned short;
+class GameRunErrorDescription;
+class GameRunException;
+struct SDLAudioParams;
+struct SDLConfig;
+struct SDLRendererParams;
+struct SDLWindowParams;
+
+// Macros.
+#define GAME_WINDOW_TITLE "AlienAttack"
+#define GAME_WINDOW_HEIGHT 600
+#define GAME_WINDOW_WIDTH 1024
 
 // Enumeration definitions.
-enum GameInitErrorCode {
+enum GameInitErrorCode : unsigned short {
   DuplicateGameInstanceError = 1,
   SDLError,
   SDLImageError,
@@ -44,9 +62,14 @@ enum GameInitErrorCode {
   GameStateError
 };
 
+enum GameRunErrorCode : unsigned short {
+  StateUpdateError = 1,
+  StateRenderAndPresentError
+};
+
 // Type definitions.
 struct GameParams {
-  string title;
+  std::string title;
   int width;
   int height;
 };
@@ -91,14 +114,45 @@ class GameInitErrorDescription : public ErrorDescription<GameInitErrorCode> {
     using ErrorDescription::ErrorDescription;
 
     // Method prototypes.
-    string describeErrorCause(GameInitErrorCode error_code) override;
-    string describeErrorDetails(GameInitErrorCode error_code) override;
-    string describeErrorSummary() override;
+    std::string describeErrorCause(
+      GameInitErrorCode error_code
+    ) const noexcept override;
+    std::string describeErrorDetails(
+      GameInitErrorCode error_code
+    ) const noexcept override;
+    std::string describeErrorSummary() const noexcept override;
+};
+
+class GameRunErrorDescription : public ErrorDescription<GameRunErrorCode> {
+  // Public components.
+  public:
+
+    // Inherited methods.
+    using ErrorDescription::ErrorDescription;
+
+    // Method prototypes.
+    std::string describeErrorCause(
+      GameRunErrorCode error_code
+    ) const noexcept override;
+    std::string describeErrorDetails(
+      GameRunErrorCode error_code
+    ) const noexcept override;
+    std::string describeErrorSummary() const noexcept override;
 };
 
 // Exception definitions.
 class GameInitException :
   public RuntimeException<GameInitErrorCode, GameInitErrorDescription>
+{
+  // Public components.
+  public:
+
+    // Inherited methods.
+    using RuntimeException::RuntimeException;
+};
+
+class GameRunException :
+  public RuntimeException<GameRunErrorCode, GameRunErrorDescription>
 {
   // Public components.
   public:
@@ -113,11 +167,11 @@ class Game {
   public:
   
     // Class method prototypes.
-    ~Game();
+    ~Game() noexcept;
 
     // Method prototypes.
-    SDL_Renderer* getRenderer();
-    State& getState();
+    SDL_Renderer* getRenderer() noexcept;
+    State& getState() noexcept;
     void run();
 
     // Static method prototypes.
@@ -130,9 +184,6 @@ class Game {
     Game(GameParams game_params);
     Game(const Game&) = delete;
 
-    // Class operators.
-    Game& operator=(const Game&) = delete;
-
     // Members.
     SDL_Renderer* renderer = nullptr;
     State* state = nullptr;
@@ -141,26 +192,30 @@ class Game {
     // Static members.
     static Game* instance;
 
+    // Default operator overloadings.
+    Game& operator = (const Game&) = delete;
+
     // Method prototypes.
-    void cleanUpFailedGameInit(GameInitErrorCode error_code);
-    void cleanUpGameRenderer();
-    void cleanUpGameState();
-    void cleanUpGameWindow();
-    void cleanUpSDLModules();
-    SDLConfig generateDefaultSDLConfig(GameParams game_params);
+    void cleanUpFailedGameInit(GameInitErrorCode error_code) noexcept;
+    void cleanUpGameRenderer() noexcept;
+    void cleanUpGameState() noexcept;
+    void cleanUpGameWindow() noexcept;
+    void cleanUpSDLModules() noexcept;
+    SDLConfig defaultSDLConfig(GameParams game_params) const noexcept;
     void initGame(SDLConfig SDL_module_params);
-    int initGameState();
-    int initSDL(Uint32 flags);
-    int initSDLAudio(SDLAudioParams audio_params, int audio_channels);
-    int initSDLImage(int flags);
-    int initSDLMix(int flags);
-    int initSDLRenderer(SDLRendererParams renderer_params);
-    int initSDLWindow(SDLWindowParams window_params);
-    void renderAndPresentGameState(SDL_Renderer* renderer);
-    bool shouldKeepRunning();
+    int initGameState() noexcept;
+    void initRandomNumberGeneration() noexcept;
+    int initSDL(Uint32 flags) noexcept;
+    int initSDLAudio(SDLAudioParams audio_params, int audio_channels) noexcept;
+    int initSDLImage(int flags) noexcept;
+    int initSDLMix(int flags) noexcept;
+    int initSDLRenderer(SDLRendererParams renderer_params) noexcept;
+    int initSDLWindow(SDLWindowParams window_params) noexcept;
+    void renderAndPresentGameState();
+    bool shouldKeepRunning() const noexcept;
     void updateGameState();
-    int verifySingletonProperty();
-    void waitTimeIntervalBetweenFrames();
+    int verifySingletonProperty() const noexcept;
+    void waitTimeIntervalBetweenFrames() const noexcept;
 };
 
 #endif // GAME_H_
