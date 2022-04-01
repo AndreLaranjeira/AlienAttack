@@ -32,7 +32,7 @@ double Rectangle::distanceBetweenCenters(
   );
 };
 
-bool Rectangle::isGivenReferenceInsideOfSelf(
+bool Rectangle::isReferenceInsideOfSelf(
   const VectorR2& reference
 ) const noexcept {
   return (
@@ -43,7 +43,7 @@ bool Rectangle::isGivenReferenceInsideOfSelf(
   );
 };
 
-bool Rectangle::isGivenReferenceOnTheBoundaryOfSelf(
+bool Rectangle::isReferenceOnTheBoundariesOfSelf(
   const VectorR2& reference
 ) const noexcept {
   return (
@@ -63,7 +63,7 @@ bool Rectangle::isGivenReferenceOnTheBoundaryOfSelf(
   );
 };
 
-bool Rectangle::isGivenReferenceInsideOrOnTheBoundaryOfSelf(
+bool Rectangle::isReferenceInsideOrOnTheBoundariesOfSelf(
   const VectorR2& reference
 ) const noexcept {
   return (

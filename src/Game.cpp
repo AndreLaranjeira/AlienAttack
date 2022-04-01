@@ -43,11 +43,11 @@ Game& Game::getInstance() {
   return *Game::instance;
 };
 
-SDL_Renderer* Game::getRenderer() const noexcept {
+SDL_Renderer* Game::getRenderer() noexcept {
   return this->renderer;
 };
 
-State& Game::getState() const noexcept {
+State& Game::getState() noexcept {
   return *(this->state);
 };
 

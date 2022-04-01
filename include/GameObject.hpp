@@ -9,7 +9,6 @@
 
 // Includes.
 #include <algorithm>
-#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -22,18 +21,18 @@
 
 // Declarations.
 class Component;
-enum ComponentType : short;
+enum ComponentType : unsigned short;
 class GameObject;
-enum GameObjectState : short;
+enum GameObjectState : unsigned short;
 
 // Enumeration definitions.
-enum ComponentType : short {
+enum ComponentType : unsigned short {
   FaceComponent,
   SoundComponent,
   SpriteComponent
 };
 
-enum GameObjectState : short {
+enum GameObjectState : unsigned short {
   AliveState,
   DeadState,
   DeletionState
@@ -83,6 +82,9 @@ class Component {
 class GameObject {
   // Public components.
   public:
+    
+    // Members.
+    Rectangle box;
 
     // Method prototypes.
     void addComponent(Component* new_component);
@@ -99,9 +101,6 @@ class GameObject {
     void setCenterCoordinates(const VectorR2& center_coordinates) noexcept;
     void setDimensions(double width, double height) noexcept;
     void update(double dt);
-    
-    // Members.
-    Rectangle box;
 
   // Private components.
   private:
@@ -117,7 +116,6 @@ class GameObject {
     component_const_iter searchComponentsByValue(
       Component* search_parameter
     ) const noexcept;
-
 };
 
 #endif // GAME_OBJECT_H_

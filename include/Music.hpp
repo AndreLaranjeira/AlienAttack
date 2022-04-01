@@ -160,8 +160,8 @@ class Music {
 
     // Method prototypes.
     bool mixerInUse() const noexcept;
-    int playCurrentMusicWithMixer(int times) noexcept;
-    int stopCurrentMusicWithMixer(
+    int useMixerToPlayCurrentMusic(int times) noexcept;
+    int useMixerToStopCurrentMusic(
       unsigned int fade_out_duration_milliseconds
     ) noexcept;
 };

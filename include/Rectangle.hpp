@@ -34,13 +34,13 @@ class Rectangle {
     // Method prototypes.
     VectorR2 coordinatesOfCenter() const noexcept;
     double distanceBetweenCenters(const Rectangle& reference) const noexcept;
-    bool isGivenReferenceInsideOfSelf(
+    bool isReferenceInsideOfSelf(
       const VectorR2& reference
     ) const noexcept;
-    bool isGivenReferenceOnTheBoundaryOfSelf(
+    bool isReferenceOnTheBoundariesOfSelf(
       const VectorR2& reference
     ) const noexcept;
-    bool isGivenReferenceInsideOrOnTheBoundaryOfSelf(
+    bool isReferenceInsideOrOnTheBoundariesOfSelf(
       const VectorR2& reference
     ) const noexcept;
 };

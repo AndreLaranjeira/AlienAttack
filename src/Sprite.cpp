@@ -80,10 +80,10 @@ bool Sprite::isOpen() const noexcept {
 };
 
 void Sprite::open(SDL_Renderer* renderer, std::string file) {
-  if(loadSpriteTexture(renderer, file) != 0)
+  if(this->loadSpriteTexture(renderer, file) != 0)
     throw OpenSpriteException(OpenSpriteErrorCode::LoadSpriteTextureError);
   
-  if(configSpriteWithTextureSpecs() != 0)
+  if(this->configSpriteWithTextureSpecs() != 0)
     throw OpenSpriteException(OpenSpriteErrorCode::ConfigureSpriteError);
 };
 
@@ -121,17 +121,17 @@ int Sprite::configSpriteWithTextureSpecs() noexcept {
       nullptr,
       &this->width,
       &this->height
-    ) == 0
-  ) {
-    this->setClip(0, 0, this->width, this->height);
-    this->associated.setDimensions(
-      (double) this->width,
-      (double) this->height
-    );
-    return 0;
-  }
-  else 
+    ) != 0
+  )
     return -1;
+
+  this->setClip(0, 0, this->width, this->height);
+  this->associated.setDimensions(
+    (double) this->width,
+    (double) this->height
+  );
+
+  return 0;
 };
 
 int Sprite::loadSpriteTexture(

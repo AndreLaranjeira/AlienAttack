@@ -46,9 +46,9 @@ struct BackgroundParams {
 };
 
 struct EnemyParams {
-  VectorR2 coordinates;
-  std::string sound_file;
   std::string sprite_file;
+  std::string sound_file;
+  VectorR2 coordinates;
 };
 
 // Class definition.
@@ -106,7 +106,6 @@ class State {
       const VectorR2& search_coordinates
     );
     VectorR2 mouseCoordinates() const noexcept;
-    bool musicIsUsingMixer() const noexcept;
     void playMusic() noexcept;
     VectorR2 randomCoordinatesWithMagnitude(
       unsigned int coordinates_magnitude

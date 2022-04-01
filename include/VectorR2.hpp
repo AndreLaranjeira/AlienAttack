@@ -29,6 +29,9 @@ class VectorR2 {
     // Method prototypes.
     double angleInRadiansFromSelfTo(const VectorR2& reference) const noexcept;
     double angleInRadiansFromXAxisToSelf() const noexcept;
+    double angleInRadiansFromXAxisToSlopeConnectingSelfTo(
+      const VectorR2& reference
+    ) const noexcept;
     VectorR2 clockwiseRotatedVector(
       double rotation_angle_in_radians
     ) const noexcept;
@@ -50,7 +53,7 @@ void operator += (VectorR2& lhs, const VectorR2& rhs) noexcept;
 VectorR2 operator - (const VectorR2& operand) noexcept;
 VectorR2 operator - (const VectorR2& lhs, const VectorR2& rhs) noexcept;
 void operator -= (VectorR2& lhs, const VectorR2& rhs) noexcept;
-VectorR2 operator * (double scalar, const VectorR2& vector) noexcept;
-VectorR2 operator * (const VectorR2& vector, double scalar) noexcept;
+VectorR2 operator * (const double scalar, const VectorR2& vector) noexcept;
+VectorR2 operator * (const VectorR2& vector, const double scalar) noexcept;
 
 #endif // VECTOR_R2_H_

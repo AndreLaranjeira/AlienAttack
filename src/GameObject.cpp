@@ -25,7 +25,7 @@ void GameObject::addComponent(Component* new_component) {
 };
 
 bool GameObject::deletionWasRequested() const noexcept {
-  return this->state == DeletionState;
+  return this->state == GameObjectState::DeletionState;
 };
 
 Component* GameObject::getComponent(ComponentType type) noexcept {
@@ -45,7 +45,7 @@ bool GameObject::hasComponentType(ComponentType type) const noexcept {
 };
 
 bool GameObject::isAlive() const noexcept {
-  return this->state == AliveState;
+  return this->state == GameObjectState::AliveState;
 };
 
 void GameObject::removeComponent(Component* removal_target) {
@@ -58,8 +58,12 @@ void GameObject::removeComponent(Component* removal_target) {
 };
 
 void GameObject::removeComponent(ComponentType removal_target_type) {
-  if(this->hasComponentType(removal_target_type))
-    this->removeComponent(this->getComponent(removal_target_type));  
+  component_const_iter removal_position = this->searchComponentsByType(
+    removal_target_type
+  );
+
+  if(removal_position != this->components.end())
+    this->components.erase(removal_position);
 };
 
 void GameObject::render(SDL_Renderer* renderer) {
@@ -68,11 +72,11 @@ void GameObject::render(SDL_Renderer* renderer) {
 };
 
 void GameObject::requestDeletion() noexcept {
-  this->state = DeletionState;
+  this->state = GameObjectState::DeletionState;
 };
 
 void GameObject::resolveDeath() {
-  this->state = DeadState;
+  this->state = GameObjectState::DeadState;
   this->removeComponent(ComponentType::FaceComponent);
   this->removeComponent(ComponentType::SpriteComponent);
 };

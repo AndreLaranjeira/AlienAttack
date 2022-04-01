@@ -159,12 +159,12 @@ class Sound : public Component {
     // Class method prototypes.
     Sound(const Sound&) = delete;
 
-    // Default operator overloadings.
-    Sound& operator = (const Sound&) = delete;
-
     // Members.
     int channel = -1;
     Mix_Chunk* sound = nullptr;
+
+    // Default operator overloadings.
+    Sound& operator = (const Sound&) = delete;
 
     // Method prototypes.
     void cleanUpCurrentSound() noexcept;
@@ -173,7 +173,7 @@ class Sound : public Component {
     bool reservedChannelHasNotBeenReassigned() const noexcept;
     bool reservedChannelIsInUse() const noexcept;
     bool soundIsPlaying() const noexcept;
-    bool startedPlaying() const noexcept;
+    bool soundStartedPlaying() const noexcept;
     void stopSoundCurrentlyPlaying() noexcept;
     void stopSoundOnReservedChannel() noexcept;
 };

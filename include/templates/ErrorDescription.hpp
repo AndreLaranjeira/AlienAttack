@@ -19,9 +19,6 @@ class ErrorDescription {
   // Public components.
   public:
 
-    // Class method prototypes.
-    ErrorDescription() noexcept;
-
     // Virtual method prototypes.
     virtual std::string describeErrorCause(
       TErrorCode error_code
@@ -37,10 +34,6 @@ class ErrorDescription {
     // Method prototypes.
     std::string describeError(TErrorCode error_code) const noexcept;
 };
-
-// Class method implementations.
-template <typename TErrorCode>
-ErrorDescription<TErrorCode>::ErrorDescription() noexcept {};
 
 // Protected method implementations.
 template <typename TErrorCode>

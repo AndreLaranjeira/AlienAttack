@@ -13,11 +13,19 @@ VectorR2::VectorR2(double x, double y) noexcept : x(x), y(y) {};
 double VectorR2::angleInRadiansFromSelfTo(
   const VectorR2& reference
 ) const noexcept {
-  return (*this - reference).angleInRadiansFromXAxisToSelf();
+  return acos(
+    this->dotProductWith(reference)/(this->magnitude() * reference.magnitude())
+  );
 };
 
 double VectorR2::angleInRadiansFromXAxisToSelf() const noexcept {
   return atan2(this->y, this->x);
+};
+
+double VectorR2::angleInRadiansFromXAxisToSlopeConnectingSelfTo(
+  const VectorR2& reference
+) const noexcept {
+  return (reference - *this).angleInRadiansFromXAxisToSelf();
 };
 
 VectorR2 VectorR2::clockwiseRotatedVector(
@@ -100,13 +108,13 @@ void operator -= (VectorR2& lhs, const VectorR2& rhs) noexcept {
   lhs = lhs - rhs;
 };
 
-VectorR2 operator * (double scalar, const VectorR2& vector) noexcept {
+VectorR2 operator * (const double scalar, const VectorR2& vector) noexcept {
   return VectorR2(
     scalar * vector.x,
     scalar * vector.y
   );
 };
 
-VectorR2 operator * (const VectorR2& vector, double scalar) noexcept {
+VectorR2 operator * (const VectorR2& vector, const double scalar) noexcept {
   return scalar * vector;
 };

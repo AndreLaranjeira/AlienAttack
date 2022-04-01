@@ -37,7 +37,7 @@ void Music::play(int times) {
   else if(this->mixerInUse())
     throw PlayMusicException(PlayMusicErrorCode::MixerInUseError);
 
-  else if(this->playCurrentMusicWithMixer(times) != 0)
+  else if(this->useMixerToPlayCurrentMusic(times) != 0)
     throw PlayMusicException(PlayMusicErrorCode::FailureToPlayMusicError);
 };
 
@@ -51,7 +51,7 @@ void Music::stop(unsigned int fade_out_duration_milliseconds) {
   else if(!this->mixerInUse())
     throw StopMusicException(StopMusicErrorCode::MixerNotInUseError);
 
-  else if(this->stopCurrentMusicWithMixer(fade_out_duration_milliseconds) != 0)
+  else if(this->useMixerToStopCurrentMusic(fade_out_duration_milliseconds) != 0)
     throw StopMusicException(StopMusicErrorCode::FailureToStopMusicError);
 };
 
@@ -198,7 +198,7 @@ bool Music::mixerInUse() const noexcept {
   return (Mix_PlayingMusic() && Mix_FadingMusic() != MIX_FADING_OUT);
 };
 
-int Music::playCurrentMusicWithMixer(int times) noexcept {
+int Music::useMixerToPlayCurrentMusic(int times) noexcept {
   if(Mix_PlayMusic(this->music.get(), times) != 0)
     return -1;
 
@@ -206,7 +206,7 @@ int Music::playCurrentMusicWithMixer(int times) noexcept {
   return 0;
 };
 
-int Music::stopCurrentMusicWithMixer(
+int Music::useMixerToStopCurrentMusic(
   unsigned int fade_out_duration_milliseconds
 ) noexcept {
   if(Mix_FadeOutMusic(fade_out_duration_milliseconds) != 0)

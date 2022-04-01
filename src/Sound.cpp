@@ -114,7 +114,7 @@ std::string PlaySoundErrorDescription::describeErrorSummary() const noexcept {
 
 bool Sound::finishedPlaying() const noexcept {
   return (
-    this->startedPlaying() &&
+    this->soundStartedPlaying() &&
     !this->soundIsPlaying()
   );
 };
@@ -154,8 +154,7 @@ void Sound::stop() {
   else if(!this->hasReservedChannel())
     throw StopSoundException(StopSoundErrorCode::NoChannelReservedError);
 
-  else if(this->soundIsPlaying())
-    this->stopSoundCurrentlyPlaying();
+  this->stopSoundCurrentlyPlaying();
 };
 
 void Sound::update(double dt) noexcept {};
@@ -252,13 +251,13 @@ bool Sound::reservedChannelIsInUse() const noexcept {
 
 bool Sound::soundIsPlaying() const noexcept {
   return (
-    this->startedPlaying() &&
+    this->soundStartedPlaying() &&
     this->reservedChannelIsInUse() &&
     this->reservedChannelHasNotBeenReassigned()
   );
 };
 
-bool Sound::startedPlaying() const noexcept {
+bool Sound::soundStartedPlaying() const noexcept {
   return (
     this->isOpen() &&
     this->hasReservedChannel()

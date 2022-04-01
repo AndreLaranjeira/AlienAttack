@@ -63,7 +63,7 @@ enum GameInitErrorCode : unsigned short {
 };
 
 enum GameRunErrorCode : unsigned short {
-  StateUpdateError,
+  StateUpdateError = 1,
   StateRenderAndPresentError
 };
 
@@ -170,8 +170,8 @@ class Game {
     ~Game() noexcept;
 
     // Method prototypes.
-    SDL_Renderer* getRenderer() const noexcept;
-    State& getState() const noexcept;
+    SDL_Renderer* getRenderer() noexcept;
+    State& getState() noexcept;
     void run();
 
     // Static method prototypes.
@@ -184,9 +184,6 @@ class Game {
     Game(GameParams game_params);
     Game(const Game&) = delete;
 
-    // Default operator overloadings.
-    Game& operator = (const Game&) = delete;
-
     // Members.
     SDL_Renderer* renderer = nullptr;
     State* state = nullptr;
@@ -194,6 +191,9 @@ class Game {
 
     // Static members.
     static Game* instance;
+
+    // Default operator overloadings.
+    Game& operator = (const Game&) = delete;
 
     // Method prototypes.
     void cleanUpFailedGameInit(GameInitErrorCode error_code) noexcept;
