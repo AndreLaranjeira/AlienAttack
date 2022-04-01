@@ -140,7 +140,7 @@ int Sprite::loadSpriteTexture(
 ) noexcept {
   this->texture.reset(IMG_LoadTexture(renderer, file.c_str()));
   
-  if(this->texture.get() != nullptr)
+  if(this->texture)
     return 0;
 
   else

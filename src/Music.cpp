@@ -23,7 +23,7 @@ bool Music::isUsingMixer() const noexcept {
 void Music::open(std::string file) {
   this->music.reset(Mix_LoadMUS(file.c_str()));
 
-  if(this->music.get() == nullptr)
+  if(!this->music)
     throw OpenMusicException(OpenMusicErrorCode::LoadMusicError);
 };
 

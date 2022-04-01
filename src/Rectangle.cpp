@@ -18,10 +18,7 @@ Rectangle::Rectangle(
 
 // Public method implementations.
 VectorR2 Rectangle::coordinatesOfCenter() const noexcept {
-  return VectorR2(
-    this->upper_left_corner.x + (this->width / 2),
-    this->upper_left_corner.y + (this->height / 2)
-  );
+  return this->upper_left_corner + this->vectorFromUpperLeftCornerToCenter();
 };
 
 double Rectangle::distanceBetweenCenters(
@@ -71,6 +68,13 @@ bool Rectangle::isReferenceInsideOrOnTheBoundariesOfSelf(
     reference.x <= this->upper_left_corner.x + width &&
     reference.y >= this->upper_left_corner.y &&
     reference.y <= this->upper_left_corner.y + height
+  );
+};
+
+VectorR2 Rectangle::vectorFromUpperLeftCornerToCenter() const noexcept {
+  return VectorR2(
+    this->width / 2,
+    this-> height / 2
   );
 };
 

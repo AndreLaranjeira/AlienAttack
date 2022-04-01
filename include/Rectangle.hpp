@@ -43,6 +43,7 @@ class Rectangle {
     bool isReferenceInsideOrOnTheBoundariesOfSelf(
       const VectorR2& reference
     ) const noexcept;
+    VectorR2 vectorFromUpperLeftCornerToCenter() const noexcept;
 };
 
 // Class operator prototypes.

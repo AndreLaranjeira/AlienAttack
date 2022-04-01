@@ -53,8 +53,7 @@ void GameObject::removeComponent(Component* removal_target) {
     removal_target
   );
 
-  if(removal_position != this->components.end())
-    this->components.erase(removal_position);
+  this->eraseComponentAtPosition(removal_position);
 };
 
 void GameObject::removeComponent(ComponentType removal_target_type) {
@@ -62,8 +61,7 @@ void GameObject::removeComponent(ComponentType removal_target_type) {
     removal_target_type
   );
 
-  if(removal_position != this->components.end())
-    this->components.erase(removal_position);
+  this->eraseComponentAtPosition(removal_position);
 };
 
 void GameObject::render(SDL_Renderer* renderer) {
@@ -84,13 +82,8 @@ void GameObject::resolveDeath() {
 void GameObject::setCenterCoordinates(
   const VectorR2& center_coordinates
 ) noexcept {
-  VectorR2 distance_from_upper_left_corner_to_center = VectorR2(
-    this->box.width / 2,
-    this->box.height / 2
-  );
-
   this->box.upper_left_corner = \
-    center_coordinates - distance_from_upper_left_corner_to_center;
+    center_coordinates - this->box.vectorFromUpperLeftCornerToCenter();
 };
 
 void GameObject::setDimensions(double width, double height) noexcept {
@@ -104,6 +97,13 @@ void GameObject::update(double dt) {
 };
 
 // Private method implementations.
+void GameObject::eraseComponentAtPosition(
+  component_const_iter removal_position
+) {
+  if(removal_position != this->components.end())
+    this->components.erase(removal_position);
+}
+
 component_const_iter GameObject::searchComponentsByType(
   ComponentType search_parameter
 ) const noexcept {

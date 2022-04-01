@@ -14,7 +14,8 @@ double VectorR2::angleInRadiansFromSelfTo(
   const VectorR2& reference
 ) const noexcept {
   return acos(
-    this->dotProductWith(reference)/(this->magnitude() * reference.magnitude())
+    this->dotProductWith(reference) /
+    (this->magnitude() * reference.magnitude())
   );
 };
 

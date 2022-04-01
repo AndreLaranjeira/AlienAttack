@@ -110,6 +110,7 @@ class GameObject {
     GameObjectState state = AliveState;
 
     // Method prototypes.
+    void eraseComponentAtPosition(component_const_iter removal_position);
     component_const_iter searchComponentsByType(
       ComponentType search_parameter
     ) const noexcept;
