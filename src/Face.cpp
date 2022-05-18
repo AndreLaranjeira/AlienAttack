@@ -21,7 +21,7 @@ void Face::registerDamage(unsigned int damage) {
     this->handleAssociatedGameObjectDeath();
 };
 
-void Face::render(SDL_Renderer* renderer) noexcept {};
+void Face::render(SDL_Renderer* renderer) const noexcept {};
 
 void Face::update(double dt) noexcept {};
 

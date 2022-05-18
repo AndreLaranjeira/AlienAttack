@@ -145,7 +145,7 @@ void Sound::play(int loops_after_first_time_played) {
     throw PlaySoundException(PlaySoundErrorCode::FailureToPlaySoundError);
 };
 
-void Sound::render(SDL_Renderer* renderer) noexcept {};
+void Sound::render(SDL_Renderer* renderer) const noexcept {};
 
 void Sound::stop() {
   if(!this->isOpen())

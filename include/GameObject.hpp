@@ -62,7 +62,7 @@ class Component {
     bool is(ComponentType type) const noexcept;
     
     // Virtual method prototypes.
-    virtual void render(SDL_Renderer* renderer) = 0;
+    virtual void render(SDL_Renderer* renderer) const = 0;
     virtual void update(double dt) = 0;
 
   // Protected components.
@@ -95,7 +95,7 @@ class GameObject {
     bool isAlive() const noexcept;
     void removeComponent(Component* component_to_remove);
     void removeComponent(ComponentType removal_target_type);
-    void render(SDL_Renderer* renderer);
+    void render(SDL_Renderer* renderer) const;
     void requestDeletion() noexcept;
     void resolveDeath();
     void setCenterCoordinates(const VectorR2& center_coordinates) noexcept;

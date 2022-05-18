@@ -33,7 +33,7 @@ class Face : public Component {
 
     // Method prototypes.
     void registerDamage(unsigned int damage);
-    void render(SDL_Renderer* renderer) noexcept override;
+    void render(SDL_Renderer* renderer) const noexcept override;
     void update(double dt) noexcept override;
 
   // Private components.

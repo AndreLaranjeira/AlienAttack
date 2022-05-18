@@ -8,68 +8,14 @@
 #define SPRITE_H_
 
 // Includes.
-#include <memory>
 #include <string>
-
-// SDL2 includes.
-#include <SDL2/SDL_error.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
 
 // User includes.
 #include "GameObject.hpp"
-
-// Template includes.
-#include "templates/ErrorDescription.hpp"
-#include "templates/RuntimeException.hpp"
+#include "Texture.hpp"
 
 // Declarations.
-enum OpenSpriteErrorCode : unsigned short;
-class OpenSpriteErrorDescription;
-class OpenSpriteException;
 class Sprite;
-
-// Enumeration definitions.
-enum OpenSpriteErrorCode : unsigned short {
-  LoadSpriteTextureError = 1,
-  ConfigureSpriteError
-};
-
-// Type definitions.
-using SDLTextureUniquePTR = \
-  std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
-
-// Auxiliary class definitions.
-class OpenSpriteErrorDescription :
-  public ErrorDescription<OpenSpriteErrorCode>
-{
-  // Public components.
-  public:
-
-    // Inherited methods.
-    using ErrorDescription::ErrorDescription;
-
-    // Method prototypes.
-    std::string describeErrorCause(
-      OpenSpriteErrorCode error_code
-    ) const noexcept override;
-    std::string describeErrorDetails(
-      OpenSpriteErrorCode error_code
-    ) const noexcept override;
-    std::string describeErrorSummary() const noexcept override;
-};
-
-// Exception definitions.
-class OpenSpriteException :
-  public RuntimeException<OpenSpriteErrorCode, OpenSpriteErrorDescription>
-{
-  // Public components.
-  public:
-
-    // Inherited methods.
-    using RuntimeException::RuntimeException;
-};
 
 // Class definition.
 class Sprite : public Component {
@@ -81,29 +27,18 @@ class Sprite : public Component {
     Sprite(GameObject& associated, SDL_Renderer* renderer, std::string file);
 
     // Method prototypes.
-    int getHeight() const noexcept;
-    int getWidth() const noexcept;
-    bool isOpen() const noexcept;
     void open(SDL_Renderer* renderer, std::string file);
-    void render(SDL_Renderer* renderer) noexcept override;
-    void setClip(int x_pos, int y_pos, int width, int height) noexcept;
+    void render(SDL_Renderer* renderer) const noexcept override;
     void update(double dt) noexcept override;
 
   // Private components.
   private:
 
     // Members.
-    SDL_Rect clip_rect;
-    int height = 0;
-    SDLTextureUniquePTR texture = SDLTextureUniquePTR(
-      nullptr,
-      &SDL_DestroyTexture
-    );
-    int width = 0;
+    Texture texture;
 
     // Method prototypes.
-    int configSpriteWithTextureSpecs() noexcept;
-    int loadSpriteTexture(SDL_Renderer* renderer, std::string file) noexcept;
+    void setAssociatedGameObjectDimensions() noexcept;
 };
 
 #endif // SPRITE_H_

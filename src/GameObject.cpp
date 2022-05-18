@@ -64,7 +64,7 @@ void GameObject::removeComponent(ComponentType removal_target_type) {
   this->eraseComponentAtPosition(removal_position);
 };
 
-void GameObject::render(SDL_Renderer* renderer) {
+void GameObject::render(SDL_Renderer* renderer) const {
   for(auto& component : this->components)
     component->render(renderer);
 };

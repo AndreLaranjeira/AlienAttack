@@ -149,7 +149,7 @@ class Sound : public Component {
     bool isOpen() const noexcept;
     void open(std::string file);
     void play(int loops_after_first_time_played = 0);
-    void render(SDL_Renderer* renderer) noexcept override;
+    void render(SDL_Renderer* renderer) const noexcept override;
     void stop();
     void update(double dt) noexcept override;
 

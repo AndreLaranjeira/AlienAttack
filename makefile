@@ -17,7 +17,8 @@ TPL_EXT = hpp
 
 # Project components.
 MAIN = main
-CLASSES = Face Game GameObject Music Rectangle Sound Sprite State VectorR2
+CLASSES = Face Game GameObject Music Rectangle Sound Sprite State Texture \
+	VectorR2
 TEMPLATES = ErrorDescription RuntimeException
 
 # Compiler name, source file extension and compilation data (flags and libs).
@@ -29,8 +30,8 @@ LIBS = -lSDL2 -lSDL2_image -lSDL2_mixer
 FULL_PATH = $(patsubst %,$(2)/%.$(3),$(1))
 
 # Joining file names with their respective paths.
-DEPS = $(call FULL_PATH,$(CLASSES),$(INC_DIR),$(INC_EXT))
-DEPS += $(call FULL_PATH,$(TEMPLATES),$(TPL_DIR),$(TPL_EXT))
+DEPS = $(call FULL_PATH,$(CLASSES),$(INC_DIR),$(INC_EXT)) \
+	$(call FULL_PATH,$(TEMPLATES),$(TPL_DIR),$(TPL_EXT))
 OBJ = $(call FULL_PATH,$(CLASSES) $(MAIN),$(OBJ_DIR),$(OBJ_EXT))
 
 # Project executable compilation rule.
