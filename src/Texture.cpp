@@ -95,8 +95,8 @@ void Texture::render(
   const VectorR2& destination
 ) const {
   SDL_Rect destination_rect = {
-    .x = (int) destination.x,
-    .y = (int) destination.y,
+    .x = destination.xAsInt(),
+    .y = destination.yAsInt(),
     .w = this->clip_rect.w,
     .h = this->clip_rect.h
   };
@@ -124,8 +124,8 @@ void Texture::setClip(
   int width,
   int height
 ) noexcept {
-  this->clip_rect.x = (int) upper_left_corner.x;
-  this->clip_rect.y = (int) upper_left_corner.y;
+  this->clip_rect.x = upper_left_corner.xAsInt();
+  this->clip_rect.y = upper_left_corner.yAsInt();
   this->clip_rect.w = width;
   this->clip_rect.h = height;
 };

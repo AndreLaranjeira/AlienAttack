@@ -82,6 +82,26 @@ void VectorR2::rotateSelfCounterClockwise(
   *this = this->counterClockwiseRotatedVector(rotation_angle_in_radians);
 };
 
+int VectorR2::xAsInt() const noexcept {
+  if(this->x < INT_MIN)
+    return INT_MIN;
+
+  if(this->x > INT_MAX)
+    return INT_MAX;
+
+  return (int) this->x;
+};
+
+int VectorR2::yAsInt() const noexcept {
+  if(this->y < INT_MIN)
+    return INT_MIN;
+
+  if(this->y > INT_MAX)
+    return INT_MAX;
+
+  return (int) this->y;
+};
+
 // Class operator implementations.
 VectorR2 operator + (const VectorR2& lhs, const VectorR2& rhs) noexcept {  
   return VectorR2(

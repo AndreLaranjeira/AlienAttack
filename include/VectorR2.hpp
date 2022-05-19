@@ -8,6 +8,7 @@
 #define VECTOR_R2_H_
 
 // Includes.
+#include <climits>
 #include <cmath>
 
 // Declarations.
@@ -45,6 +46,8 @@ class VectorR2 {
     void normalizeSelf() noexcept;
     void rotateSelfClockwise(double rotation_angle_in_radians) noexcept;
     void rotateSelfCounterClockwise(double rotation_angle_in_radians) noexcept;
+    int xAsInt() const noexcept;
+    int yAsInt() const noexcept;
 };
 
 // Class operator prototypes.

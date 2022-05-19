@@ -227,7 +227,7 @@ VectorR2 State::randomCoordinatesWithMagnitude(
 ) const noexcept {
   double random_angle = M_PI * (rand() % 2000)/1000.0;
 
-  return VectorR2((int) coordinates_magnitude, 0)\
+  return VectorR2((double) coordinates_magnitude, 0)\
     .clockwiseRotatedVector(random_angle);
 };
 
