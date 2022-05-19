@@ -43,21 +43,6 @@ std::string OpenSoundErrorDescription::describeErrorCause(
   return error_cause;
 };
 
-std::string OpenSoundErrorDescription::describeErrorDetails(
-  OpenSoundErrorCode error_code
-) const noexcept {
-  std::string error_details;
-
-  switch (error_code) {
-    default:
-      error_details += Mix_GetError();
-  }
-
-  error_details += ".";
-
-  return error_details;
-};
-
 std::string OpenSoundErrorDescription::describeErrorSummary() const noexcept {
   std::string error_summary = std::string(
     "OpenSoundError: An error occurred when opening a sound asset!"
@@ -87,21 +72,6 @@ std::string PlaySoundErrorDescription::describeErrorCause(
   error_cause += ".";
 
   return error_cause;
-};
-
-std::string PlaySoundErrorDescription::describeErrorDetails(
-  PlaySoundErrorCode error_code
-) const noexcept {
-  std::string error_details;
-
-  switch (error_code) {
-    default:
-      error_details += Mix_GetError();
-  }
-
-  error_details += ".";
-
-  return error_details;
 };
 
 std::string PlaySoundErrorDescription::describeErrorSummary() const noexcept {
@@ -177,21 +147,6 @@ std::string StopSoundErrorDescription::describeErrorCause(
   error_cause += ".";
 
   return error_cause;
-};
-
-std::string StopSoundErrorDescription::describeErrorDetails(
-  StopSoundErrorCode error_code
-) const noexcept {
-  std::string error_details;
-
-  switch (error_code) {
-    default:
-      error_details += Mix_GetError();
-  }
-
-  error_details += ".";
-
-  return error_details;
 };
 
 std::string StopSoundErrorDescription::describeErrorSummary() const noexcept {

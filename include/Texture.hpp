@@ -26,6 +26,7 @@
 
 // Declarations.
 enum OpenTextureErrorCode : unsigned short;
+enum RenderTextureErrorCode : unsigned short;
 class OpenTextureErrorDescription;
 class OpenTextureException;
 class Texture;
@@ -34,6 +35,11 @@ class Texture;
 enum OpenTextureErrorCode : unsigned short {
   LoadTextureError = 1,
   ExtractTextureMetadataError
+};
+
+enum RenderTextureErrorCode : unsigned short {
+  RenderUnopenedTextureError = 1,
+  FailureToRenderTextureError
 };
 
 // Type definitions.
@@ -54,8 +60,21 @@ class OpenTextureErrorDescription :
     std::string describeErrorCause(
       OpenTextureErrorCode error_code
     ) const noexcept override;
-    std::string describeErrorDetails(
-      OpenTextureErrorCode error_code
+    std::string describeErrorSummary() const noexcept override;
+};
+
+class RenderTextureErrorDescription :
+  public ErrorDescription<RenderTextureErrorCode>
+{
+  // Public components.
+  public:
+
+    // Inherited methods.
+    using ErrorDescription::ErrorDescription;
+
+    // Method prototypes.
+    std::string describeErrorCause(
+      RenderTextureErrorCode error_code
     ) const noexcept override;
     std::string describeErrorSummary() const noexcept override;
 };
@@ -63,6 +82,19 @@ class OpenTextureErrorDescription :
 // Exception definitions.
 class OpenTextureException :
   public RuntimeException<OpenTextureErrorCode, OpenTextureErrorDescription>
+{
+  // Public components.
+  public:
+
+    // Inherited methods.
+    using RuntimeException::RuntimeException;
+};
+
+class RenderTextureException :
+  public RuntimeException<
+    RenderTextureErrorCode,
+    RenderTextureErrorDescription
+  >
 {
   // Public components.
   public:
@@ -88,7 +120,7 @@ class Texture {
     void render(
       SDL_Renderer* renderer,
       const VectorR2& destination
-    ) const noexcept;
+    ) const;
     void setClip(
       const VectorR2& upper_left_corner,
       int width,

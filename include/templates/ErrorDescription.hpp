@@ -10,6 +10,9 @@
 // Includes.
 #include <string>
 
+// SDL2 includes.
+#include <SDL2/SDL_error.h>
+
 // Declarations.
 template <typename TErrorCode> class ErrorDescription;
 
@@ -25,7 +28,7 @@ class ErrorDescription {
     ) const noexcept = 0;
     virtual std::string describeErrorDetails(
       TErrorCode error_code
-    ) const noexcept = 0;
+    ) const noexcept;
     virtual std::string describeErrorSummary() const noexcept = 0;
 
   // Protected components.
@@ -33,6 +36,16 @@ class ErrorDescription {
 
     // Method prototypes.
     std::string describeError(TErrorCode error_code) const noexcept;
+};
+
+// Public method implementations.
+template <typename TErrorCode>
+std::string ErrorDescription<TErrorCode>::describeErrorDetails(
+  TErrorCode error_code
+) const noexcept {
+  std::string error_details = std::string(SDL_GetError()).append(".");
+
+  return error_details;
 };
 
 // Protected method implementations.

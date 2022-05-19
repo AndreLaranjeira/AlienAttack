@@ -31,25 +31,38 @@ std::string OpenTextureErrorDescription::describeErrorCause(
   return error_cause;
 };
 
-std::string OpenTextureErrorDescription::describeErrorDetails(
-  OpenTextureErrorCode error_code
-) const noexcept {
-  std::string error_details;
-
-  switch (error_code) {
-    default:
-      error_details += SDL_GetError();
-  }
-
-  error_details += ".";
-
-  return error_details;
-};
-
 std::string OpenTextureErrorDescription::describeErrorSummary() \
 const noexcept {
   std::string error_summary = std::string(
     "OpenTextureError: An error occurred when opening a texture!"
+  );
+
+  return error_summary;
+};
+
+std::string RenderTextureErrorDescription::describeErrorCause(
+  RenderTextureErrorCode error_code
+) const noexcept {
+  std::string error_cause = std::string("This error was caused by ");
+  
+  switch (error_code) {
+    case RenderTextureErrorCode::RenderUnopenedTextureError:
+      error_cause += "attempting to render a texture that was not opened";
+      break;
+    case RenderTextureErrorCode::FailureToRenderTextureError:
+      error_cause += "a failure to render a texture";
+      break;
+  }
+
+  error_cause += ".";
+
+  return error_cause;
+};
+
+std::string RenderTextureErrorDescription::describeErrorSummary() \
+const noexcept {
+  std::string error_summary = std::string(
+    "RenderTextureError: An error occurred when rendering a texture!"
   );
 
   return error_summary;
@@ -80,7 +93,7 @@ void Texture::open(SDL_Renderer* renderer, std::string file) {
 void Texture::render(
   SDL_Renderer* renderer,
   const VectorR2& destination
-) const noexcept {
+) const {
   SDL_Rect destination_rect = {
     .x = (int) destination.x,
     .y = (int) destination.y,
@@ -88,12 +101,22 @@ void Texture::render(
     .h = this->clip_rect.h
   };
 
-  SDL_RenderCopy(
-    renderer,
-    this->texture.get(),
-    &this->clip_rect,
-    &destination_rect
-  );
+  if(!this->isOpen())
+    throw RenderTextureException(
+      RenderTextureErrorCode::RenderUnopenedTextureError
+    );
+
+  if(
+    SDL_RenderCopy(
+      renderer,
+      this->texture.get(),
+      &this->clip_rect,
+      &destination_rect
+    ) != 0
+  )
+    throw RenderTextureException(
+      RenderTextureErrorCode::FailureToRenderTextureError
+    );
 };
 
 void Texture::setClip(

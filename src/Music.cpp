@@ -71,21 +71,6 @@ std::string OpenMusicErrorDescription::describeErrorCause(
   return error_cause;
 };
 
-std::string OpenMusicErrorDescription::describeErrorDetails(
-  OpenMusicErrorCode error_code
-) const noexcept {
-  std::string error_details;
-
-  switch (error_code) {
-    default:
-      error_details += Mix_GetError();
-  }
-
-  error_details += ".";
-
-  return error_details;
-};
-
 std::string OpenMusicErrorDescription::describeErrorSummary() const noexcept {
   std::string error_summary = std::string(
     "OpenMusicError: An error occurred when opening a music track!"
@@ -121,21 +106,6 @@ std::string PlayMusicErrorDescription::describeErrorCause(
   return error_cause;
 };
 
-std::string PlayMusicErrorDescription::describeErrorDetails(
-  PlayMusicErrorCode error_code
-) const noexcept {
-  std::string error_details;
-
-  switch (error_code) {
-    default:
-      error_details += Mix_GetError();
-  }
-
-  error_details += ".";
-
-  return error_details;
-};
-
 std::string PlayMusicErrorDescription::describeErrorSummary() const noexcept {
   std::string error_summary = std::string(
     "PlayMusicError: An error occurred when playing a music track!"
@@ -168,21 +138,6 @@ std::string StopMusicErrorDescription::describeErrorCause(
   error_cause += ".";
 
   return error_cause;
-};
-
-std::string StopMusicErrorDescription::describeErrorDetails(
-  StopMusicErrorCode error_code
-) const noexcept {
-  std::string error_details;
-
-  switch (error_code) {
-    default:
-      error_details += Mix_GetError();
-  }
-
-  error_details += ".";
-
-  return error_details;
 };
 
 std::string StopMusicErrorDescription::describeErrorSummary() const noexcept {

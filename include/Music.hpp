@@ -64,9 +64,6 @@ class OpenMusicErrorDescription : public ErrorDescription<OpenMusicErrorCode> {
     std::string describeErrorCause(
       OpenMusicErrorCode error_code
     ) const noexcept override;
-    std::string describeErrorDetails(
-      OpenMusicErrorCode error_code
-    ) const noexcept override;
     std::string describeErrorSummary() const noexcept override;
 };
 
@@ -81,9 +78,6 @@ class PlayMusicErrorDescription : public ErrorDescription<PlayMusicErrorCode> {
     std::string describeErrorCause(
       PlayMusicErrorCode error_code
     ) const noexcept override;
-    std::string describeErrorDetails(
-      PlayMusicErrorCode error_code
-    ) const noexcept override;
     std::string describeErrorSummary() const noexcept override;
 };
 
@@ -96,9 +90,6 @@ class StopMusicErrorDescription : public ErrorDescription<StopMusicErrorCode> {
 
     // Method prototypes.
     std::string describeErrorCause(
-      StopMusicErrorCode error_code
-    ) const noexcept override;
-    std::string describeErrorDetails(
       StopMusicErrorCode error_code
     ) const noexcept override;
     std::string describeErrorSummary() const noexcept override;
