@@ -18,7 +18,7 @@ TPL_EXT = hpp
 # Project components.
 MAIN = main
 CLASSES = Face Game GameObject Music Rectangle Sound Sprite State Texture \
-	VectorR2
+	Tileset VectorR2
 TEMPLATES = ErrorDescription RuntimeException
 
 # Compiler name, source file extension and compilation data (flags and libs).
