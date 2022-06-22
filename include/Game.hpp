@@ -40,10 +40,7 @@ struct GameParams;
 enum GameRunErrorCode : unsigned short;
 class GameRunErrorDescription;
 class GameRunException;
-struct SDLAudioParams;
 struct SDLConfig;
-struct SDLRendererParams;
-struct SDLWindowParams;
 
 // Macros.
 #define GAME_WINDOW_TITLE "AlienAttack"
@@ -74,35 +71,35 @@ struct GameParams {
   int height;
 };
 
-struct SDLAudioParams {
-  int frequency;
-  Uint16 format;
-  int output_channels;
-  int chunksize;
-};
-
-struct SDLRendererParams {
-  int index;
-  Uint32 flags;
-};
-
-struct SDLWindowParams {
-  const char* title;
-  int x_offset;
-  int y_offset;
-  int width;
-  int height;
-  Uint32 flags;
-};
-
 struct SDLConfig {
+  struct AudioParams {
+    int frequency;
+    Uint16 format;
+    int output_channels;
+    int chunksize;
+  };
+
+  struct RendererParams {
+    int index;
+    Uint32 flags;
+  };
+
+  struct WindowParams {
+    const char* title;
+    int x_offset;
+    int y_offset;
+    int width;
+    int height;
+    Uint32 flags;
+  };
+
   Uint32 SDL_flags;
   int image_flags;
   int mixer_flags;
-  SDLAudioParams audio_params;
+  AudioParams audio_params;
   int mixer_channels;
-  SDLWindowParams window_params;
-  SDLRendererParams renderer_params;
+  WindowParams window_params;
+  RendererParams renderer_params;
 };
 
 // Auxiliary class definitions.
@@ -206,11 +203,14 @@ class Game {
     int initGameState() noexcept;
     void initRandomNumberGeneration() noexcept;
     int initSDL(Uint32 flags) noexcept;
-    int initSDLAudio(SDLAudioParams audio_params, int audio_channels) noexcept;
+    int initSDLAudio(
+      SDLConfig::AudioParams audio_params,
+      int audio_channels
+    ) noexcept;
     int initSDLImage(int flags) noexcept;
     int initSDLMix(int flags) noexcept;
-    int initSDLRenderer(SDLRendererParams renderer_params) noexcept;
-    int initSDLWindow(SDLWindowParams window_params) noexcept;
+    int initSDLRenderer(SDLConfig::RendererParams renderer_params) noexcept;
+    int initSDLWindow(SDLConfig::WindowParams window_params) noexcept;
     void renderAndPresentGameState();
     bool shouldKeepRunning() const noexcept;
     void updateGameState();

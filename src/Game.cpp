@@ -310,7 +310,7 @@ int Game::initSDL(Uint32 SDL_flags) noexcept {
 };
 
 int Game::initSDLAudio(
-  SDLAudioParams audio_params,
+  SDLConfig::AudioParams audio_params,
   int mixer_channels
 ) noexcept {
   if(
@@ -342,7 +342,7 @@ int Game::initSDLMix(int mix_flags) noexcept {
     return -1;  
 };
 
-int Game::initSDLRenderer(SDLRendererParams renderer_params) noexcept {
+int Game::initSDLRenderer(SDLConfig::RendererParams renderer_params) noexcept {
   this->renderer = SDL_CreateRenderer(
     this->window,
     renderer_params.index,
@@ -355,7 +355,7 @@ int Game::initSDLRenderer(SDLRendererParams renderer_params) noexcept {
     return -1;
 };
 
-int Game::initSDLWindow(SDLWindowParams window_params) noexcept {
+int Game::initSDLWindow(SDLConfig::WindowParams window_params) noexcept {
   this->window = SDL_CreateWindow(
     window_params.title,
     window_params.x_offset,

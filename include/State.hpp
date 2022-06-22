@@ -32,6 +32,8 @@
 #include "VectorR2.hpp"
 
 // Declarations.
+struct BackgroundParams;
+struct EnemyParams;
 class State;
 
 // Macros.
