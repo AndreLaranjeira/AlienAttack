@@ -51,7 +51,9 @@ void Music::stop(unsigned int fade_out_duration_milliseconds) {
   else if(!this->mixerInUse())
     throw StopMusicException(StopMusicErrorCode::MixerNotInUseError);
 
-  else if(this->useMixerToStopCurrentMusic(fade_out_duration_milliseconds) != 0)
+  else if(
+    this->useMixerToStopCurrentMusic(fade_out_duration_milliseconds) != 0
+  )
     throw StopMusicException(StopMusicErrorCode::FailureToStopMusicError);
 };
 
