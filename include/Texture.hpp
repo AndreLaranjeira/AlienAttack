@@ -33,13 +33,13 @@ class Texture;
 
 // Enumeration definitions.
 enum OpenTextureErrorCode : unsigned short {
-  LoadTextureError = 1,
-  ExtractTextureMetadataError
+  FailureToLoadTexture = 1,
+  BadTextureMetadata
 };
 
 enum RenderTextureErrorCode : unsigned short {
-  RenderUnopenedTextureError = 1,
-  FailureToRenderTextureError
+  RenderedUnopenedTexture = 1,
+  FailureToRenderTexture
 };
 
 // Type definitions.
@@ -74,6 +74,9 @@ class RenderTextureErrorDescription :
 
     // Method prototypes.
     std::string describeErrorCause(
+      RenderTextureErrorCode error_code
+    ) const noexcept override;
+    std::string describeErrorDetails(
       RenderTextureErrorCode error_code
     ) const noexcept override;
     std::string describeErrorSummary() const noexcept override;
@@ -140,6 +143,10 @@ class Texture {
     int width = 0;
 
     // Method prototypes.
+    int copyTextureToRenderTarget(
+      SDL_Renderer* renderer,
+      SDL_Rect& destination
+    ) const noexcept;
     int extractTextureMetadata() noexcept;
     int loadTextureFile(SDL_Renderer* renderer, std::string file) noexcept;
 };

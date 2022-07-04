@@ -33,13 +33,13 @@ class Tileset;
 
 // Enumeration definitions.
 enum MeasureTilesetDimensionsErrorCode : unsigned short {
-  InvalidColumnMeasurementError = 1,
-  InvalidRowMeasurementError
+  InvalidColumnMeasurement = 1,
+  InvalidRowMeasurement
 };
 
 enum RenderTileErrorCode : unsigned short {
-  InexistantTileIndexError = 1,
-  FailureToRenderTileError
+  OutOfRangeTileIndex = 1,
+  FailureToRenderTile
 };
 
 // Auxiliary class definitions.
@@ -119,6 +119,7 @@ class Tileset {
     );
 
     // Method prototypes.
+    unsigned int getNumberOfTiles() const noexcept;
     unsigned int getTileHeight() const noexcept;
     unsigned int getTileWidth() const noexcept;
     void renderTile(
@@ -126,7 +127,6 @@ class Tileset {
       SDL_Renderer* renderer,
       const VectorR2& destination
     );
-    bool tileExistsAtIndex(unsigned int tile_index) const noexcept;
 
   // Private components.
   private:
@@ -145,6 +145,7 @@ class Tileset {
     int measureNumberOfRowsInTileset() noexcept;
     void measureTilesetDimensions();
     void setTilesetClipForTileAtIndex(unsigned int tile_index) noexcept;
+    bool tileExistsAtIndex(unsigned int tile_index) const noexcept;
     VectorR2 upperLeftCornerOfTileAtIndex(
       unsigned int tile_index
     ) const noexcept;

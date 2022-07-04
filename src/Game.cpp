@@ -65,29 +65,36 @@ std::string GameInitErrorDescription::describeErrorCause(
   std::string error_cause = std::string("This error was caused by ");
   
   switch (error_code) {
-    case GameInitErrorCode::DuplicateGameInstanceError:
+    case GameInitErrorCode::DuplicateGameInstance:
       error_cause += "an attempt to create multiple game instances";
       break;
+  
     case GameInitErrorCode::SDLError:
       error_cause += "the SDL module";
       break;
+
     case GameInitErrorCode::SDLImageError:
       error_cause += "the SDL Image module";
       break;
+
     case GameInitErrorCode::SDLMixError:
       error_cause += "the SDL Mixer module";
       break;
+
     case GameInitErrorCode::SDLAudioError:
       error_cause += "the SDL Audio functionality";
       break;
+
     case GameInitErrorCode::SDLWindowError:
       error_cause += "the SDL Window";
       break;
+
     case GameInitErrorCode::SDLRendererError:
       error_cause += "the SDL Renderer";
       break;
-    case GameInitErrorCode::GameStateError:
-      error_cause += "the internal Game State";
+
+    case GameInitErrorCode::GameStateConstructorError:
+      error_cause += "the Game State constructor";
       break;
   }
 
@@ -102,9 +109,10 @@ std::string GameInitErrorDescription::describeErrorDetails(
   std::string error_details;
 
   switch (error_code) {
-    case GameInitErrorCode::DuplicateGameInstanceError:
+    case GameInitErrorCode::DuplicateGameInstance:
       error_details += "There can only be 1 instance of Game running";
       break;
+  
     case GameInitErrorCode::SDLError:
     case GameInitErrorCode::SDLImageError:
     case GameInitErrorCode::SDLMixError:
@@ -113,7 +121,8 @@ std::string GameInitErrorDescription::describeErrorDetails(
     case GameInitErrorCode::SDLRendererError:
       error_details += SDL_GetError();
       break;
-    case GameInitErrorCode::GameStateError:
+
+    case GameInitErrorCode::GameStateConstructorError:
       error_details += "The Game State constructor threw an exception";
       break;
   }
@@ -137,10 +146,11 @@ std::string GameRunErrorDescription::describeErrorCause(
   std::string error_cause = std::string("This error was caused by ");
   
   switch (error_code) {
-    case GameRunErrorCode::StateUpdateError:
+    case GameRunErrorCode::StateUpdateFailure:
       error_cause += "a failure to update the internal Game State";
       break;
-    case GameRunErrorCode::StateRenderAndPresentError:
+
+    case GameRunErrorCode::StateRenderAndPresentFailure:
       error_cause += "a failure to render and present the internal Game State";
       break;
   }
@@ -153,15 +163,7 @@ std::string GameRunErrorDescription::describeErrorCause(
 std::string GameRunErrorDescription::describeErrorDetails(
   GameRunErrorCode error_code
 ) const noexcept {
-  std::string error_details;
-
-  switch (error_code) {
-    default:
-      error_details += "The Game State threw an exception";
-      break;
-  }
-
-  error_details += ".";
+  std::string error_details = "The Game State threw an exception.";
 
   return error_details;
 };
@@ -177,7 +179,7 @@ std::string GameRunErrorDescription::describeErrorSummary() const noexcept {
 // Private method implementations.
 void Game::cleanUpFailedGameInit(GameInitErrorCode error_code) noexcept {
   switch (error_code) {
-    case GameInitErrorCode::GameStateError:
+    case GameInitErrorCode::GameStateConstructorError:
       this->cleanUpGameRenderer();
 
     case GameInitErrorCode::SDLRendererError:
@@ -196,7 +198,7 @@ void Game::cleanUpFailedGameInit(GameInitErrorCode error_code) noexcept {
       SDL_Quit();
 
     case GameInitErrorCode::SDLError:
-    case GameInitErrorCode::DuplicateGameInstanceError:
+    case GameInitErrorCode::DuplicateGameInstance:
       ;
   }
 };
@@ -258,7 +260,7 @@ SDLConfig Game::defaultSDLConfig(GameParams game_params) const noexcept {
 
 void Game::initGame(SDLConfig SDL_config) {
   if(this->verifySingletonProperty() != 0)
-    throw GameInitException(GameInitErrorCode::DuplicateGameInstanceError);
+    throw GameInitException(GameInitErrorCode::DuplicateGameInstance);
 
   if(this->initSDL(SDL_config.SDL_flags) != 0)
     throw GameInitException(GameInitErrorCode::SDLError);
@@ -281,7 +283,7 @@ void Game::initGame(SDLConfig SDL_config) {
     throw GameInitException(GameInitErrorCode::SDLRendererError);
 
   if(this->initGameState() != 0)
-    throw GameInitException(GameInitErrorCode::GameStateError);
+    throw GameInitException(GameInitErrorCode::GameStateConstructorError);
 
   this->initRandomNumberGeneration(); 
 };
@@ -377,7 +379,7 @@ void Game::renderAndPresentGameState() {
   }
   catch(std::exception& e) {
     std::cerr << "[Game] " << e.what();
-    throw GameRunException(GameRunErrorCode::StateRenderAndPresentError);
+    throw GameRunException(GameRunErrorCode::StateRenderAndPresentFailure);
   }
 };
 
@@ -391,7 +393,7 @@ void Game::updateGameState() {
   }
   catch(std::exception& e) {
     std::cerr << "[Game] " << e.what();
-    throw GameRunException(GameRunErrorCode::StateUpdateError);
+    throw GameRunException(GameRunErrorCode::StateUpdateFailure);
   }
 };
 

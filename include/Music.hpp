@@ -32,21 +32,20 @@ class StopMusicException;
 
 // Enumeration definitions.
 enum OpenMusicErrorCode : unsigned short {
-  LoadMusicError = 1
+  FailureToLoadMusic = 1
 };
 
 enum PlayMusicErrorCode : unsigned short {
-  PlayUnopenedMusicError = 1,
-  MusicAlreadyPlayingError,
-  MixerInUseError,
-  FailureToPlayMusicError
+  PlayedUnopenedMusic = 1,
+  InvalidPlayCommand,
+  MixerInUse,
+  FailureToPlayMusic
 };
 
 enum StopMusicErrorCode : unsigned short {
-  StopUnopenedMusicError = 1,
-  MusicNotPlayedError,
-  MixerNotInUseError,
-  FailureToStopMusicError
+  StoppedUnopenedMusic = 1,
+  StoppedUnplayedMusic,
+  FailureToStopMusic
 };
 
 // Type definitions.
@@ -78,6 +77,9 @@ class PlayMusicErrorDescription : public ErrorDescription<PlayMusicErrorCode> {
     std::string describeErrorCause(
       PlayMusicErrorCode error_code
     ) const noexcept override;
+    std::string describeErrorDetails(
+      PlayMusicErrorCode error_code
+    ) const noexcept override;
     std::string describeErrorSummary() const noexcept override;
 };
 
@@ -90,6 +92,9 @@ class StopMusicErrorDescription : public ErrorDescription<StopMusicErrorCode> {
 
     // Method prototypes.
     std::string describeErrorCause(
+      StopMusicErrorCode error_code
+    ) const noexcept override;
+    std::string describeErrorDetails(
       StopMusicErrorCode error_code
     ) const noexcept override;
     std::string describeErrorSummary() const noexcept override;
@@ -151,10 +156,10 @@ class Music {
 
     // Method prototypes.
     bool mixerInUse() const noexcept;
-    int useMixerToPlayCurrentMusic(int times) noexcept;
+    int useMixerToPlayCurrentMusic(int times) const noexcept;
     int useMixerToStopCurrentMusic(
       unsigned int fade_out_duration_milliseconds
-    ) noexcept;
+    ) const noexcept;
 };
 
 #endif // MUSIC_H_

@@ -35,18 +35,18 @@ class StopSoundException;
 
 // Enumeration definitions.
 enum OpenSoundErrorCode : unsigned short {
-  LoadSoundError = 1
+  FailureToLoadSound = 1
 };
 
 enum PlaySoundErrorCode : unsigned short {
-  PlayUnopenedSoundError = 1,
-  SoundAlreadyPlayingError,
-  FailureToPlaySoundError
+  PlayedUnopenedSound = 1,
+  SoundAlreadyPlaying,
+  FailureToPlaySound
 };
 
 enum StopSoundErrorCode : unsigned short {
-  StopUnopenedSoundError = 1,
-  NoChannelReservedError
+  StoppedUnopenedSound = 1,
+  NoReservedChannel
 };
 
 // Auxiliary class definitions.
@@ -75,6 +75,9 @@ class PlaySoundErrorDescription : public ErrorDescription<PlaySoundErrorCode> {
     std::string describeErrorCause(
       PlaySoundErrorCode error_code
     ) const noexcept override;
+    std::string describeErrorDetails(
+      PlaySoundErrorCode error_code
+    ) const noexcept override;
     std::string describeErrorSummary() const noexcept override;
 };
 
@@ -87,6 +90,9 @@ class StopSoundErrorDescription : public ErrorDescription<StopSoundErrorCode> {
 
     // Method prototypes.
     std::string describeErrorCause(
+      StopSoundErrorCode error_code
+    ) const noexcept override;
+    std::string describeErrorDetails(
       StopSoundErrorCode error_code
     ) const noexcept override;
     std::string describeErrorSummary() const noexcept override;
@@ -166,7 +172,7 @@ class Sound : public Component {
     bool soundIsPlaying() const noexcept;
     bool soundStartedPlaying() const noexcept;
     void stopSoundCurrentlyPlaying() noexcept;
-    void stopSoundOnReservedChannel() noexcept;
+    void stopSoundOnReservedChannel() const noexcept;
 };
 
 #endif // SOUND_H_

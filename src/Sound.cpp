@@ -33,7 +33,7 @@ std::string OpenSoundErrorDescription::describeErrorCause(
   std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
-    case LoadSoundError:
+    case FailureToLoadSound:
       error_cause += "attempting to load the sound asset from the file system";
       break;
   }
@@ -57,14 +57,16 @@ std::string PlaySoundErrorDescription::describeErrorCause(
   std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
-    case PlaySoundErrorCode::PlayUnopenedSoundError:
-      error_cause += "attempting to play a sound asset that was not opened";
+    case PlaySoundErrorCode::PlayedUnopenedSound:
+      error_cause += "playing a sound asset that was not opened";
       break;
-    case PlaySoundErrorCode::SoundAlreadyPlayingError:
+
+    case PlaySoundErrorCode::SoundAlreadyPlaying:
       error_cause += "attempting to play a sound asset that is already "
         "playing";
       break;
-    case PlaySoundErrorCode::FailureToPlaySoundError:
+
+    case PlaySoundErrorCode::FailureToPlaySound:
       error_cause += "a failure to play a sound asset with the mixer channels";
       break;
   }
@@ -72,6 +74,32 @@ std::string PlaySoundErrorDescription::describeErrorCause(
   error_cause += ".";
 
   return error_cause;
+};
+
+std::string PlaySoundErrorDescription::describeErrorDetails(
+  PlaySoundErrorCode error_code
+) const noexcept {
+    std::string error_details;
+
+  switch (error_code) {
+    case PlaySoundErrorCode::PlayedUnopenedSound:
+      error_details += "The sound asset to be played must have an open file "
+        "pointer that is not NULL";
+      break;
+
+    case PlaySoundErrorCode::SoundAlreadyPlaying:
+      error_details += "The sound asset to be played must not be playing or "
+        "must have finished playing";
+      break;
+
+    case PlaySoundErrorCode::FailureToPlaySound:
+      error_details += SDL_GetError();
+      break;
+  }
+
+  error_details += ".";
+
+  return error_details;
 };
 
 std::string PlaySoundErrorDescription::describeErrorSummary() const noexcept {
@@ -101,28 +129,28 @@ void Sound::open(std::string file) {
   this->cleanUpCurrentSound();
 
   if(this->loadSoundFile(file) != 0)
-    throw OpenSoundException(OpenSoundErrorCode::LoadSoundError);
+    throw OpenSoundException(OpenSoundErrorCode::FailureToLoadSound);
 };
 
 void Sound::play(int loops_after_first_time_played) {
   if(!this->isOpen())
-    throw PlaySoundException(PlaySoundErrorCode::PlayUnopenedSoundError);
+    throw PlaySoundException(PlaySoundErrorCode::PlayedUnopenedSound);
 
-  else if(this->soundIsPlaying())
-    throw PlaySoundException(PlaySoundErrorCode::SoundAlreadyPlayingError);
+  if(this->soundIsPlaying())
+    throw PlaySoundException(PlaySoundErrorCode::SoundAlreadyPlaying);
 
-  else if(this->playCurrentSoundWithMixer(loops_after_first_time_played) != 0)
-    throw PlaySoundException(PlaySoundErrorCode::FailureToPlaySoundError);
+  if(this->playCurrentSoundWithMixer(loops_after_first_time_played) != 0)
+    throw PlaySoundException(PlaySoundErrorCode::FailureToPlaySound);
 };
 
 void Sound::render(SDL_Renderer* renderer) const noexcept {};
 
 void Sound::stop() {
   if(!this->isOpen())
-    throw StopSoundException(StopSoundErrorCode::StopUnopenedSoundError);
+    throw StopSoundException(StopSoundErrorCode::StoppedUnopenedSound);
 
-  else if(!this->hasReservedChannel())
-    throw StopSoundException(StopSoundErrorCode::NoChannelReservedError);
+  if(!this->hasReservedChannel())
+    throw StopSoundException(StopSoundErrorCode::NoReservedChannel);
 
   this->stopSoundCurrentlyPlaying();
 };
@@ -135,18 +163,41 @@ std::string StopSoundErrorDescription::describeErrorCause(
   std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
-    case StopSoundErrorCode::StopUnopenedSoundError:
-      error_cause += "attempting to stop a sound asset that was not opened";
+    case StopSoundErrorCode::StoppedUnopenedSound:
+      error_cause += "stopping a sound asset that was not opened";
       break;
-    case StopSoundErrorCode::NoChannelReservedError:
-      error_cause += "attempting to stop a sound asset that did not reserve "
-        "a sound channel to play on";
+
+    case StopSoundErrorCode::NoReservedChannel:
+      error_cause += "attempting to stop a sound asset without a reserved "
+        "sound channel";
       break;
   }
 
   error_cause += ".";
 
   return error_cause;
+};
+
+std::string StopSoundErrorDescription::describeErrorDetails(
+  StopSoundErrorCode error_code
+) const noexcept {
+    std::string error_details;
+
+  switch (error_code) {
+    case StopSoundErrorCode::StoppedUnopenedSound:
+      error_details += "The sound asset to be stopped must have an open file "
+        "pointer that is not NULL";
+      break;
+
+    case StopSoundErrorCode::NoReservedChannel:
+      error_details += "The sound asset to be stopped must have been assigned "
+        "a reserved channel (occurs when played) to be properly stopped";
+      break;
+  }
+
+  error_details += ".";
+
+  return error_details;
 };
 
 std::string StopSoundErrorDescription::describeErrorSummary() const noexcept {
@@ -222,9 +273,10 @@ bool Sound::soundStartedPlaying() const noexcept {
 void Sound::stopSoundCurrentlyPlaying() noexcept {
   if(this->soundIsPlaying())
     this->stopSoundOnReservedChannel();
+
+  this->channel = -1;
 };
 
-void Sound::stopSoundOnReservedChannel() noexcept {
+void Sound::stopSoundOnReservedChannel() const noexcept {
   Mix_HaltChannel(this->channel);
-  this->channel = -1;
 };

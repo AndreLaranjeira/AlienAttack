@@ -27,10 +27,11 @@ std::string MeasureTilesetDimensionsErrorDescription::describeErrorCause(
   std::string error_cause = std::string("This error was caused by ");
   
   switch (error_code) {
-    case MeasureTilesetDimensionsErrorCode::InvalidColumnMeasurementError:
+    case MeasureTilesetDimensionsErrorCode::InvalidColumnMeasurement:
       error_cause += "an invalid column measurement for the tileset";
       break;
-    case MeasureTilesetDimensionsErrorCode::InvalidRowMeasurementError:
+
+    case MeasureTilesetDimensionsErrorCode::InvalidRowMeasurement:
       error_cause += "an invalid row measurement for the tileset";
       break;
   }
@@ -46,11 +47,12 @@ std::string MeasureTilesetDimensionsErrorDescription::describeErrorDetails(
   std::string error_details;
 
   switch (error_code) {
-    case MeasureTilesetDimensionsErrorCode::InvalidColumnMeasurementError:
+    case MeasureTilesetDimensionsErrorCode::InvalidColumnMeasurement:
       error_details += "The tileset width must be divisible by the specified "
         "tile width to ensure a whole number of columns";
       break;
-    case MeasureTilesetDimensionsErrorCode::InvalidRowMeasurementError:
+
+    case MeasureTilesetDimensionsErrorCode::InvalidRowMeasurement:
       error_details += "The tileset height must be divisible by the specified "
         "tile height to ensure a whole number of rows";
       break;
@@ -77,11 +79,12 @@ std::string RenderTileErrorDescription::describeErrorCause(
   std::string error_cause = std::string("This error was caused by ");
   
   switch (error_code) {
-    case RenderTileErrorCode::InexistantTileIndexError:
-      error_cause += "attempting to render a tile at an inexistant index in "
+    case RenderTileErrorCode::OutOfRangeTileIndex:
+      error_cause += "attempting to render a tile index that is outside of "
         "the tileset";
       break;
-    case RenderTileErrorCode::FailureToRenderTileError:
+
+    case RenderTileErrorCode::FailureToRenderTile:
       error_cause += "an error at rendering a tile from the tileset";
       break;
   }
@@ -97,11 +100,12 @@ std::string RenderTileErrorDescription::describeErrorDetails(
   std::string error_details;
 
   switch (error_code) {
-    case RenderTileErrorCode::InexistantTileIndexError:
+    case RenderTileErrorCode::OutOfRangeTileIndex:
       error_details += "The tile index to be rendered must exist in the "
-        "tileset. Please use the Tileset::tileExistsAtIndex method";
+        "tileset.";
       break;
-    case RenderTileErrorCode::FailureToRenderTileError:
+
+    case RenderTileErrorCode::FailureToRenderTile:
       error_details += SDL_GetError();
       break;
   }
@@ -119,6 +123,10 @@ std::string RenderTileErrorDescription::describeErrorSummary() const noexcept {
   return error_summary;
 };
 
+unsigned int Tileset::getNumberOfTiles() const noexcept {
+  return this->number_of_tiles_in_tileset;
+};
+
 unsigned int Tileset::getTileHeight() const noexcept {
   return this->tile_height;
 };
@@ -133,7 +141,7 @@ void Tileset::renderTile(
   const VectorR2& destination
 ) {
   if(!this->tileExistsAtIndex(requested_tile_index))
-    throw RenderTileException(RenderTileErrorCode::InexistantTileIndexError);
+    throw RenderTileException(RenderTileErrorCode::OutOfRangeTileIndex);
 
   if(this->index_of_last_tile_rendered != requested_tile_index)
     this->setTilesetClipForTileAtIndex(requested_tile_index);
@@ -142,12 +150,8 @@ void Tileset::renderTile(
     this->tileset.render(renderer, destination);
   }
   catch(RenderTextureException& render_texture_exception) {
-    throw RenderTileException(RenderTileErrorCode::FailureToRenderTileError);
+    throw RenderTileException(RenderTileErrorCode::FailureToRenderTile);
   }
-};
-
-bool Tileset::tileExistsAtIndex(unsigned int tile_index) const noexcept {
-  return tile_index < this->number_of_tiles_in_tileset;
 };
 
 // Private method implementations.
@@ -174,12 +178,12 @@ int Tileset::measureNumberOfRowsInTileset() noexcept {
 void Tileset::measureTilesetDimensions() {
   if(this->measureNumberOfColumnsInTileset() != 0)
     throw MeasureTilesetDimensionsException(
-      MeasureTilesetDimensionsErrorCode::InvalidColumnMeasurementError
+      MeasureTilesetDimensionsErrorCode::InvalidColumnMeasurement
     );
 
   if(this->measureNumberOfRowsInTileset() != 0)
     throw MeasureTilesetDimensionsException(
-      MeasureTilesetDimensionsErrorCode::InvalidRowMeasurementError
+      MeasureTilesetDimensionsErrorCode::InvalidRowMeasurement
     );
 
   this->number_of_tiles_in_tileset = (this->rows * this->columns);
@@ -192,6 +196,10 @@ void Tileset::setTilesetClipForTileAtIndex(unsigned int tile_index) noexcept {
     this->tile_height
   );
   this->index_of_last_tile_rendered = tile_index;
+};
+
+bool Tileset::tileExistsAtIndex(unsigned int tile_index) const noexcept {
+  return tile_index < this->number_of_tiles_in_tileset;
 };
 
 VectorR2 Tileset::upperLeftCornerOfTileAtIndex(

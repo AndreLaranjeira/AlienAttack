@@ -18,11 +18,12 @@ std::string OpenTextureErrorDescription::describeErrorCause(
   std::string error_cause = std::string("This error was caused by ");
   
   switch (error_code) {
-    case OpenTextureErrorCode::LoadTextureError:
+    case OpenTextureErrorCode::FailureToLoadTexture:
       error_cause += "attempting to load a texture from the file system";
       break;
-    case OpenTextureErrorCode::ExtractTextureMetadataError:
-      error_cause += "attempting to extract a texture's metadata";
+
+    case OpenTextureErrorCode::BadTextureMetadata:
+      error_cause += "unsuccessfully attempting to query a texture's metadata";
       break;
   }
 
@@ -46,10 +47,11 @@ std::string RenderTextureErrorDescription::describeErrorCause(
   std::string error_cause = std::string("This error was caused by ");
   
   switch (error_code) {
-    case RenderTextureErrorCode::RenderUnopenedTextureError:
-      error_cause += "attempting to render a texture that was not opened";
+    case RenderTextureErrorCode::RenderedUnopenedTexture:
+      error_cause += "rendering a texture that was not opened";
       break;
-    case RenderTextureErrorCode::FailureToRenderTextureError:
+
+    case RenderTextureErrorCode::FailureToRenderTexture:
       error_cause += "a failure to render a texture";
       break;
   }
@@ -57,6 +59,27 @@ std::string RenderTextureErrorDescription::describeErrorCause(
   error_cause += ".";
 
   return error_cause;
+};
+
+std::string RenderTextureErrorDescription::describeErrorDetails(
+  RenderTextureErrorCode error_code
+) const noexcept {
+  std::string error_details;
+
+  switch (error_code) {
+     case RenderTextureErrorCode::RenderedUnopenedTexture:
+      error_details += "The texture to be rendered must have an open file "
+        "pointer that is not NULL";
+      break;
+
+    case RenderTextureErrorCode::FailureToRenderTexture:
+      error_details += SDL_GetError();
+      break;
+  }
+
+  error_details += ".";
+
+  return error_details;
 };
 
 std::string RenderTextureErrorDescription::describeErrorSummary() \
@@ -82,11 +105,11 @@ bool Texture::isOpen() const noexcept {
 
 void Texture::open(SDL_Renderer* renderer, std::string file) {
   if(this->loadTextureFile(renderer, file) != 0)
-    throw OpenTextureException(OpenTextureErrorCode::LoadTextureError);
+    throw OpenTextureException(OpenTextureErrorCode::FailureToLoadTexture);
 
   if(this->extractTextureMetadata() != 0)
     throw OpenTextureException(
-      OpenTextureErrorCode::ExtractTextureMetadataError
+      OpenTextureErrorCode::BadTextureMetadata
     );
 };
 
@@ -103,19 +126,12 @@ void Texture::render(
 
   if(!this->isOpen())
     throw RenderTextureException(
-      RenderTextureErrorCode::RenderUnopenedTextureError
+      RenderTextureErrorCode::RenderedUnopenedTexture
     );
 
-  if(
-    SDL_RenderCopy(
-      renderer,
-      this->texture.get(),
-      &this->clip_rect,
-      &destination_rect
-    ) != 0
-  )
+  if(this->copyTextureToRenderTarget(renderer, destination_rect) != 0)
     throw RenderTextureException(
-      RenderTextureErrorCode::FailureToRenderTextureError
+      RenderTextureErrorCode::FailureToRenderTexture
     );
 };
 
@@ -131,6 +147,23 @@ void Texture::setClip(
 };
 
 // Private method implementations.
+int Texture::copyTextureToRenderTarget(
+  SDL_Renderer* renderer,
+  SDL_Rect& destination
+) const noexcept {
+  if(
+    SDL_RenderCopy(
+      renderer,
+      this->texture.get(),
+      &this->clip_rect,
+      &destination
+    ) != 0
+  )
+    return -1;
+
+  return 0;
+};
+
 int Texture::extractTextureMetadata() noexcept {
   if(
     SDL_QueryTexture(

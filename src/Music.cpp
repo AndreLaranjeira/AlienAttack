@@ -24,37 +24,39 @@ void Music::open(std::string file) {
   this->music.reset(Mix_LoadMUS(file.c_str()));
 
   if(!this->music)
-    throw OpenMusicException(OpenMusicErrorCode::LoadMusicError);
+    throw OpenMusicException(OpenMusicErrorCode::FailureToLoadMusic);
 };
 
 void Music::play(int times) {
   if(!this->isOpen())
-    throw PlayMusicException(PlayMusicErrorCode::PlayUnopenedMusicError);
+    throw PlayMusicException(PlayMusicErrorCode::PlayedUnopenedMusic);
 
-  else if(this->isUsingMixer())
-    throw PlayMusicException(PlayMusicErrorCode::MusicAlreadyPlayingError);
+  if(this->isUsingMixer())
+    throw PlayMusicException(PlayMusicErrorCode::InvalidPlayCommand);
 
-  else if(this->mixerInUse())
-    throw PlayMusicException(PlayMusicErrorCode::MixerInUseError);
+  if(this->mixerInUse())
+    throw PlayMusicException(PlayMusicErrorCode::MixerInUse);
 
-  else if(this->useMixerToPlayCurrentMusic(times) != 0)
-    throw PlayMusicException(PlayMusicErrorCode::FailureToPlayMusicError);
+  if(this->useMixerToPlayCurrentMusic(times) != 0)
+    throw PlayMusicException(PlayMusicErrorCode::FailureToPlayMusic);
+
+  this->usingMixer = true;
 };
 
 void Music::stop(unsigned int fade_out_duration_milliseconds) {
   if(!this->isOpen())
-    throw StopMusicException(StopMusicErrorCode::StopUnopenedMusicError);
+    throw StopMusicException(StopMusicErrorCode::StoppedUnopenedMusic);
 
-  else if(!this->isUsingMixer())
-    throw StopMusicException(StopMusicErrorCode::MusicNotPlayedError);
+  if(!this->isUsingMixer())
+    throw StopMusicException(StopMusicErrorCode::StoppedUnplayedMusic);
 
-  else if(!this->mixerInUse())
-    throw StopMusicException(StopMusicErrorCode::MixerNotInUseError);
-
-  else if(
+  if(
+    this->mixerInUse() &&
     this->useMixerToStopCurrentMusic(fade_out_duration_milliseconds) != 0
   )
-    throw StopMusicException(StopMusicErrorCode::FailureToStopMusicError);
+    throw StopMusicException(StopMusicErrorCode::FailureToStopMusic);
+
+  this->usingMixer = false;
 };
 
 std::string OpenMusicErrorDescription::describeErrorCause(
@@ -63,7 +65,7 @@ std::string OpenMusicErrorDescription::describeErrorCause(
   std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
-    case LoadMusicError:
+    case FailureToLoadMusic:
       error_cause += "attempting to load the music from the file system";
       break;
   }
@@ -87,18 +89,21 @@ std::string PlayMusicErrorDescription::describeErrorCause(
   std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
-    case PlayMusicErrorCode::PlayUnopenedMusicError:
-      error_cause += "attempting to play a music track that was not opened";
+    case PlayMusicErrorCode::PlayedUnopenedMusic:
+      error_cause += "playing a music track that was not opened";
       break;
-    case PlayMusicErrorCode::MusicAlreadyPlayingError:
-      error_cause += "attempting to play a music track that is already "
-        "playing";
+
+    case PlayMusicErrorCode::InvalidPlayCommand:
+      error_cause += "issuing a play command for a music track that was "
+        "already played but not stopped afterwards";
       break;
-    case PlayMusicErrorCode::MixerInUseError:
+
+    case PlayMusicErrorCode::MixerInUse:
       error_cause += "attempting to use the mixer to play a music track when "
-        "another track is already playing";
+        "another track is already playing in the mixer";
       break;
-    case PlayMusicErrorCode::FailureToPlayMusicError:
+
+    case PlayMusicErrorCode::FailureToPlayMusic:
       error_cause += "a failure to play a music track with the mixer";
       break;
   }
@@ -106,6 +111,37 @@ std::string PlayMusicErrorDescription::describeErrorCause(
   error_cause += ".";
 
   return error_cause;
+};
+
+std::string PlayMusicErrorDescription::describeErrorDetails(
+  PlayMusicErrorCode error_code
+) const noexcept {
+    std::string error_details;
+
+  switch (error_code) {
+    case PlayMusicErrorCode::PlayedUnopenedMusic:
+      error_details += "The music track to be played must have an open file "
+        "pointer that is not NULL";
+      break;
+
+    case PlayMusicErrorCode::InvalidPlayCommand:
+      error_details += "The music track to be played must be properly stopped "
+        "before it can be played again";
+      break;
+
+    case PlayMusicErrorCode::MixerInUse:
+      error_details += "There can be no music track playing in the mixer for "
+        "another music track to start playing";
+      break;
+
+    case PlayMusicErrorCode::FailureToPlayMusic:
+      error_details += SDL_GetError();
+      break;
+  }
+
+  error_details += ".";
+
+  return error_details;
 };
 
 std::string PlayMusicErrorDescription::describeErrorSummary() const noexcept {
@@ -122,17 +158,15 @@ std::string StopMusicErrorDescription::describeErrorCause(
   std::string error_cause = std::string("This error was caused by ");
 
   switch (error_code) {
-    case StopMusicErrorCode::StopUnopenedMusicError:
-      error_cause += "attempting to stop a music track that was not opened";
+    case StopMusicErrorCode::StoppedUnopenedMusic:
+      error_cause += "stopping a music track that was not opened";
       break;
-    case StopMusicErrorCode::MusicNotPlayedError:
-      error_cause += "attempting to stop a music track that was not played";
+
+    case StopMusicErrorCode::StoppedUnplayedMusic:
+      error_cause += "stopping a music track that was not played";
       break;
-    case StopMusicErrorCode::MixerNotInUseError:
-      error_cause += "attempting to use the mixer to stop a music track when "
-        "no track is playing";
-      break;
-    case StopMusicErrorCode::FailureToStopMusicError:
+
+    case StopMusicErrorCode::FailureToStopMusic:
       error_cause += "a failure to stop a music track with the mixer";
       break;
   }
@@ -140,6 +174,32 @@ std::string StopMusicErrorDescription::describeErrorCause(
   error_cause += ".";
 
   return error_cause;
+};
+
+std::string StopMusicErrorDescription::describeErrorDetails(
+  StopMusicErrorCode error_code
+) const noexcept {
+    std::string error_details;
+
+  switch (error_code) {
+    case StopMusicErrorCode::StoppedUnopenedMusic:
+      error_details += "The music track to be stopped must have an open file "
+        "pointer that is not NULL";
+      break;
+
+    case StopMusicErrorCode::StoppedUnplayedMusic:
+      error_details += "The music track to be stopped must be have been "
+        "played before it can be stopped";
+      break;
+
+    case StopMusicErrorCode::FailureToStopMusic:
+      error_details += SDL_GetError();
+      break;
+  }
+
+  error_details += ".";
+
+  return error_details;
 };
 
 std::string StopMusicErrorDescription::describeErrorSummary() const noexcept {
@@ -152,23 +212,21 @@ std::string StopMusicErrorDescription::describeErrorSummary() const noexcept {
 
 // Private method implementations.
 bool Music::mixerInUse() const noexcept {
-  return (Mix_PlayingMusic() && Mix_FadingMusic() != MIX_FADING_OUT);
+  return (Mix_PlayingMusic() == 1 && Mix_FadingMusic() != MIX_FADING_OUT);
 };
 
-int Music::useMixerToPlayCurrentMusic(int times) noexcept {
+int Music::useMixerToPlayCurrentMusic(int times) const noexcept {
   if(Mix_PlayMusic(this->music.get(), times) != 0)
     return -1;
 
-  this->usingMixer = true;
   return 0;
 };
 
 int Music::useMixerToStopCurrentMusic(
   unsigned int fade_out_duration_milliseconds
-) noexcept {
+) const noexcept {
   if(Mix_FadeOutMusic(fade_out_duration_milliseconds) != 0)
     return -1;
 
-  this->usingMixer = false;
   return 0;
 };

@@ -49,19 +49,19 @@ struct SDLConfig;
 
 // Enumeration definitions.
 enum GameInitErrorCode : unsigned short {
-  DuplicateGameInstanceError = 1,
+  DuplicateGameInstance = 1,
   SDLError,
   SDLImageError,
   SDLMixError,
   SDLAudioError,
   SDLWindowError,
   SDLRendererError,
-  GameStateError
+  GameStateConstructorError
 };
 
 enum GameRunErrorCode : unsigned short {
-  StateUpdateError = 1,
-  StateRenderAndPresentError
+  StateUpdateFailure = 1,
+  StateRenderAndPresentFailure
 };
 
 // Type definitions.
